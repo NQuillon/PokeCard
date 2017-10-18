@@ -1,10 +1,8 @@
 <resources>
     <string name="app_name">PokeCard</string>
 
-    <string name="title_activity_splash_screen">SplashScreen</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_splash_screen">PokéCard</string>
+    <string name="title_activity_login">Connexion</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

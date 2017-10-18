@@ -1,17 +1,45 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ec1e24"
     tools:context="nicolas.johan.iem.pokecard.SplashScreen">
 
-    <!-- The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PokéCard"
+        android:textSize="80dp"
+        android:layout_marginTop="42dp"
+        android:id="@+id/logo"
+        android:textColor="#f6ba2c"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
 
 <ImageView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/iv"/>
 
-</LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tb"
+        android:text="By Nicolas Quillon &amp; Johan Lannier"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="v 1.0"
+        android:textSize="12dp"
+        android:textStyle="italic"
+        android:layout_above="@id/tb"
+        android:layout_centerHorizontal="true"/>
+
+
+</RelativeLayout>
