@@ -72,7 +72,7 @@ public class SignUpActivity extends AppCompatActivity {
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        Intent i=new Intent(SignUpActivity.this, MainActivity.class);
+        Intent i=new Intent(SignUpActivity.this, LoginActivity.class);
         startActivity(i);
         finish();
     }
