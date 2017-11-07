@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "91940252924",
+    "project_id": "pokecard-78083"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91940252924:android:fa5ddf8554b4ad03",
+        "android_client_info": {
+          "package_name": "nicolas.johan.iem.pokecard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "91940252924-i9jukdmvilanakh32ju3um6ujitqk1bu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "nicolas.johan.iem.pokecard",
+            "certificate_hash": "1f0a37c55ea53889ba71cfe15610fd2066cb0e05"
+          }
+        },
+        {
+          "client_id": "91940252924-t8401sagsl9aug7tfr232jh2buh70uc0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMZbdDTFskc3k5BhM5ZglFUlmle3ZeYGs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
