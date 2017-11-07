@@ -2,11 +2,9 @@ package nicolas.johan.iem.pokecard;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,24 +30,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
     EditText emailText;
@@ -61,17 +45,17 @@ public class LoginActivity extends AppCompatActivity {
     GoogleApiClient mGoogleApiClient;
     SignInButton signInButton;
     GoogleSignInAccount acct;
-    String mailFB;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //Init Facebook SDK
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
-
-
+        //Récupération des éléments graphiques
         emailText=(EditText) findViewById(R.id.input_email);
         passwordText=(EditText) findViewById(R.id.input_password) ;
         loginButton=(Button)findViewById(R.id.btn_login);
@@ -79,60 +63,62 @@ public class LoginActivity extends AppCompatActivity {
         signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         loginButtonFacebook = (LoginButton) findViewById(R.id.login_button_facebook);
         loginButtonFacebook.setReadPermissions("email");
+        loginButtonFacebook.setReadPermissions("public_profile");
 
+        TextView textView = (TextView) signInButton.getChildAt(0);
+        textView.setText("Continuer avec Google");
+
+        //Mise en place de la police d'écriture du logo
         Typeface tf = Typeface.createFromAsset(getAssets(),"Pokemon Solid.ttf");
         TextView logo=(TextView) findViewById(R.id.logo);
         logo.setTypeface(tf);
 
-
+        //CallBack Login Facebook
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         Toast.makeText(LoginActivity.this, "Connecté", Toast.LENGTH_LONG).show();
-
-
-                        GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(),
+                        GraphRequest grequest = GraphRequest.newMeRequest(loginResult.getAccessToken(),
                                 new GraphRequest.GraphJSONObjectCallback() {
                                     @Override
                                     public void onCompleted(
                                             JSONObject object,
                                             GraphResponse response) {
-                                        Log.v("LoginActivity Response ", response.toString());
-
                                             try {
                                                 Profile profile=Profile.getCurrentProfile();
                                                 JSONObject jsonParam = new JSONObject();
                                                 jsonParam.put("mail", object.getString("email"));
                                                 jsonParam.put("password", "facebook");
 
-                                                sendPost("verify", jsonParam);
+                                                request.sendPost("verify", jsonParam);
+
+                                                Account.getInstance().setMail(object.getString("email"));
+                                                Account.getInstance().setPrenom(object.getString("first_name"));
+                                                Account.getInstance().setNom(object.getString("last_name"));
+                                                Account.getInstance().setId(object.getString("id"));
+                                                Account.getInstance().setPicture(profile.getProfilePictureUri(150,150));
+                                                Intent i=new Intent(LoginActivity.this, Accueil.class);
+                                                startActivity(i);
+                                                finish();
                                             }catch(Exception e){}
                                     }
                                 });
                         Bundle parameters = new Bundle();
-                        parameters.putString("fields", "email"); // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-                        request.setParameters(parameters);
-                        request.executeAsync();
-
-
-
-
-
-
+                        parameters.putString("fields", "email,first_name,last_name,id"); // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
+                        grequest.setParameters(parameters);
+                        grequest.executeAsync();
                     }
 
                     @Override
                     public void onCancel() {
                         Toast.makeText(LoginActivity.this, "Annulé", Toast.LENGTH_LONG).show();
-// App code
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
                         Toast.makeText(LoginActivity.this, "Erreur", Toast.LENGTH_LONG).show();
-// App code
                     }
                 });
 
@@ -154,6 +140,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        //Login Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestProfile()
@@ -168,7 +155,6 @@ public class LoginActivity extends AppCompatActivity {
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -179,8 +165,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login() {
-        Log.d(TAG, "Login");
 
+        //Vérification des champs
         if (!validate()) {
             onLoginFailed();
             return;
@@ -197,10 +183,10 @@ public class LoginActivity extends AppCompatActivity {
             jsonParam.put("mail", email);
             jsonParam.put("password", password);
 
-            sendPost("login", jsonParam);
+            request.sendPost("login", jsonParam);
+            //Implémenter le cas d'erreur
         }catch(Exception e){}
 
-        // TODO: Implement your own authentication logic here.
         onLoginSuccess();
 
     }
@@ -270,7 +256,7 @@ public class LoginActivity extends AppCompatActivity {
                 jsonParam.put("mail", acct.getEmail());
                 jsonParam.put("password", "google");
 
-                sendPost("verify", jsonParam);
+                request.sendPost("verify", jsonParam);
             }catch(Exception e){}
 
         } else {
@@ -278,51 +264,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void sendPost(final String route, final JSONObject jsonParam) {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL url = new URL("http://192.168.43.200:3000/"+route);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                    conn.setRequestProperty("Accept","application/json");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
 
-
-
-                    Log.i("JSON", jsonParam.toString());
-                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                    //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
-                    os.writeBytes(jsonParam.toString());
-
-                    os.flush();
-                    os.close();
-                    InputStream inputStream = conn.getInputStream();
-                    if (inputStream == null) {
-                    }
-
-                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
-                    BufferedReader reader = new BufferedReader(inputStreamReader);
-                    StringBuffer buffer = new StringBuffer();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        buffer.append(line);
-                        buffer.append("\n");
-                    }
-
-                    System.out.println(buffer);
-
-                    conn.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        thread.start();
-    }
 
 }
