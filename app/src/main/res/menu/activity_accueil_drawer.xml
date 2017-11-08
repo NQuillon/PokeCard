@@ -26,10 +26,12 @@
 
     <item android:title="Autre">
         <menu>
+            <group android:checkableBehavior="single">
             <item
                 android:id="@+id/nav_params"
                 android:icon="@drawable/settings"
                 android:title="Paramètres" />
+            </group>
             <item
                 android:id="@+id/nav_deco"
                 android:icon="@drawable/deco"

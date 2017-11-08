@@ -1,5 +1,6 @@
 package nicolas.johan.iem.pokecard;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -8,16 +9,23 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.etsy.android.grid.StaggeredGridView;
 
 import java.net.URL;
 
@@ -35,6 +43,33 @@ public class Accueil extends AppCompatActivity
         setContentView(R.layout.activity_accueil);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ///////////////////////////////////////////////////
+
+        String[] values = new String[] { "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View"
+        };
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, android.R.id.text1, values);
+
+        System.out.println(adapter);
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.fragment_pokedex, null, false);
+
+        StaggeredGridView gridView = (StaggeredGridView) view.findViewById(R.id.grid_view);
+        System.out.println(gridView);
+
+        gridView.setAdapter(adapter);
+
+
+        ///////////////////////////////////////////////////
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -122,17 +157,17 @@ public class Accueil extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_pokedex) {
-            // Handle the camera action
+            showFragment(new PokedexFragment());
         } else if (id == R.id.nav_echanger) {
-
+            showFragment(new ExchangeFragment());
         } else if (id == R.id.nav_jeux) {
-
+            showFragment(new GameFragment());
         } else if (id == R.id.nav_boutique) {
-
+            showFragment(new StoreFragment());
         } else if (id == R.id.nav_amis) {
-
+            showFragment(new FriendsFragment());
         } else if (id == R.id.nav_params) {
-
+            showFragment(new SettingsFragment());
         } else if (id == R.id.nav_deco) {
 
         }
@@ -140,5 +175,13 @@ public class Accueil extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_main, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
     }
 }
