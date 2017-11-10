@@ -90,19 +90,22 @@ public class LoginActivity extends AppCompatActivity {
                                                 System.out.println(object);
                                                 Profile profile=Profile.getCurrentProfile();
                                                 JSONObject jsonParam = new JSONObject();
-                                                jsonParam.put("mail", object.getString("email"));
+                                                jsonParam.put("pseudo", object.getString("first_name")+" "+object.getString("last_name"));
                                                 jsonParam.put("password", "facebook");
+                                                jsonParam.put("idUser", object.getString("id"));
+                                                jsonParam.put("profilePicture", profile.getProfilePictureUri(150,150).toString());
 
-                                                request.sendPost("verify", jsonParam);
+                                                new request().execute("verify", jsonParam);
 
-                                                //GERER SI MAIL BLOQUE
-                                                Account.getInstance().setMail(object.getString("email"));
-                                                Account.getInstance().setPrenom(object.getString("first_name"));
-                                                Account.getInstance().setNom(object.getString("last_name"));
-                                                Account.getInstance().setId(object.getString("id"));
-                                                Account.getInstance().setPicture(profile.getProfilePictureUri(150,150));
+                                                Account.getInstance().setPseudo(object.getString("first_name")+" "+object.getString("last_name"));
+                                                Account.getInstance().setIdAccount(object.getString("id"));
+                                                Account.getInstance().setPicture(profile.getProfilePictureUri(150,150).toString());
+                                                Account.getInstance().setPokeCoin(250);
+                                                String resp=new request().execute("verify", jsonParam).get();
+                                                Toast.makeText(LoginActivity.this, resp, Toast.LENGTH_SHORT).show();
 
                                             }catch(Exception e){}
+
                                         Intent i=new Intent(LoginActivity.this, Accueil.class);
                                         startActivity(i);
                                         finish();
@@ -186,7 +189,7 @@ public class LoginActivity extends AppCompatActivity {
             jsonParam.put("mail", email);
             jsonParam.put("password", password);
 
-            request.sendPost("login", jsonParam);
+            new request().execute("login", jsonParam);
             //Implémenter le cas d'erreur
         }catch(Exception e){}
 
@@ -256,11 +259,34 @@ public class LoginActivity extends AppCompatActivity {
 
             try {
                 JSONObject jsonParam = new JSONObject();
-                jsonParam.put("mail", acct.getEmail());
+                jsonParam.put("pseudo", acct.getDisplayName());
                 jsonParam.put("password", "google");
-
-                request.sendPost("verify", jsonParam);
+                jsonParam.put("idUser", acct.getId());
+                String url="";
+                try{
+                    jsonParam.put("profilePicture", acct.getPhotoUrl().toString());
+                }catch(Exception e){
+                    jsonParam.put("profilePicture", "https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png");
+                }
+                String response=new request().execute("verify", jsonParam).get();
+                Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
             }catch(Exception e){}
+
+            Account.getInstance().setPseudo(acct.getDisplayName());
+            Account.getInstance().setIdAccount(acct.getId());
+            String url="";
+            try{
+                url=acct.getPhotoUrl().toString();
+            }catch(Exception e){
+                url="https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png";
+            }
+
+            Account.getInstance().setPicture(url);
+            Account.getInstance().setPokeCoin(250);
+
+            Intent i=new Intent(LoginActivity.this, Accueil.class);
+            startActivity(i);
+            finish();
 
         } else {
             Toast.makeText(this, "Echec, vous n'êtes pas connecté", Toast.LENGTH_SHORT).show();

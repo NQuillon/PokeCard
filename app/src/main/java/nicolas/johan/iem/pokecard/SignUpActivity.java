@@ -15,7 +15,7 @@ import org.json.JSONObject;
 public class SignUpActivity extends AppCompatActivity {
 
     EditText nameText;
-    EditText emailText;
+    EditText pseudoText;
     EditText passwordText;
     Button signupButton;
     TextView loginLink;
@@ -25,8 +25,7 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        nameText=(EditText) findViewById(R.id.input_name);
-        emailText=(EditText) findViewById(R.id.input_email);
+        pseudoText=(EditText) findViewById(R.id.input_pseudo);
         passwordText=(EditText) findViewById(R.id.input_password);
         signupButton=(Button) findViewById(R.id.btn_signup);
         loginLink=(TextView)findViewById(R.id.link_login);
@@ -59,15 +58,14 @@ public class SignUpActivity extends AppCompatActivity {
 
         signupButton.setEnabled(false);
 
-        String name = nameText.getText().toString();
-        String email = emailText.getText().toString();
+        String pseudo = pseudoText.getText().toString();
         String password = passwordText.getText().toString();
 
         try {
             JSONObject jsonParam = new JSONObject();
-            jsonParam.put("mail", email);
+            jsonParam.put("pseudo", pseudo);
             jsonParam.put("password", password);
-            request.sendPost("signup",jsonParam);
+            new request().execute("signup",jsonParam);
         }catch(Exception e){}
         //Gérer le cas ou le compte existe deja
         onSignupSuccess();
@@ -91,22 +89,14 @@ public class SignUpActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String name = nameText.getText().toString();
-        String email = emailText.getText().toString();
+        String pseudo = pseudoText.getText().toString();
         String password = passwordText.getText().toString();
 
-        if (name.isEmpty() || name.length() < 3) {
-            nameText.setError("Au moins 3 caractères");
+        if (pseudo.isEmpty() || pseudo.length() < 3) {
+            pseudoText.setError("Au moins 3 caractères");
             valid = false;
         } else {
-            nameText.setError(null);
-        }
-
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailText.setError("Merci d'entrer une adresse email valide");
-            valid = false;
-        } else {
-            emailText.setError(null);
+            pseudoText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {

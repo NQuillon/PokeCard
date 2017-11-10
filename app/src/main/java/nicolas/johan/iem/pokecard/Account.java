@@ -2,18 +2,22 @@ package nicolas.johan.iem.pokecard;
 
 import android.net.Uri;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Objects;
+
 /**
  * Created by Johan on 07/11/2017.
  */
 
 public class Account {
-    String id;
-    String nom;
-    String mail;
-    String type;
-    String prenom;
-    Uri picture;
-
+    String idUser;
+    String pseudo;
+    String typeConnexion;
+    String picture;
+    ArrayList<String> listePokemon;
+    int pokeCoin;
+    String idAccount;
 
     /** Constructeur privé */
     private Account()
@@ -31,51 +35,67 @@ public class Account {
         return INSTANCE;
     }
 
-    public String getNom() {
-        return nom;
+    public String getIdUser() {
+        return idUser;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
     }
 
-    public String getMail() {
-        return mail;
+    public String getIdAccount() {
+        return idAccount;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setIdAccount(String idAccount) {
+        this.idAccount = idAccount;
     }
 
-    public String getType() {
-        return type;
+    public String getPseudo() {
+        return pseudo;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
     }
 
-    public String getPrenom() {
-        return prenom;
+    public String getTypeConnexion() {
+        return typeConnexion;
     }
 
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
+    public void setTypeConnexion(String typeConnexion) {
+        this.typeConnexion = typeConnexion;
     }
 
-    public Uri getPicture() {
+    public String getPicture() {
         return picture;
     }
 
-    public void setPicture(Uri picture) {
+    public void setPicture(String picture) {
         this.picture = picture;
     }
 
-    public String getId() {
-        return id;
+    public ArrayList<String> getListePokemon() {
+        return listePokemon;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setListePokemon(ArrayList<String> listePokemon) {
+        this.listePokemon = listePokemon;
+    }
+
+    public int getPokeCoin() {
+        return pokeCoin;
+    }
+
+    public void setPokeCoin(int pokeCoin) {
+        this.pokeCoin = pokeCoin;
+    }
+
+    public boolean isConnectedByFacebook(){
+        return this.typeConnexion.equals("facebook");
+    }
+
+    public boolean isConnectedByGoogle(){
+        return this.typeConnexion.equals("google");
     }
 }

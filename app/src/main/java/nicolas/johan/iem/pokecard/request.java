@@ -1,5 +1,7 @@
 package nicolas.johan.iem.pokecard;
 
+import android.os.AsyncTask;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -13,45 +15,46 @@ import java.net.URL;
  * Created by Johan on 07/11/2017.
  */
 
-public class request {
-    public static void sendPost(final String route, final JSONObject jsonParam) {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL url = new URL("http://192.168.43.200:3000/"+route);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                    conn.setRequestProperty("Accept","application/json");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
-                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                    os.writeBytes(jsonParam.toString());
-                    os.flush();
-                    os.close();
-                    InputStream inputStream = conn.getInputStream();
-                    if (inputStream == null) {
-                    }
+public class request extends AsyncTask<Object, String, String>
 
-                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
-                    BufferedReader reader = new BufferedReader(inputStreamReader);
-                    StringBuffer buffer = new StringBuffer();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        buffer.append(line);
-                        buffer.append("\n");
-                    }
-
-                    System.out.println(buffer);
-
-                    conn.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
+    //(final String route, final JSONObject jsonParam)
+    {
+        protected String doInBackground(Object... data) {
+            String line="";
+            try {
+                URL url = new URL("http://192.168.43.200:3000/"+data[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                conn.setRequestProperty("Accept","application/json");
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                os.writeBytes(data[1].toString());
+                os.flush();
+                os.close();
+                InputStream inputStream = conn.getInputStream();
+                if (inputStream == null) {
                 }
-            }
-        });
 
-        thread.start();
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader reader = new BufferedReader(inputStreamReader);
+                StringBuffer buffer=new StringBuffer();
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                    buffer.append("\n");
+                }
+                line=buffer.toString();
+
+                conn.disconnect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return line;
+        }
+
+    protected void onPostExecute(String result) {
+        System.out.println("RETOUR DE L'API: "+result);
+        super.onPostExecute(result);
     }
 }

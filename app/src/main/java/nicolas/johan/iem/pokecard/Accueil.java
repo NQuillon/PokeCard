@@ -1,6 +1,7 @@
 package nicolas.johan.iem.pokecard;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -15,27 +16,31 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.etsy.android.grid.StaggeredGridView;
+import org.json.JSONObject;
 
 import java.net.URL;
 
 public class Accueil extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    TextView mail_header;
-    TextView name_header;
+    TextView pseudo_header;
+    TextView pokecoin;
     ImageView profileImage;
     Bitmap bitprofile;
+    ImageView modify_header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,28 +51,11 @@ public class Accueil extends AppCompatActivity
 
         ///////////////////////////////////////////////////
 
-        String[] values = new String[] { "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View"
-        };
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, android.R.id.text1, values);
-
-        System.out.println(adapter);
-
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.fragment_pokedex, null, false);
 
-        StaggeredGridView gridView = (StaggeredGridView) view.findViewById(R.id.grid_view);
-        System.out.println(gridView);
 
-        gridView.setAdapter(adapter);
-
+        ///////////////////////////////////////////////////
 
         ///////////////////////////////////////////////////
 
@@ -90,12 +78,55 @@ public class Accueil extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View header = navigationView.getHeaderView(0);
         header.setBackgroundColor(Color.rgb(246, 186, 44));
-        mail_header = (TextView) header.findViewById(R.id.mail_header);
-        mail_header.setText(Account.getInstance().getMail());
-        name_header = (TextView) header.findViewById(R.id.name_header);
-        name_header.setText(Account.getInstance().getPrenom()+" "+Account.getInstance().getNom());
+        pseudo_header = (TextView) header.findViewById(R.id.pseudo_header);
+        pseudo_header.setText(Account.getInstance().getPseudo());
+        pokecoin = (TextView) header.findViewById(R.id.pokecoin_header);
+        pokecoin.setText(""+Account.getInstance().getPokeCoin());
+        modify_header=(ImageView) header.findViewById(R.id.modify_header);
 
         profileImage = (ImageView) header.findViewById(R.id.profileImage);
+
+
+        View.OnClickListener modify_listener=new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Accueil.this);
+                builder.setTitle("Entrez votre nouveau pseudo");
+
+                final EditText input = new EditText(Accueil.this);
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                input.setText(Account.getInstance().getPseudo());
+                builder.setView(input);
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Account.getInstance().setPseudo(input.getText().toString());
+                        pseudo_header.setText(input.getText().toString());
+                        try{
+                            JSONObject jsonParam = new JSONObject();
+                            jsonParam.put("idUser", Account.getInstance().getIdAccount());
+                            jsonParam.put("pseudo", input.getText().toString());
+                            new request().execute("option/editpseudo",jsonParam);
+                        }catch (Exception e){
+
+                        }
+
+                    }
+                });
+                builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        };
+
+        pseudo_header.setOnClickListener(modify_listener);
+        modify_header.setOnClickListener(modify_listener);
 
         new chargeProfilePicture().execute();
 
