@@ -87,6 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                                             JSONObject object,
                                             GraphResponse response) {
                                             try {
+                                                System.out.println(object);
                                                 Profile profile=Profile.getCurrentProfile();
                                                 JSONObject jsonParam = new JSONObject();
                                                 jsonParam.put("mail", object.getString("email"));
@@ -94,15 +95,17 @@ public class LoginActivity extends AppCompatActivity {
 
                                                 request.sendPost("verify", jsonParam);
 
+                                                //GERER SI MAIL BLOQUE
                                                 Account.getInstance().setMail(object.getString("email"));
                                                 Account.getInstance().setPrenom(object.getString("first_name"));
                                                 Account.getInstance().setNom(object.getString("last_name"));
                                                 Account.getInstance().setId(object.getString("id"));
                                                 Account.getInstance().setPicture(profile.getProfilePictureUri(150,150));
-                                                Intent i=new Intent(LoginActivity.this, Accueil.class);
-                                                startActivity(i);
-                                                finish();
+
                                             }catch(Exception e){}
+                                        Intent i=new Intent(LoginActivity.this, Accueil.class);
+                                        startActivity(i);
+                                        finish();
                                     }
                                 });
                         Bundle parameters = new Bundle();
@@ -118,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(FacebookException exception) {
-                        Toast.makeText(LoginActivity.this, "Erreur", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Erreur"+exception, Toast.LENGTH_LONG).show();
                     }
                 });
 
