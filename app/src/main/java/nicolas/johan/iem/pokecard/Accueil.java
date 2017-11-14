@@ -1,6 +1,5 @@
 package nicolas.johan.iem.pokecard;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,16 +19,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.facebook.login.LoginManager;
 
 import org.json.JSONObject;
 
@@ -107,7 +102,7 @@ public class Accueil extends AppCompatActivity
                             JSONObject jsonParam = new JSONObject();
                             jsonParam.put("idUser", Account.getInstance().getIdUser());
                             jsonParam.put("pseudo", input.getText().toString());
-                            new request().execute("option/editPseudo",jsonParam);
+                            new POSTrequest().execute("option/editPseudo",jsonParam);
                         }catch (Exception e){
 
                         }

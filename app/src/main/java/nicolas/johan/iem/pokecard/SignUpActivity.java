@@ -65,7 +65,7 @@ public class SignUpActivity extends AppCompatActivity {
             JSONObject jsonParam = new JSONObject();
             jsonParam.put("pseudo", pseudo);
             jsonParam.put("password", password);
-            result=new request().execute("signup",jsonParam).get();
+            result=new POSTrequest().execute("signup",jsonParam).get();
             JSONObject objResult=new JSONObject(result);
             if(objResult.getString("pseudo").equals("false")){
                 Toast.makeText(this, "Le compte existe déjà, veuillez changer de pseudo", Toast.LENGTH_LONG).show();

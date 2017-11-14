@@ -4,32 +4,28 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
-import java.util.List;
-import java.util.concurrent.Executor;
+import java.util.ArrayList;
 
 /**
  * Created by iem on 14/11/2017.
  */
 
-public class PokemonAdapter extends ArrayAdapter<String> {
+public class PokemonAdapter extends ArrayAdapter<Pokemon>{
     PokemonViewHolder viewHolder;
     Bitmap bitmapimg;
     Context context;
 
-        public PokemonAdapter(Context context, List<String> pokemons) {
+        public PokemonAdapter(Context context, ArrayList<Pokemon> pokemons) {
             super(context, 0, pokemons);
             this.context=context;
         }
@@ -49,12 +45,12 @@ public class PokemonAdapter extends ArrayAdapter<String> {
                 convertView.setTag(viewHolder);
             }
 
-            String pokemonItem = getItem(position);
+            Pokemon pokemonItem = getItem(position);
 
-            viewHolder.nomPokemon.setText(pokemonItem);
+            viewHolder.nomPokemon.setText(pokemonItem.getName());
         //new chargeProfilePicture().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        Picasso.with(context).load("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png").into(viewHolder.imgPokemon);
+        Picasso.with(context).load(pokemonItem.getUrlPicture()).into(viewHolder.imgPokemon);
             return convertView;
         }
 

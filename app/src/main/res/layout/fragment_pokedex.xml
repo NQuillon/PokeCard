@@ -11,11 +11,11 @@
         android:id="@+id/myPokedex"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="100dp"
+        android:columnWidth="110dp"
         android:numColumns="auto_fit"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
-        android:stretchMode="columnWidth"
+        android:verticalSpacing="8dp"
+        android:horizontalSpacing="5dp"
+        android:stretchMode="spacingWidth"
         android:gravity="center">
     </GridView>
 

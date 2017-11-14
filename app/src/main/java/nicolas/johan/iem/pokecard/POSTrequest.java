@@ -2,8 +2,6 @@ package nicolas.johan.iem.pokecard;
 
 import android.os.AsyncTask;
 
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -15,14 +13,14 @@ import java.net.URL;
  * Created by Johan on 07/11/2017.
  */
 
-public class request extends AsyncTask<Object, String, String>
+public class POSTrequest extends AsyncTask<Object, String, String>
 
     //(final String route, final JSONObject jsonParam)
     {
         protected String doInBackground(Object... data) {
             String line="";
             try {
-                URL url = new URL("http://192.168.43.200:3000/"+data[0]);
+                URL url = new URL("http://192.168.43.200:3000/"+data[0]); //192.168.0.17
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");

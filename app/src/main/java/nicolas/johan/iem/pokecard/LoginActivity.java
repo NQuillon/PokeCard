@@ -11,8 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -95,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 jsonParam.put("idUser", object.getString("id"));
                                                 jsonParam.put("profilePicture", profile.getProfilePictureUri(150,150).toString());
 
-                                                String resp=new request().execute("verify", jsonParam).get();
+                                                String resp=new POSTrequest().execute("verify", jsonParam).get();
 
                                                 Toast.makeText(LoginActivity.this, resp, Toast.LENGTH_SHORT).show();
 
@@ -191,7 +189,7 @@ public class LoginActivity extends AppCompatActivity {
             JSONObject jsonParam = new JSONObject();
             jsonParam.put("pseudo", pseudo);
             jsonParam.put("password", password);
-            result=new request().execute("login", jsonParam).get();
+            result=new POSTrequest().execute("login", jsonParam).get();
 
             JSONObject objResult=new JSONObject(result);
             if(objResult.getString("pseudo").equals("false")){
@@ -287,7 +285,7 @@ public class LoginActivity extends AppCompatActivity {
                 }catch(Exception e){
                     jsonParam.put("profilePicture", "https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png");
                 }
-                response=new request().execute("verify", jsonParam).get();
+                response=new POSTrequest().execute("verify", jsonParam).get();
                 Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
             }catch(Exception e){}
             Account.getInstance().setIdAccount(acct.getId());
