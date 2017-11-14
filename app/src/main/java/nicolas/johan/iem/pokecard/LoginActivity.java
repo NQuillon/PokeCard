@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -36,7 +38,7 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_SIGNUP = 0;
 
-    EditText emailText;
+    EditText pseudoText;
     EditText passwordText;
     Button loginButton;
     TextView signupLink;
@@ -56,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
         AppEventsLogger.activateApp(this);
 
         //Récupération des éléments graphiques
-        emailText=(EditText) findViewById(R.id.input_email);
+        pseudoText=(EditText) findViewById(R.id.input_pseudo_login);
         passwordText=(EditText) findViewById(R.id.input_password) ;
         loginButton=(Button)findViewById(R.id.btn_login);
         signupLink=(TextView) findViewById(R.id.link_signup);
@@ -79,7 +81,6 @@ public class LoginActivity extends AppCompatActivity {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        Toast.makeText(LoginActivity.this, "Connecté", Toast.LENGTH_LONG).show();
                         GraphRequest grequest = GraphRequest.newMeRequest(loginResult.getAccessToken(),
                                 new GraphRequest.GraphJSONObjectCallback() {
                                     @Override
@@ -87,7 +88,6 @@ public class LoginActivity extends AppCompatActivity {
                                             JSONObject object,
                                             GraphResponse response) {
                                             try {
-                                                System.out.println(object);
                                                 Profile profile=Profile.getCurrentProfile();
                                                 JSONObject jsonParam = new JSONObject();
                                                 jsonParam.put("pseudo", object.getString("first_name")+" "+object.getString("last_name"));
@@ -95,20 +95,25 @@ public class LoginActivity extends AppCompatActivity {
                                                 jsonParam.put("idUser", object.getString("id"));
                                                 jsonParam.put("profilePicture", profile.getProfilePictureUri(150,150).toString());
 
-                                                new request().execute("verify", jsonParam);
-
-                                                Account.getInstance().setPseudo(object.getString("first_name")+" "+object.getString("last_name"));
-                                                Account.getInstance().setIdAccount(object.getString("id"));
-                                                Account.getInstance().setPicture(profile.getProfilePictureUri(150,150).toString());
-                                                Account.getInstance().setPokeCoin(250);
                                                 String resp=new request().execute("verify", jsonParam).get();
+
                                                 Toast.makeText(LoginActivity.this, resp, Toast.LENGTH_SHORT).show();
 
-                                            }catch(Exception e){}
+                                                JSONObject objResult=new JSONObject(resp);
 
-                                        Intent i=new Intent(LoginActivity.this, Accueil.class);
-                                        startActivity(i);
-                                        finish();
+                                                Account.getInstance().setPseudo(objResult.getString("pseudo"));
+                                                Account.getInstance().setIdAccount(object.getString("id"));
+                                                Account.getInstance().setPicture(objResult.getString("profilePicture"));
+                                                Account.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
+                                                Account.getInstance().setIdUser(objResult.getString("idUser"));
+
+                                                Intent i=new Intent(LoginActivity.this, Accueil.class);
+                                                startActivity(i);
+                                                finish();
+                                            }catch(Exception e){
+                                                Toast.makeText(LoginActivity.this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
+                                            }
+                                        LoginManager.getInstance().logOut(); //déconnexion facebook
                                     }
                                 });
                         Bundle parameters = new Bundle();
@@ -160,7 +165,6 @@ public class LoginActivity extends AppCompatActivity {
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,20 +184,35 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton.setEnabled(false);
 
-        String email = emailText.getText().toString();
+        String pseudo = pseudoText.getText().toString();
         String password = passwordText.getText().toString();
-
+        String result="";
         try {
-            Profile profile=Profile.getCurrentProfile();
             JSONObject jsonParam = new JSONObject();
-            jsonParam.put("mail", email);
+            jsonParam.put("pseudo", pseudo);
             jsonParam.put("password", password);
+            result=new request().execute("login", jsonParam).get();
 
-            new request().execute("login", jsonParam);
-            //Implémenter le cas d'erreur
-        }catch(Exception e){}
-
-        onLoginSuccess();
+            JSONObject objResult=new JSONObject(result);
+            if(objResult.getString("pseudo").equals("false")){
+                Toast.makeText(this, "Pseudo inconnu. Veuillez créer un compte", Toast.LENGTH_LONG).show();
+                loginButton.setEnabled(true);
+            }
+            else if(objResult.getString("pseudo").equals("true") && objResult.getString("password").equals("false")){
+                Toast.makeText(this, "Mot de passe incorrect, veuillez réessayer", Toast.LENGTH_LONG).show();
+                loginButton.setEnabled(true);
+            }
+            else {
+                Account.getInstance().setPseudo(objResult.getString("pseudo"));
+                Account.getInstance().setPicture(objResult.getString("profilePicture"));
+                Account.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
+                Account.getInstance().setIdUser(objResult.getString("idUser"));
+                onLoginSuccess();
+            }
+        }catch(Exception e){
+            Toast.makeText(this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
+            loginButton.setEnabled(false);
+        }
 
     }
 
@@ -219,14 +238,14 @@ public class LoginActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String email = emailText.getText().toString();
+        String pseudo = pseudoText.getText().toString();
         String password = passwordText.getText().toString();
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailText.setError("Adresse email invalide");
+        if (pseudo.isEmpty() || pseudo.length() < 3) {
+            pseudoText.setError("Au moins 3 caractères");
             valid = false;
         } else {
-            emailText.setError(null);
+            pseudoText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
@@ -256,7 +275,7 @@ public class LoginActivity extends AppCompatActivity {
             acct = result.getSignInAccount();
             Toast.makeText(this, "Connecté en tant que "+acct.getDisplayName()+" ("+acct.getEmail()+")", Toast.LENGTH_LONG).show();
             signInButton.setVisibility(View.INVISIBLE);
-
+            String response="";
             try {
                 JSONObject jsonParam = new JSONObject();
                 jsonParam.put("pseudo", acct.getDisplayName());
@@ -268,11 +287,9 @@ public class LoginActivity extends AppCompatActivity {
                 }catch(Exception e){
                     jsonParam.put("profilePicture", "https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png");
                 }
-                String response=new request().execute("verify", jsonParam).get();
+                response=new request().execute("verify", jsonParam).get();
                 Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
             }catch(Exception e){}
-
-            Account.getInstance().setPseudo(acct.getDisplayName());
             Account.getInstance().setIdAccount(acct.getId());
             String url="";
             try{
@@ -282,11 +299,20 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             Account.getInstance().setPicture(url);
-            Account.getInstance().setPokeCoin(250);
+            try {
+                JSONObject objResult = new JSONObject(response);
+                Account.getInstance().setPseudo(objResult.getString("pseudo"));
+                Account.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
+                Account.getInstance().setIdUser(objResult.getString("idUser"));
+                Intent i=new Intent(LoginActivity.this, Accueil.class);
+                startActivity(i);
+                finish();
+            }catch(Exception e){
+                Toast.makeText(this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
+                mGoogleApiClient.disconnect();
+            }
 
-            Intent i=new Intent(LoginActivity.this, Accueil.class);
-            startActivity(i);
-            finish();
+
 
         } else {
             Toast.makeText(this, "Echec, vous n'êtes pas connecté", Toast.LENGTH_SHORT).show();

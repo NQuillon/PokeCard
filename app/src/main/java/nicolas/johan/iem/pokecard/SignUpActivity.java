@@ -60,15 +60,24 @@ public class SignUpActivity extends AppCompatActivity {
 
         String pseudo = pseudoText.getText().toString();
         String password = passwordText.getText().toString();
-
+        String result="";
         try {
             JSONObject jsonParam = new JSONObject();
             jsonParam.put("pseudo", pseudo);
             jsonParam.put("password", password);
-            new request().execute("signup",jsonParam);
-        }catch(Exception e){}
-        //Gérer le cas ou le compte existe deja
-        onSignupSuccess();
+            result=new request().execute("signup",jsonParam).get();
+            JSONObject objResult=new JSONObject(result);
+            if(objResult.getString("pseudo").equals("false")){
+                Toast.makeText(this, "Le compte existe déjà, veuillez changer de pseudo", Toast.LENGTH_LONG).show();
+                signupButton.setEnabled(true);
+            }else{
+                Toast.makeText(this, "Votre compte a été créé, veuillez vous connecter", Toast.LENGTH_LONG).show();
+                onSignupSuccess();
+            }
+        }catch(Exception e){
+            Toast.makeText(this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_LONG).show();
+            signupButton.setEnabled(true);
+        }
     }
 
 

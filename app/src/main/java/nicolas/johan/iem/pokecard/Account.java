@@ -11,13 +11,13 @@ import java.util.Objects;
  */
 
 public class Account {
-    String idUser;
+    String idUser; //id bd
     String pseudo;
     String typeConnexion;
     String picture;
     ArrayList<String> listePokemon;
     int pokeCoin;
-    String idAccount;
+    String idAccount; //id facebook/google
 
     /** Constructeur privé */
     private Account()

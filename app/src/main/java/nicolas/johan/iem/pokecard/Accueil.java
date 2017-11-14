@@ -29,6 +29,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.login.LoginManager;
+
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -49,10 +51,8 @@ public class Accueil extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        showFragment(new PokedexFragment());
         ///////////////////////////////////////////////////
-
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.fragment_pokedex, null, false);
 
 
         ///////////////////////////////////////////////////
@@ -105,9 +105,9 @@ public class Accueil extends AppCompatActivity
                         pseudo_header.setText(input.getText().toString());
                         try{
                             JSONObject jsonParam = new JSONObject();
-                            jsonParam.put("idUser", Account.getInstance().getIdAccount());
+                            jsonParam.put("idUser", Account.getInstance().getIdUser());
                             jsonParam.put("pseudo", input.getText().toString());
-                            new request().execute("option/editpseudo",jsonParam);
+                            new request().execute("option/editPseudo",jsonParam);
                         }catch (Exception e){
 
                         }
@@ -181,7 +181,6 @@ public class Accueil extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
