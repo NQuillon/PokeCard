@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_pokedex"
+            android:icon="@drawable/pokedex"
+            android:title="Mon Pokédex" />
+        <item
+            android:id="@+id/nav_echanger"
+            android:icon="@drawable/exchange"
+            android:title="Echanger" />
+        <item
+            android:id="@+id/nav_jeux"
+            android:icon="@drawable/game"
+            android:title="Mini-Jeux" />
+        <item
+            android:id="@+id/nav_boutique"
+            android:icon="@drawable/store"
+            android:title="Boutique" />
+        <item
+            android:id="@+id/nav_amis"
+            android:icon="@drawable/friends"
+            android:title="Mes Amis"/>
+    </group>
+
+    <item android:title="Autre">
+        <menu>
+            <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/nav_params"
+                android:icon="@drawable/settings"
+                android:title="Paramètres" />
+            </group>
+            <item
+                android:id="@+id/nav_deco"
+                android:icon="@drawable/deco"
+                android:title="Se déconnecter" />
+        </menu>
+    </item>
+
+</menu>
