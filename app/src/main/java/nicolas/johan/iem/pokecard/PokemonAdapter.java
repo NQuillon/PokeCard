@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by iem on 14/11/2017.
@@ -25,7 +26,7 @@ public class PokemonAdapter extends ArrayAdapter<Pokemon>{
     Bitmap bitmapimg;
     Context context;
 
-        public PokemonAdapter(Context context, ArrayList<Pokemon> pokemons) {
+        public PokemonAdapter(Context context, List<Pokemon> pokemons) {
             super(context, 0, pokemons);
             this.context=context;
         }
