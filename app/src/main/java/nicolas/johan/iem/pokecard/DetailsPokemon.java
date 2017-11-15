@@ -1,10 +1,6 @@
 package nicolas.johan.iem.pokecard;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,14 +10,12 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DetailsPokemon extends Fragment {
     View parent;
@@ -31,6 +25,7 @@ public class DetailsPokemon extends Fragment {
     TextView type;
     TextView poids;
     TextView taille;
+    PokemonDetails details;
 
     public DetailsPokemon() {
         // Required empty public constructor
@@ -48,9 +43,10 @@ public class DetailsPokemon extends Fragment {
         type=(TextView)parent.findViewById(R.id.details_type);
         poids=(TextView)parent.findViewById(R.id.details_poids);
         taille=(TextView)parent.findViewById(R.id.details_taille);
-
-        String result="";
         Bundle data=getArguments();
+
+        /*String result="";
+
         try{
             result=new GETrequest().execute("pokemon/"+data.getInt("id")).get();
             JSONObject obj=new JSONObject(result);
@@ -77,10 +73,36 @@ public class DetailsPokemon extends Fragment {
             }
         }catch (Exception e){
 
-        }
+        }*/
+
+        Call<PokemonDetails> pokdet =  PokemonApp.getPokemonService().getDetails(data.getInt("id"));
+
+        pokdet.enqueue(new Callback<PokemonDetails>() {
+            @Override
+            public void onResponse(Call<PokemonDetails> call, Response<PokemonDetails> response) {
+                if(response.isSuccessful()) {
+                    details = response.body();
+                    refresh(details);
+                }
+            }
+            @Override
+            public void onFailure(Call<PokemonDetails> call, Throwable t) {
+
+            }
+        });
 
 
-        CardAdapter myCardsAdapter=new CardAdapter(getContext(), cartes);
+        return parent;
+    }
+
+    private void refresh(final PokemonDetails pok) {
+        Picasso.with(getContext()).load(pok.getUrlPicture()).into(imgPokemon);
+        id.setText(pok.getId());
+        nom.setText(pok.getName());
+        type.setText(pok.getType());
+        poids.setText(pok.getWeight());
+        taille.setText(pok.getHeight());
+        CardAdapter myCardsAdapter=new CardAdapter(getContext(), pok.getCards());
         GridView gridview = (GridView) parent.findViewById(R.id.details_cartes);
         gridview.setAdapter(myCardsAdapter);
 
@@ -89,15 +111,12 @@ public class DetailsPokemon extends Fragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 final View customLayout = getActivity().getLayoutInflater().inflate(R.layout.detailzoom, null);
                 ImageView tmp=(ImageView) customLayout.findViewById(R.id.zoomimg);
-                String url=cartes.get(position);
+                String url=pok.getCards().get(position).getUrlPicture();
                 url.replace(".png","_hires.png");
                 Picasso.with(getContext()).load(url).into(tmp);
                 builder.setView(customLayout);
                 builder.show();
             }
         });
-
-
-        return parent;
     }
 }

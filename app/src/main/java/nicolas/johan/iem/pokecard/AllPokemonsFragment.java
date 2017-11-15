@@ -9,12 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +36,11 @@ public class AllPokemonsFragment extends Fragment {
         String result="";
 
 
-new Thread(new Runnable() {
+/*new Thread(new Runnable() {
     @Override
     public void run() {
         try {
-            Call<Pokemon> pok = PokemonApp.getPokemonService().getFromId(2);
+            Call<Pokemon> pok = PokemonApp.getPokemonService().getDetails(2);
             Response<Pokemon> response = pok.execute();
             if(response.isSuccessful()) {
                 Pokemon p = response.body();
@@ -55,7 +50,7 @@ new Thread(new Runnable() {
             e.printStackTrace();
         }
     }
-}).start();
+}).start();*/
 
 
         Call<List<Pokemon>> pokemons =  PokemonApp.getPokemonService().getAll();
@@ -76,7 +71,7 @@ new Thread(new Runnable() {
         });
 
 
-        try{
+        /*try{
             result=new GETrequest().execute("pokedex").get();
         }catch (Exception e){
 
@@ -97,7 +92,7 @@ new Thread(new Runnable() {
             }
         }catch (Exception e){
 
-        }
+        }*/
 
 
 

@@ -9,15 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.List;
 
-import java.util.ArrayList;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PokedexFragment extends Fragment {
     View parent;
+    List<Pokemon> pokedexRetrofit;
 
     public PokedexFragment() {
         // Required empty public constructor
@@ -29,7 +30,7 @@ public class PokedexFragment extends Fragment {
         // Inflate the layout for this fragment
         parent=inflater.inflate(R.layout.fragment_pokedex, container, false);
         getActivity().setTitle("Mon Pokédex");
-        final ArrayList<Pokemon> monPokedex;
+        /*final ArrayList<Pokemon> monPokedex;
         String result="";
         try{
             result=new GETrequest().execute("user/"+Account.getInstance().getIdUser()+"/pokedex").get();
@@ -51,8 +52,31 @@ public class PokedexFragment extends Fragment {
             }
         }catch (Exception e){
 
-        }
+        }*/
 
+        Call<List<Pokemon>> pokemons =  PokemonApp.getPokemonService().getFromId(Account.getInstance().getIdUser());
+
+        pokemons.enqueue(new Callback<List<Pokemon>>() {
+            @Override
+            public void onResponse(Call<List<Pokemon>> call, Response<List<Pokemon>> response) {
+                if(response.isSuccessful()) {
+                    pokedexRetrofit = response.body();
+                    refresh(pokedexRetrofit);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Pokemon>> call, Throwable t) {
+
+            }
+        });
+
+
+
+        return parent;
+    }
+
+    private void refresh(final List<Pokemon> monPokedex) {
         PokemonAdapter myPokemonAdapter=new PokemonAdapter(getActivity(), monPokedex);
         GridView gridview = (GridView) parent.findViewById(R.id.myPokedex);
         gridview.setAdapter(myPokemonAdapter);
@@ -72,8 +96,7 @@ public class PokedexFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
-
-        return parent;
     }
+
 
 }

@@ -16,12 +16,12 @@ import java.util.ArrayList;
  * Created by iem on 14/11/2017.
  */
 
-public class CardAdapter extends ArrayAdapter<String>{
+public class CardAdapter extends ArrayAdapter<Card>{
     PokemonViewHolder viewHolder;
     Bitmap bitmapimg;
     Context context;
 
-    public CardAdapter(Context context, ArrayList<String> cartes) {
+    public CardAdapter(Context context, ArrayList<Card> cartes) {
         super(context, 0, cartes);
         this.context=context;
     }
@@ -40,9 +40,9 @@ public class CardAdapter extends ArrayAdapter<String>{
             convertView.setTag(viewHolder);
         }
 
-        String pokemonItem = getItem(position);
+        Card pokemonItem = getItem(position);
 
-        Picasso.with(context).load(pokemonItem).into(viewHolder.imgCarte);
+        Picasso.with(context).load(pokemonItem.getUrlPicture()).into(viewHolder.imgCarte);
         return convertView;
     }
 
