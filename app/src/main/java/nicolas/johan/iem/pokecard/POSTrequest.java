@@ -52,7 +52,7 @@ public class POSTrequest extends AsyncTask<Object, String, String>
         }
 
     protected void onPostExecute(String result) {
-        System.out.println("RETOUR DE L'API: "+result);
+        //System.out.println("RETOUR DE L'API: "+result);
         super.onPostExecute(result);
     }
 }

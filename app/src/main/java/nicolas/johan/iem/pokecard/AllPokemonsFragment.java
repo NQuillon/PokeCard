@@ -16,10 +16,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class PokedexFragment extends Fragment {
+public class AllPokemonsFragment extends Fragment {
     View parent;
 
-    public PokedexFragment() {
+    public AllPokemonsFragment() {
         // Required empty public constructor
     }
 
@@ -27,16 +27,17 @@ public class PokedexFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        parent=inflater.inflate(R.layout.fragment_pokedex, container, false);
-        getActivity().setTitle("Mon Pokédex");
-        final ArrayList<Pokemon> monPokedex;
+        parent=inflater.inflate(R.layout.fragment_allpokemons, container, false);
+
+        final ArrayList<Pokemon> pokedex;
         String result="";
         try{
-            result=new GETrequest().execute("user/"+Account.getInstance().getIdUser()+"/pokedex").get();
+            result=new GETrequest().execute("pokedex").get();
         }catch (Exception e){
 
         }
-        monPokedex=new ArrayList<Pokemon>();
+        pokedex=new ArrayList<Pokemon>();
+        JSONArray jsonArray;
         try{
             JSONObject resp = new JSONObject(result);
             JSONArray jArray = resp.getJSONArray("pokedex");
@@ -47,21 +48,21 @@ public class PokedexFragment extends Fragment {
                 tmp.setId(oneObject.getInt("id"));
                 tmp.setName(oneObject.getString("name"));
                 tmp.setUrlPicture(oneObject.getString("urlPicture"));
-                monPokedex.add(tmp);
+                pokedex.add(tmp);
             }
         }catch (Exception e){
 
         }
 
-        PokemonAdapter myPokemonAdapter=new PokemonAdapter(getActivity(), monPokedex);
-        GridView gridview = (GridView) parent.findViewById(R.id.myPokedex);
+        PokemonAdapter myPokemonAdapter=new PokemonAdapter(getActivity(), pokedex);
+        GridView gridview = (GridView) parent.findViewById(R.id.allPokemons);
         gridview.setAdapter(myPokemonAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
 
                 Bundle data=new Bundle();
-                data.putInt("id",monPokedex.get(position).getId());
+                data.putInt("id",pokedex.get(position).getId());
 
                 Fragment f = (Fragment) new DetailsPokemon();
                 FragmentManager fragmentManager = getFragmentManager();
@@ -70,6 +71,7 @@ public class PokedexFragment extends Fragment {
                 fragmentTransaction.replace(R.id.content_main, f);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+
             }
         });
 

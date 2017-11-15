@@ -1,6 +1,7 @@
 package nicolas.johan.iem.pokecard;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -45,24 +46,18 @@ public class Accueil extends AppCompatActivity
         setContentView(R.layout.activity_accueil);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setLogo(R.mipmap.ic_launcher);
 
         showFragment(new PokedexFragment());
-        ///////////////////////////////////////////////////
 
-
-        ///////////////////////////////////////////////////
-
-        ///////////////////////////////////////////////////
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -168,10 +163,9 @@ public class Accueil extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -183,18 +177,30 @@ public class Accueil extends AppCompatActivity
 
         if (id == R.id.nav_pokedex) {
             showFragment(new PokedexFragment());
+            getSupportActionBar().setTitle("Mon Pokédex");
+        } else if (id == R.id.nav_allpokemons) {
+            showFragment(new AllPokemonsFragment());
+            getSupportActionBar().setTitle("Tous les pokémons");
         } else if (id == R.id.nav_echanger) {
             showFragment(new ExchangeFragment());
+            getSupportActionBar().setTitle("Échanger");
         } else if (id == R.id.nav_jeux) {
             showFragment(new GameFragment());
+            getSupportActionBar().setTitle("Jeux");
         } else if (id == R.id.nav_boutique) {
             showFragment(new StoreFragment());
+            getSupportActionBar().setTitle("Boutique");
         } else if (id == R.id.nav_amis) {
             showFragment(new FriendsFragment());
+            getSupportActionBar().setTitle("Mes amis");
         } else if (id == R.id.nav_params) {
             showFragment(new SettingsFragment());
+            getSupportActionBar().setTitle("Paramètres");
         } else if (id == R.id.nav_deco) {
-
+            finish();
+            Intent i = new Intent(Accueil.this, LoginActivity.class);
+            startActivity(i);
+            overridePendingTransition(R.anim.in, R.anim.out);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

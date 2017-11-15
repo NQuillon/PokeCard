@@ -58,20 +58,4 @@ public class PokemonAdapter extends ArrayAdapter<Pokemon>{
             public ImageView imgPokemon;
             public TextView nomPokemon;
         }
-
-    private class chargeProfilePicture extends AsyncTask<String, Void, Void> {
-        @Override
-        protected Void doInBackground(String... strings) {
-            try {
-                URL imageURL = new URL("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png");
-                bitmapimg = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-            }catch (Exception e){}
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result){
-            viewHolder.imgPokemon.setImageBitmap(bitmapimg);
-        }
-    }
     }

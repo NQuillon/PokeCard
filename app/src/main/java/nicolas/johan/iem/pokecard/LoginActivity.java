@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -95,8 +96,6 @@ public class LoginActivity extends AppCompatActivity {
 
                                                 String resp=new POSTrequest().execute("verify", jsonParam).get();
 
-                                                Toast.makeText(LoginActivity.this, resp, Toast.LENGTH_SHORT).show();
-
                                                 JSONObject objResult=new JSONObject(resp);
 
                                                 Account.getInstance().setPseudo(objResult.getString("pseudo"));
@@ -145,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                startActivity(intent);
             }
         });
 
@@ -209,7 +208,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }catch(Exception e){
             Toast.makeText(this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
-            loginButton.setEnabled(false);
+            loginButton.setEnabled(true);
         }
 
     }
