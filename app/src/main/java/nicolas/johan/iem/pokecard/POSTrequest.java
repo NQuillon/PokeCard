@@ -20,7 +20,7 @@ public class POSTrequest extends AsyncTask<Object, String, String>
         protected String doInBackground(Object... data) {
             String line="";
             try {
-                URL url = new URL("http://192.168.0.17:3000/"+data[0]); //192.168.43.200
+                URL url = new URL("http://192.168.43.200:3000/"+data[0]); //192.168.43.200
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");

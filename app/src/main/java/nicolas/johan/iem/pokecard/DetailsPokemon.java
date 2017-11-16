@@ -112,7 +112,8 @@ public class DetailsPokemon extends Fragment {
                 final View customLayout = getActivity().getLayoutInflater().inflate(R.layout.detailzoom, null);
                 ImageView tmp=(ImageView) customLayout.findViewById(R.id.zoomimg);
                 String url=pok.getCards().get(position).getUrlPicture();
-                url.replace(".png","_hires.png");
+                url=url.replace(".png","_hires.png");
+
                 Picasso.with(getContext()).load(url).into(tmp);
                 builder.setView(customLayout);
                 builder.show();
