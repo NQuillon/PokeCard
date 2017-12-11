@@ -1,7 +1,9 @@
-package nicolas.johan.iem.pokecard;
+package nicolas.johan.iem.pokecard.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,10 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import nicolas.johan.iem.pokecard.pojo.Account;
+import nicolas.johan.iem.pokecard.pojo.Card;
+import nicolas.johan.iem.pokecard.R;
 
 /**
  * Created by iem on 14/11/2017.
@@ -41,6 +47,10 @@ public class CardAdapter extends ArrayAdapter<Card>{
         }
 
         Card pokemonItem = getItem(position);
+
+        if(Account.getInstance().getListeCards().contains("base5-32") && pokemonItem.getId().equals("base5-32")){
+            viewHolder.imgCarte.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        }
 
         Picasso.with(context).load(pokemonItem.getUrlPicture()).into(viewHolder.imgCarte);
         return convertView;

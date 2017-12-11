@@ -1,4 +1,4 @@
-package nicolas.johan.iem.pokecard;
+package nicolas.johan.iem.pokecard.vues;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,9 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -30,6 +28,17 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import java.net.URL;
+
+import nicolas.johan.iem.pokecard.pojo.Account;
+import nicolas.johan.iem.pokecard.vues.fragments.AllPokemonsFragment;
+import nicolas.johan.iem.pokecard.vues.fragments.ExchangeFragment;
+import nicolas.johan.iem.pokecard.vues.fragments.FriendsFragment;
+import nicolas.johan.iem.pokecard.vues.fragments.GameFragment;
+import nicolas.johan.iem.pokecard.POSTrequest;
+import nicolas.johan.iem.pokecard.vues.fragments.PokedexFragment;
+import nicolas.johan.iem.pokecard.R;
+import nicolas.johan.iem.pokecard.vues.fragments.SettingsFragment;
+import nicolas.johan.iem.pokecard.vues.fragments.StoreFragment;
 
 public class Accueil extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

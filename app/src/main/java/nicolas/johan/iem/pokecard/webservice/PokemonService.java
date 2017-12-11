@@ -2,8 +2,8 @@ package nicolas.johan.iem.pokecard.webservice;
 
 import java.util.List;
 
-import nicolas.johan.iem.pokecard.Pokemon;
-import nicolas.johan.iem.pokecard.PokemonDetails;
+import nicolas.johan.iem.pokecard.pojo.Pokemon;
+import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

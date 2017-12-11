@@ -1,10 +1,6 @@
-package nicolas.johan.iem.pokecard;
+package nicolas.johan.iem.pokecard.pojo;
 
-import android.net.Uri;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * Created by Johan on 07/11/2017.
@@ -15,7 +11,8 @@ public class Account {
     String pseudo;
     String typeConnexion;
     String picture;
-    ArrayList<String> listePokemon;
+    ArrayList<String> listePokemon=new ArrayList<>();
+    ArrayList<String> listeCards=new ArrayList<>();
     int pokeCoin;
     String idAccount; //id facebook/google
 
@@ -33,6 +30,14 @@ public class Account {
         { 	INSTANCE = new Account();
         }
         return INSTANCE;
+    }
+
+    public ArrayList<String> getListeCards() {
+        return listeCards;
+    }
+
+    public void setListeCards(ArrayList<String> listeCards) {
+        this.listeCards = listeCards;
     }
 
     public String getIdUser() {

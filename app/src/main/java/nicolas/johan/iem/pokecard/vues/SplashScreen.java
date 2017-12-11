@@ -1,4 +1,4 @@
-package nicolas.johan.iem.pokecard;
+package nicolas.johan.iem.pokecard.vues;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+
+import nicolas.johan.iem.pokecard.R;
 
 public class SplashScreen extends AppCompatActivity {
 

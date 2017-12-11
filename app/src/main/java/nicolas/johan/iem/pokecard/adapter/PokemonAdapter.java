@@ -1,9 +1,7 @@
-package nicolas.johan.iem.pokecard;
+package nicolas.johan.iem.pokecard.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +11,10 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
+
+import nicolas.johan.iem.pokecard.pojo.Pokemon;
+import nicolas.johan.iem.pokecard.R;
 
 /**
  * Created by iem on 14/11/2017.

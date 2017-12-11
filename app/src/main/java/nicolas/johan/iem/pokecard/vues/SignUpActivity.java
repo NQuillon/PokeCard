@@ -1,4 +1,4 @@
-package nicolas.johan.iem.pokecard;
+package nicolas.johan.iem.pokecard.vues;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -11,6 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
+
+import nicolas.johan.iem.pokecard.POSTrequest;
+import nicolas.johan.iem.pokecard.R;
 
 public class SignUpActivity extends AppCompatActivity {
 

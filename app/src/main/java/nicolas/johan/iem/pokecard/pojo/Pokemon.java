@@ -1,4 +1,4 @@
-package nicolas.johan.iem.pokecard;
+package nicolas.johan.iem.pokecard.pojo;
 
 /**
  * Created by Johan on 14/11/2017.

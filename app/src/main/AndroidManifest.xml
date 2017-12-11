@@ -12,9 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" />
+        <activity android:name=".vues.MainActivity" />
         <activity
-            android:name=".SplashScreen"
+            android:name=".vues.SplashScreen"
             android:label="@string/title_activity_splash_screen"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
@@ -45,17 +45,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".vues.LoginActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".vues.SignUpActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".Accueil"
+            android:name=".vues.Accueil"
             android:label="@string/title_activity_accueil"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".DetailsPokemon"
+            android:name=".vues.fragments.DetailsPokemon"
             android:label="@string/title_activity_details_pokemon"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

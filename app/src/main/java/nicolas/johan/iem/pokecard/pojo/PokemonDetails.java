@@ -1,4 +1,4 @@
-package nicolas.johan.iem.pokecard;
+package nicolas.johan.iem.pokecard.pojo;
 
 import java.util.ArrayList;
 

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ec1e24"
-    tools:context="nicolas.johan.iem.pokecard.SplashScreen">
+    tools:context="nicolas.johan.iem.pokecard.vues.SplashScreen">
 
     <TextView
         android:layout_width="wrap_content"

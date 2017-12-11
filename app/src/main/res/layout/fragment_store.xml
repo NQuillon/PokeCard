@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="nicolas.johan.iem.pokecard.StoreFragment">
+    tools:context="nicolas.johan.iem.pokecard.vues.fragments.StoreFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
