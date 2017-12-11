@@ -3,6 +3,8 @@ package nicolas.johan.iem.pokecard.vues.fragments;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,18 @@ public class ExchangeFragment extends Fragment {
         // Inflate the layout for this fragment
         parent=inflater.inflate(R.layout.fragment_exchange, container, false);
 
+        FloatingActionButton fb_exchange=(FloatingActionButton) parent.findViewById(R.id.fb_exchange);
+        fb_exchange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment f = (Fragment) new NewExchangeFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.content_main, f);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
 
 
         return parent;

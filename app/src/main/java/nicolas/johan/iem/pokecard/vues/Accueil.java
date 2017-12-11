@@ -45,6 +45,7 @@ public class Accueil extends AppCompatActivity
 
     TextView pseudo_header;
     TextView pokecoin;
+    TextView nbCards;
     ImageView profileImage;
     Bitmap bitprofile;
     ImageView modify_header;
@@ -81,6 +82,11 @@ public class Accueil extends AppCompatActivity
         pseudo_header.setText(Account.getInstance().getPseudo());
         pokecoin = (TextView) header.findViewById(R.id.pokecoin_header);
         pokecoin.setText(""+Account.getInstance().getPokeCoin());
+
+        nbCards = (TextView) header.findViewById(R.id.nbCards_header);
+        nbCards.setText(""+Account.getInstance().getListeCards().size());
+
+
         modify_header=(ImageView) header.findViewById(R.id.modify_header);
 
         profileImage = (ImageView) header.findViewById(R.id.profileImage);

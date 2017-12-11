@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 Account.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
                                                 Account.getInstance().setIdUser(objResult.getString("idUser"));
 
-                                                Account.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").split(","))));
+                                                Account.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").replace("[","").replace("]","").replace("\"","").split(","))));
                                                 Account.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").split(","))));
 
 
@@ -216,8 +216,8 @@ public class LoginActivity extends AppCompatActivity {
                 Account.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
                 Account.getInstance().setIdUser(objResult.getString("idUser"));
 
-                Account.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").split(","))));
-                Account.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").split(","))));
+                Account.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").replace("[","").replace("]","").replace("\"","").split(","))));
+                Account.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").replace("[","").replace("]","").replace("\"","").split(","))));
                 onLoginSuccess();
             }
         }catch(Exception e){
@@ -316,8 +316,8 @@ public class LoginActivity extends AppCompatActivity {
                 Account.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
                 Account.getInstance().setIdUser(objResult.getString("idUser"));
 
-                Account.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").split(","))));
-                Account.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").split(","))));
+                Account.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").replace("[","").replace("]","").replace("\"","").split(","))));
+                Account.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").replace("[","").replace("]","").replace("\"","").split(","))));
 
                 Intent i=new Intent(LoginActivity.this, Accueil.class);
                 startActivity(i);

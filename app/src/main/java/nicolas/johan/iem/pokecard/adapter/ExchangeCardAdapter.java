@@ -2,8 +2,6 @@ package nicolas.johan.iem.pokecard.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,21 +12,21 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.pojo.Account;
 import nicolas.johan.iem.pokecard.pojo.Card;
-import nicolas.johan.iem.pokecard.R;
 
 /**
  * Created by iem on 14/11/2017.
  */
 
-public class CardAdapter extends ArrayAdapter<Card>{
+public class ExchangeCardAdapter extends ArrayAdapter<Card>{
     PokemonViewHolder viewHolder;
-    Bitmap bitmapimg;
     Context context;
 
-    public CardAdapter(Context context, ArrayList<Card> cartes) {
+    public ExchangeCardAdapter(Context context, List<Card> cartes) {
         super(context, 0, cartes);
         this.context=context;
     }
@@ -50,11 +48,6 @@ public class CardAdapter extends ArrayAdapter<Card>{
 
         Card pokemonItem = getItem(position);
 
-        if(!Account.getInstance().getListeCards().contains(pokemonItem.getId())){
-            viewHolder.imgCarte.setAlpha(100);
-            viewHolder.nbCards.setText("");
-        }else{
-            viewHolder.imgCarte.setAlpha(255);
             int nb=0;
             for(int i=0; i<Account.getInstance().getListeCards().size();i++){
                 if(Account.getInstance().getListeCards().get(i).equals(pokemonItem.getId())){
@@ -66,7 +59,7 @@ public class CardAdapter extends ArrayAdapter<Card>{
             }else{
                 viewHolder.nbCards.setText("");
             }
-        }
+
 
         Picasso.with(context).load(pokemonItem.getUrlPicture()).into(viewHolder.imgCarte);
         return convertView;

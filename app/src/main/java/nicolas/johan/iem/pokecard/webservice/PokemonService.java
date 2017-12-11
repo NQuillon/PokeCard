@@ -1,7 +1,9 @@
 package nicolas.johan.iem.pokecard.webservice;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import nicolas.johan.iem.pokecard.pojo.Card;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
 import retrofit2.Call;
@@ -22,5 +24,8 @@ public interface PokemonService  {
 
     @GET("pokemon/{id}")
     Call<PokemonDetails> getDetails(@Path("id") int id);
+
+    @GET("user/{idUser}/{idPokemon}/cards")
+    Call<List<Card>> getCardsFromId(@Path("idUser") int idUser, @Path("idPokemon") int idPokemon);
 
 }
