@@ -1,10 +1,12 @@
-package nicolas.johan.iem.pokecard;
+package nicolas.johan.iem.pokecard.vues.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import nicolas.johan.iem.pokecard.R;
 
 public class GameFragment extends Fragment {
 

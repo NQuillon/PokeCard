@@ -1,6 +1,8 @@
-package nicolas.johan.iem.pokecard;
+package nicolas.johan.iem.pokecard.vues.fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -9,16 +11,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import nicolas.johan.iem.pokecard.pojo.Pokemon;
+import nicolas.johan.iem.pokecard.adapter.PokemonAdapter;
+import nicolas.johan.iem.pokecard.PokemonApp;
+import nicolas.johan.iem.pokecard.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AllPokemonsFragment extends Fragment {
     View parent;
+    LinearLayout loadingScreen;
 
     List<Pokemon> pokedexRetrofit;
 
@@ -34,6 +46,7 @@ public class AllPokemonsFragment extends Fragment {
 
         final ArrayList<Pokemon> pokedex;
         String result="";
+        loadingScreen=(LinearLayout) parent.findViewById(R.id.loadingAllPokemons);
 
 
 /*new Thread(new Runnable() {
@@ -52,6 +65,15 @@ public class AllPokemonsFragment extends Fragment {
     }
 }).start();*/
 
+        /*new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            public void onFinish() {
+            }
+        }.start();*/
 
         Call<List<Pokemon>> pokemons =  PokemonApp.getPokemonService().getAll();
 
@@ -59,6 +81,7 @@ public class AllPokemonsFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Pokemon>> call, Response<List<Pokemon>> response) {
                 if(response.isSuccessful()) {
+                    loadingScreen.setVisibility(View.GONE);
                     pokedexRetrofit = response.body();
                     refresh(pokedexRetrofit);
                 }
@@ -66,6 +89,8 @@ public class AllPokemonsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<Pokemon>> call, Throwable t) {
+                TextView loadingText=(TextView) parent.findViewById(R.id.loadingTextAllPokemons);
+                loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
 
             }
         });

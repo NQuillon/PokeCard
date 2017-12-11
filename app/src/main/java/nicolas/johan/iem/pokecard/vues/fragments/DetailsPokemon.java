@@ -1,18 +1,26 @@
-package nicolas.johan.iem.pokecard;
+package nicolas.johan.iem.pokecard.vues.fragments;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import nicolas.johan.iem.pokecard.adapter.CardAdapter;
+import nicolas.johan.iem.pokecard.PokemonApp;
+import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
+import nicolas.johan.iem.pokecard.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,6 +34,7 @@ public class DetailsPokemon extends Fragment {
     TextView poids;
     TextView taille;
     PokemonDetails details;
+    LinearLayout loadingScreen;
 
     public DetailsPokemon() {
         // Required empty public constructor
@@ -44,6 +53,7 @@ public class DetailsPokemon extends Fragment {
         poids=(TextView)parent.findViewById(R.id.details_poids);
         taille=(TextView)parent.findViewById(R.id.details_taille);
         Bundle data=getArguments();
+        loadingScreen=(LinearLayout) parent.findViewById(R.id.loadingDetails);
 
         /*String result="";
 
@@ -81,13 +91,15 @@ public class DetailsPokemon extends Fragment {
             @Override
             public void onResponse(Call<PokemonDetails> call, Response<PokemonDetails> response) {
                 if(response.isSuccessful()) {
+                    loadingScreen.setVisibility(View.GONE);
                     details = response.body();
                     refresh(details);
                 }
             }
             @Override
             public void onFailure(Call<PokemonDetails> call, Throwable t) {
-
+                TextView loadingText=(TextView) parent.findViewById(R.id.loadingTextDetails);
+                loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
             }
         });
 
@@ -113,7 +125,6 @@ public class DetailsPokemon extends Fragment {
                 ImageView tmp=(ImageView) customLayout.findViewById(R.id.zoomimg);
                 String url=pok.getCards().get(position).getUrlPicture();
                 url=url.replace(".png","_hires.png");
-
                 Picasso.with(getContext()).load(url).into(tmp);
                 builder.setView(customLayout);
                 builder.show();
