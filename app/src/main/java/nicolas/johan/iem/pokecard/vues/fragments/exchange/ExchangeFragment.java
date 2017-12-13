@@ -41,4 +41,13 @@ public class ExchangeFragment extends Fragment {
         return parent;
     }
 
+    public static ExchangeFragment newInstance() {
+        
+        Bundle args = new Bundle();
+        
+        ExchangeFragment fragment = new ExchangeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 }

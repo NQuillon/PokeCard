@@ -2,8 +2,6 @@ package nicolas.johan.iem.pokecard.vues.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +9,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
-import nicolas.johan.iem.pokecard.pojo.Account;
+import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.adapter.PokemonAdapter;
 import nicolas.johan.iem.pokecard.PokemonApp;
@@ -24,7 +21,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PokedexFragment extends Fragment {
+public class PokedexFragment extends BaseFragment {
     View parent;
     LinearLayout loadingScreen;
     List<Pokemon> pokedexRetrofit;
@@ -33,6 +30,14 @@ public class PokedexFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static PokedexFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        PokedexFragment fragment = new PokedexFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -42,7 +47,7 @@ public class PokedexFragment extends Fragment {
         /*final ArrayList<Pokemon> monPokedex;
         String result="";
         try{
-            result=new GETrequest().execute("user/"+Account.getInstance().getIdUser()+"/pokedex").get();
+            result=new GETrequest().execute("user/"+AccountSingleton.getInstance().getIdUser()+"/pokedex").get();
         }catch (Exception e){
 
         }
@@ -65,24 +70,26 @@ public class PokedexFragment extends Fragment {
 
         loadingScreen=(LinearLayout) parent.findViewById(R.id.loadingPokedex);
 
-        Call<List<Pokemon>> pokemons =  PokemonApp.getPokemonService().getFromId(Account.getInstance().getIdUser());
 
-        pokemons.enqueue(new Callback<List<Pokemon>>() {
-            @Override
-            public void onResponse(Call<List<Pokemon>> call, Response<List<Pokemon>> response) {
-                if(response.isSuccessful()) {
-                    loadingScreen.setVisibility(View.GONE);
-                    pokedexRetrofit = response.body();
-                    refresh(pokedexRetrofit);
+            Call<List<Pokemon>> pokemons = PokemonApp.getPokemonService().getFromId(AccountSingleton.getInstance().getIdUser());
+
+            pokemons.enqueue(new Callback<List<Pokemon>>() {
+                @Override
+                public void onResponse(Call<List<Pokemon>> call, Response<List<Pokemon>> response) {
+                    if (response.isSuccessful()) {
+                        loadingScreen.setVisibility(View.GONE);
+                        pokedexRetrofit = response.body();
+                        refresh(pokedexRetrofit);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Pokemon>> call, Throwable t) {
-                TextView loadingText=(TextView) parent.findViewById(R.id.loadingTextPokedex);
-                loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
-            }
-        });
+                @Override
+                public void onFailure(Call<List<Pokemon>> call, Throwable t) {
+                    TextView loadingText = (TextView) parent.findViewById(R.id.loadingTextPokedex);
+                    loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
+                }
+            });
+
 
 
 
@@ -100,16 +107,17 @@ public class PokedexFragment extends Fragment {
                 Bundle data=new Bundle();
                 data.putInt("id",monPokedex.get(position).getId());
 
-                Fragment f = (Fragment) new DetailsPokemon();
-                FragmentManager fragmentManager = getFragmentManager();
+                Fragment f = DetailsPokemon.newInstance(data);
+                showFragment(f);
+
+                /*FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 f.setArguments(data);
                 fragmentTransaction.replace(R.id.content_main, f);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                fragmentTransaction.addToBackStack("Nav");
+                fragmentTransaction.commit();*/
             }
         });
     }
-
 
 }

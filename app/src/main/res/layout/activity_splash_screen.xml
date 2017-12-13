@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ec1e24"
+    android:background="@color/splashScreenColor"
     tools:context="nicolas.johan.iem.pokecard.vues.SplashScreen">
 
     <TextView
@@ -12,7 +12,7 @@
         android:textSize="80dp"
         android:layout_marginTop="42dp"
         android:id="@+id/logo"
-        android:textColor="#f6ba2c"
+        android:textColor="@color/pokemonTextColor"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
 

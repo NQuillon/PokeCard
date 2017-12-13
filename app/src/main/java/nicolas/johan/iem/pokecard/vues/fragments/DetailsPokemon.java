@@ -40,6 +40,14 @@ public class DetailsPokemon extends Fragment {
         // Required empty public constructor
     }
 
+    public static DetailsPokemon newInstance(Bundle data) {
+
+
+        DetailsPokemon fragment = new DetailsPokemon();
+        fragment.setArguments(data);
+        return fragment;
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {

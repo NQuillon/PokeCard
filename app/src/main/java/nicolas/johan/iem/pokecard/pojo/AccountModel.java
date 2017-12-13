@@ -3,33 +3,30 @@ package nicolas.johan.iem.pokecard.pojo;
 import java.util.ArrayList;
 
 /**
- * Created by Johan on 07/11/2017.
+ * Created by iem on 13/12/2017.
  */
 
-public class Account {
-    String idUser; //id bd
-    String pseudo;
-    String typeConnexion;
-    String picture;
-    ArrayList<String> listePokemon=new ArrayList<>();
-    ArrayList<String> listeCards=new ArrayList<>();
-    int pokeCoin;
-    String idAccount; //id facebook/google
+public class AccountModel {
+    private String idUser; //id bd
+    private String pseudo;
+    private String picture;
+    private ArrayList<String> listePokemon=new ArrayList<>();
+    private ArrayList<String> listeCards=new ArrayList<>();
+    private int pokeCoin;
+    private String idAccount; //id facebook/google
 
     /** Constructeur privé */
-    private Account()
+    private AccountModel()
     {}
 
-    /** Instance unique non préinitialisée */
-    private static Account INSTANCE = null;
-
-    /** Point d'accès pour l'instance unique du singleton */
-    public static Account getInstance()
-    {
-        if (INSTANCE == null)
-        { 	INSTANCE = new Account();
-        }
-        return INSTANCE;
+    public AccountModel(String idUser, String pseudo, String picture, ArrayList<String> listePokemon, ArrayList<String> listeCards, int pokeCoin, String idAccount) {
+        this.idUser = idUser;
+        this.pseudo = pseudo;
+        this.picture = picture;
+        this.listePokemon = listePokemon;
+        this.listeCards = listeCards;
+        this.pokeCoin = pokeCoin;
+        this.idAccount = idAccount;
     }
 
     public ArrayList<String> getListeCards() {
@@ -64,14 +61,6 @@ public class Account {
         this.pseudo = pseudo;
     }
 
-    public String getTypeConnexion() {
-        return typeConnexion;
-    }
-
-    public void setTypeConnexion(String typeConnexion) {
-        this.typeConnexion = typeConnexion;
-    }
-
     public String getPicture() {
         return picture;
     }
@@ -94,13 +83,5 @@ public class Account {
 
     public void setPokeCoin(int pokeCoin) {
         this.pokeCoin = pokeCoin;
-    }
-
-    public boolean isConnectedByFacebook(){
-        return this.typeConnexion.equals("facebook");
-    }
-
-    public boolean isConnectedByGoogle(){
-        return this.typeConnexion.equals("google");
     }
 }

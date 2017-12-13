@@ -28,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AllPokemonsFragment extends Fragment {
+public class AllPokemonsFragment extends BaseFragment {
     View parent;
     LinearLayout loadingScreen;
 
@@ -124,6 +124,15 @@ public class AllPokemonsFragment extends Fragment {
         return parent;
     }
 
+    public static AllPokemonsFragment newInstance() {
+        
+        Bundle args = new Bundle();
+        
+        AllPokemonsFragment fragment = new AllPokemonsFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     private void refresh(final List<Pokemon> pokedex) {
         PokemonAdapter myPokemonAdapter=new PokemonAdapter(getActivity(), pokedex);
         GridView gridview = (GridView) parent.findViewById(R.id.allPokemons);
@@ -135,13 +144,16 @@ public class AllPokemonsFragment extends Fragment {
                 Bundle data=new Bundle();
                 data.putInt("id",pokedex.get(position).getId());
 
-                Fragment f = (Fragment) new DetailsPokemon();
+                Fragment f = DetailsPokemon.newInstance(data);
+                showFragment(f);
+
+                /*Fragment f = (Fragment) new DetailsPokemon();
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 f.setArguments(data);
                 fragmentTransaction.replace(R.id.content_main, f);
                 fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                fragmentTransaction.commit();*/
 
             }
         });

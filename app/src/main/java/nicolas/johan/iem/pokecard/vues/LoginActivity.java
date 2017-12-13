@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,9 +36,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import nicolas.johan.iem.pokecard.pojo.Account;
+import nicolas.johan.iem.pokecard.PokemonApp;
+import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.POSTrequest;
 import nicolas.johan.iem.pokecard.R;
+import nicolas.johan.iem.pokecard.pojo.AccountModel;
+import nicolas.johan.iem.pokecard.pojo.VerifyClass;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -94,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                                             GraphResponse response) {
                                             try {
                                                 Profile profile=Profile.getCurrentProfile();
-                                                JSONObject jsonParam = new JSONObject();
+                                                /*JSONObject jsonParam = new JSONObject();
                                                 jsonParam.put("pseudo", object.getString("first_name")+" "+object.getString("last_name"));
                                                 jsonParam.put("password", "facebook");
                                                 jsonParam.put("idUser", object.getString("id"));
@@ -104,20 +111,41 @@ public class LoginActivity extends AppCompatActivity {
 
                                                 JSONObject objResult=new JSONObject(resp);
 
-                                                Account.getInstance().setPseudo(objResult.getString("pseudo"));
-                                                Account.getInstance().setIdAccount(object.getString("id"));
-                                                Account.getInstance().setPicture(objResult.getString("profilePicture"));
-                                                Account.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
-                                                Account.getInstance().setIdUser(objResult.getString("idUser"));
+                                                AccountSingleton.getInstance().setPseudo(objResult.getString("pseudo"));
+                                                AccountSingleton.getInstance().setIdAccount(object.getString("id"));
+                                                AccountSingleton.getInstance().setPicture(objResult.getString("profilePicture"));
+                                                AccountSingleton.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
+                                                AccountSingleton.getInstance().setIdUser(objResult.getString("idUser"));
 
-                                                Account.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").replace("[","").replace("]","").replace("\"","").split(","))));
-                                                Account.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").split(","))));
+                                                AccountSingleton.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").replace("[","").replace("]","").replace("\"","").split(","))));
+                                                AccountSingleton.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").split(","))));
+                                                */
 
+                                                VerifyClass request=new VerifyClass(object.getString("first_name")+" "+object.getString("last_name"), "facebook", object.getString("id"), profile.getProfilePictureUri(150,150).toString());
+                                                Call<AccountModel> call = PokemonApp.getPokemonService().verifyAccount(request);
+                                                call.enqueue(new Callback<AccountModel>() {
+                                                    @Override
+                                                    public void onResponse(retrofit2.Call<AccountModel> call, Response<AccountModel> response) {
+                                                        AccountModel tmpAccount=response.body();
+                                                        AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
+                                                        AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
+                                                        AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
+                                                        AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
+                                                        AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
+                                                        AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
+                                                        AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
 
+                                                        Intent i=new Intent(LoginActivity.this, Accueil.class);
+                                                        startActivity(i);
+                                                        finish();
+                                                    }
 
-                                                Intent i=new Intent(LoginActivity.this, Accueil.class);
-                                                startActivity(i);
-                                                finish();
+                                                    @Override
+                                                    public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
+                                                        Log.e("ERREUR",t.getMessage());
+                                                        Toast.makeText(LoginActivity.this, "Impossible de communiquer avec le serveur", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
                                             }catch(Exception e){
                                                 Toast.makeText(LoginActivity.this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
                                             }
@@ -211,13 +239,18 @@ public class LoginActivity extends AppCompatActivity {
                 loginButton.setEnabled(true);
             }
             else {
-                Account.getInstance().setPseudo(objResult.getString("pseudo"));
-                Account.getInstance().setPicture(objResult.getString("profilePicture"));
-                Account.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
-                Account.getInstance().setIdUser(objResult.getString("idUser"));
 
-                Account.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").replace("[","").replace("]","").replace("\"","").split(","))));
-                Account.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").replace("[","").replace("]","").replace("\"","").split(","))));
+
+                AccountSingleton.getInstance().setPseudo(objResult.getString("pseudo"));
+                AccountSingleton.getInstance().setPicture(objResult.getString("profilePicture"));
+                AccountSingleton.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
+                AccountSingleton.getInstance().setIdUser(objResult.getString("idUser"));
+
+                AccountSingleton.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").replace("[","").replace("]","").replace("\"","").split(","))));
+                AccountSingleton.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").replace("[","").replace("]","").replace("\"","").split(","))));
+
+
+
                 onLoginSuccess();
             }
         }catch(Exception e){
@@ -284,7 +317,7 @@ public class LoginActivity extends AppCompatActivity {
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             acct = result.getSignInAccount();
-            Toast.makeText(this, "Connecté en tant que "+acct.getDisplayName()+" ("+acct.getEmail()+")", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Connecté en tant que "+acct.getDisplayName()+" ("+acct.getEmail()+")", Toast.LENGTH_LONG).show();
             signInButton.setVisibility(View.INVISIBLE);
             String response="";
             try {
@@ -299,9 +332,9 @@ public class LoginActivity extends AppCompatActivity {
                     jsonParam.put("profilePicture", "https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png");
                 }
                 response=new POSTrequest().execute("verify", jsonParam).get();
-                Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
             }catch(Exception e){}
-            Account.getInstance().setIdAccount(acct.getId());
+            AccountSingleton.getInstance().setIdAccount(acct.getId());
             String url="";
             try{
                 url=acct.getPhotoUrl().toString();
@@ -309,15 +342,15 @@ public class LoginActivity extends AppCompatActivity {
                 url="https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png";
             }
 
-            Account.getInstance().setPicture(url);
+            AccountSingleton.getInstance().setPicture(url);
             try {
                 JSONObject objResult = new JSONObject(response);
-                Account.getInstance().setPseudo(objResult.getString("pseudo"));
-                Account.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
-                Account.getInstance().setIdUser(objResult.getString("idUser"));
+                AccountSingleton.getInstance().setPseudo(objResult.getString("pseudo"));
+                AccountSingleton.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
+                AccountSingleton.getInstance().setIdUser(objResult.getString("idUser"));
 
-                Account.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").replace("[","").replace("]","").replace("\"","").split(","))));
-                Account.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").replace("[","").replace("]","").replace("\"","").split(","))));
+                AccountSingleton.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").replace("[","").replace("]","").replace("\"","").split(","))));
+                AccountSingleton.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").replace("[","").replace("]","").replace("\"","").split(","))));
 
                 Intent i=new Intent(LoginActivity.this, Accueil.class);
                 startActivity(i);

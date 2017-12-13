@@ -8,14 +8,10 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.Menu;
@@ -29,9 +25,9 @@ import org.json.JSONObject;
 
 import java.net.URL;
 
-import nicolas.johan.iem.pokecard.pojo.Account;
+import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.vues.fragments.AllPokemonsFragment;
-import nicolas.johan.iem.pokecard.vues.fragments.ExchangeFragment;
+import nicolas.johan.iem.pokecard.vues.fragments.exchange.ExchangeFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.FriendsFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.GameFragment;
 import nicolas.johan.iem.pokecard.POSTrequest;
@@ -40,8 +36,7 @@ import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.vues.fragments.SettingsFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.StoreFragment;
 
-public class Accueil extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class Accueil extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     TextView pseudo_header;
     TextView pokecoin;
@@ -58,7 +53,7 @@ public class Accueil extends AppCompatActivity
         setSupportActionBar(toolbar);
         toolbar.setLogo(R.mipmap.ic_launcher);
 
-        showFragment(new PokedexFragment());
+        showFragment(PokedexFragment.newInstance());
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -79,17 +74,20 @@ public class Accueil extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
         header.setBackgroundColor(Color.rgb(246, 186, 44));
         pseudo_header = (TextView) header.findViewById(R.id.pseudo_header);
-        pseudo_header.setText(Account.getInstance().getPseudo());
+        pseudo_header.setText(AccountSingleton.getInstance().getPseudo());
         pokecoin = (TextView) header.findViewById(R.id.pokecoin_header);
-        pokecoin.setText(""+Account.getInstance().getPokeCoin());
+        pokecoin.setText(""+ AccountSingleton.getInstance().getPokeCoin());
 
         nbCards = (TextView) header.findViewById(R.id.nbCards_header);
-        nbCards.setText(""+Account.getInstance().getListeCards().size());
+        nbCards.setText(""+ AccountSingleton.getInstance().getListeCards().size());
 
 
         modify_header=(ImageView) header.findViewById(R.id.modify_header);
 
         profileImage = (ImageView) header.findViewById(R.id.profileImage);
+
+
+
 
 
         View.OnClickListener modify_listener=new View.OnClickListener() {
@@ -100,17 +98,17 @@ public class Accueil extends AppCompatActivity
 
                 final EditText input = new EditText(Accueil.this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-                input.setText(Account.getInstance().getPseudo());
+                input.setText(AccountSingleton.getInstance().getPseudo());
                 builder.setView(input);
 
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Account.getInstance().setPseudo(input.getText().toString());
+                        AccountSingleton.getInstance().setPseudo(input.getText().toString());
                         pseudo_header.setText(input.getText().toString());
                         try{
                             JSONObject jsonParam = new JSONObject();
-                            jsonParam.put("idUser", Account.getInstance().getIdUser());
+                            jsonParam.put("idUser", AccountSingleton.getInstance().getIdUser());
                             jsonParam.put("pseudo", input.getText().toString());
                             new POSTrequest().execute("option/editPseudo",jsonParam);
                         }catch (Exception e){
@@ -142,7 +140,7 @@ public class Accueil extends AppCompatActivity
         @Override
         protected Void doInBackground(String... strings) {
             try {
-                URL imageURL = new URL(Account.getInstance().getPicture().toString());
+                URL imageURL = new URL(AccountSingleton.getInstance().getPicture().toString());
                 bitprofile = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
             }catch (Exception e){}
             return null;
@@ -191,27 +189,35 @@ public class Accueil extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_pokedex) {
-            showFragment(new PokedexFragment());
+            clearBackstack();
+            showFragment(PokedexFragment.newInstance());
             getSupportActionBar().setTitle("Mon Pokédex");
         } else if (id == R.id.nav_allpokemons) {
-            showFragment(new AllPokemonsFragment());
+            clearBackstack();
+            showFragment(AllPokemonsFragment.newInstance());
             getSupportActionBar().setTitle("Tous les pokémons");
         } else if (id == R.id.nav_echanger) {
-            showFragment(new ExchangeFragment());
+            clearBackstack();
+            showFragment(ExchangeFragment.newInstance());
             getSupportActionBar().setTitle("Échanger");
         } else if (id == R.id.nav_jeux) {
-            showFragment(new GameFragment());
+            clearBackstack();
+            showFragment(GameFragment.newInstance());
             getSupportActionBar().setTitle("Jeux");
         } else if (id == R.id.nav_boutique) {
-            showFragment(new StoreFragment());
+            clearBackstack();
+            showFragment(StoreFragment.newInstance());
             getSupportActionBar().setTitle("Boutique");
         } else if (id == R.id.nav_amis) {
-            showFragment(new FriendsFragment());
+            clearBackstack();
+            showFragment(FriendsFragment.newInstance());
             getSupportActionBar().setTitle("Mes amis");
         } else if (id == R.id.nav_params) {
-            showFragment(new SettingsFragment());
+            clearBackstack();
+            showFragment(SettingsFragment.newInstance());
             getSupportActionBar().setTitle("Paramètres");
         } else if (id == R.id.nav_deco) {
+            clearBackstack();
             finish();
             Intent i = new Intent(Accueil.this, LoginActivity.class);
             startActivity(i);
@@ -223,11 +229,8 @@ public class Accueil extends AppCompatActivity
         return true;
     }
 
-    private void showFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_main, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .commit();
+    public void update() {
+        nbCards.setText(""+ AccountSingleton.getInstance().getListeCards().size());
     }
+
 }

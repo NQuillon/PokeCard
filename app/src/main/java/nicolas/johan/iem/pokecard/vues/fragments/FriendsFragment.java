@@ -21,4 +21,13 @@ public class FriendsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_friends, container, false);
     }
 
+    public static FriendsFragment newInstance() {
+        
+        Bundle args = new Bundle();
+        
+        FriendsFragment fragment = new FriendsFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 }

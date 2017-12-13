@@ -2,8 +2,6 @@ package nicolas.johan.iem.pokecard.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import nicolas.johan.iem.pokecard.pojo.Account;
+import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Card;
 import nicolas.johan.iem.pokecard.R;
 
@@ -50,14 +48,14 @@ public class CardAdapter extends ArrayAdapter<Card>{
 
         Card pokemonItem = getItem(position);
 
-        if(!Account.getInstance().getListeCards().contains(pokemonItem.getId())){
+        if(!AccountSingleton.getInstance().getListeCards().contains(pokemonItem.getId())){
             viewHolder.imgCarte.setAlpha(100);
             viewHolder.nbCards.setText("");
         }else{
             viewHolder.imgCarte.setAlpha(255);
             int nb=0;
-            for(int i=0; i<Account.getInstance().getListeCards().size();i++){
-                if(Account.getInstance().getListeCards().get(i).equals(pokemonItem.getId())){
+            for(int i = 0; i< AccountSingleton.getInstance().getListeCards().size(); i++){
+                if(AccountSingleton.getInstance().getListeCards().get(i).equals(pokemonItem.getId())){
                     nb++;
                 }
             }

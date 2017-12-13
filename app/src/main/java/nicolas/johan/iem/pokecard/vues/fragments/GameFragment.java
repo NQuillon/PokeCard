@@ -21,4 +21,13 @@ public class GameFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_game, container, false);
     }
 
+    public static GameFragment newInstance() {
+        
+        Bundle args = new Bundle();
+        
+        GameFragment fragment = new GameFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 }

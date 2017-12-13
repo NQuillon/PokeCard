@@ -21,4 +21,13 @@ public class StoreFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_store, container, false);
     }
 
+    public static StoreFragment newInstance() {
+        
+        Bundle args = new Bundle();
+        
+        StoreFragment fragment = new StoreFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 }

@@ -1,10 +1,12 @@
 package nicolas.johan.iem.pokecard.vues.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -27,13 +30,16 @@ import nicolas.johan.iem.pokecard.adapter.ExchangeCardAdapter;
 import nicolas.johan.iem.pokecard.adapter.PokemonAdapter;
 import nicolas.johan.iem.pokecard.pojo.Account;
 import nicolas.johan.iem.pokecard.pojo.Card;
+import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
+import nicolas.johan.iem.pokecard.vues.Accueil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NewExchangeFragment extends Fragment {
     View parent;
+    Accueil attachContext;
     LinearLayout loadingScreen;
     List<Pokemon> pokedexRetrofit;
     List<Card> cardsList;
@@ -81,12 +87,13 @@ public class NewExchangeFragment extends Fragment {
         gridview.setAdapter(myPokemonAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
+            public void onItemClick(final AdapterView<?> parent, View v, int position, long id) {
                 Bundle data=new Bundle();
                 data.putInt("id",monPokedex.get(position).getId());
 
                 //AlertDialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Sélectionnez la carte");
                 final View customLayout = getActivity().getLayoutInflater().inflate(R.layout.dialog_exchange, null);
 
                 Call<List<Card>> list =  PokemonApp.getPokemonService().getCardsFromId(Integer.parseInt(Account.getInstance().getIdUser()),monPokedex.get(position).getId());
@@ -99,6 +106,34 @@ public class NewExchangeFragment extends Fragment {
                                          GridView gv_exchange = (GridView) customLayout.findViewById(R.id.exchange_cards);
                                          ExchangeCardAdapter exchange_cardAdapter=new ExchangeCardAdapter(getActivity(),cardsList);
                                          gv_exchange.setAdapter(exchange_cardAdapter);
+                                         gv_exchange.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                             @Override
+                                             public void onItemClick(final AdapterView<?> parent, View view, int position, long id) {
+                                                 //------------------TEST POST RETROFIT--------------
+
+                                                 ExchangePOST request=new ExchangePOST(Integer.parseInt(Account.getInstance().getIdUser()),12,cardsList.get(position).getId());
+                                                 Call<Account> call = PokemonApp.getPokemonService().sendExchangeRequest(request);
+                                                 call.enqueue(new Callback<Account>() {
+                                                     @Override
+                                                     public void onResponse(retrofit2.Call<Account> call, Response<Account> response) {
+                                                         Account tmpAccount=response.body();
+                                                         Account.getInstance().setListePokemon(tmpAccount.getListePokemon());
+                                                         Account.getInstance().setListeCards(tmpAccount.getListeCards());
+
+                                                         attachContext.update();
+
+                                                         Toast.makeText(parent.getContext(), ""+response.code(), Toast.LENGTH_SHORT).show();
+                                                     }
+
+                                                     @Override
+                                                     public void onFailure(retrofit2.Call<Account> call, Throwable t) {
+                                                         Toast.makeText(parent.getContext(), "ECHEC", Toast.LENGTH_SHORT).show();
+                                                     }
+                                                 });
+
+                                                 //--------------------------------------------------
+                                             }
+                                         });
                                      }
                                  }
 
@@ -115,5 +150,18 @@ public class NewExchangeFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.attachContext=(Accueil) context;
+    }
 
+    public static NewExchangeFragment newInstance() {
+        
+        Bundle args = new Bundle();
+        
+        NewExchangeFragment fragment = new NewExchangeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 }
