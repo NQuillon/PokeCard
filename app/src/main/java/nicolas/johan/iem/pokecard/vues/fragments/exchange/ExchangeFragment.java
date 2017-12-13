@@ -1,4 +1,4 @@
-package nicolas.johan.iem.pokecard.vues.fragments;
+package nicolas.johan.iem.pokecard.vues.fragments.exchange;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,8 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import nicolas.johan.iem.pokecard.R;
+import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
 
-public class ExchangeFragment extends Fragment {
+public class ExchangeFragment extends BaseFragment {
     View parent;
 
     public ExchangeFragment() {
@@ -29,11 +30,12 @@ public class ExchangeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Fragment f = (Fragment) new NewExchangeFragment();
-                FragmentManager fragmentManager = getFragmentManager();
+                showFragment(f);
+                /*FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.content_main, f);
                 fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                fragmentTransaction.commit();*/
             }
         });
 

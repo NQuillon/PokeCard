@@ -1,43 +1,39 @@
-package nicolas.johan.iem.pokecard.vues.fragments;
+package nicolas.johan.iem.pokecard.vues.fragments.exchange;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.adapter.CardAdapter;
 import nicolas.johan.iem.pokecard.adapter.ExchangeCardAdapter;
 import nicolas.johan.iem.pokecard.adapter.PokemonAdapter;
-import nicolas.johan.iem.pokecard.pojo.Account;
+import nicolas.johan.iem.pokecard.pojo.AccountModel;
+import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Card;
 import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.vues.Accueil;
+import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
+import nicolas.johan.iem.pokecard.vues.fragments.PokedexFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NewExchangeFragment extends Fragment {
+public class NewExchangeFragment extends BaseFragment {
     View parent;
     Accueil attachContext;
     LinearLayout loadingScreen;
@@ -57,7 +53,7 @@ public class NewExchangeFragment extends Fragment {
 
         loadingScreen=(LinearLayout) parent.findViewById(R.id.loadingNewExchange);
 
-        Call<List<Pokemon>> pokemons =  PokemonApp.getPokemonService().getFromId(Account.getInstance().getIdUser());
+        Call<List<Pokemon>> pokemons =  PokemonApp.getPokemonService().getFromId(AccountSingleton.getInstance().getIdUser());
 
         pokemons.enqueue(new Callback<List<Pokemon>>() {
             @Override
@@ -83,7 +79,7 @@ public class NewExchangeFragment extends Fragment {
 
     private void refresh(final List<Pokemon> monPokedex) {
         PokemonAdapter myPokemonAdapter=new PokemonAdapter(getActivity(), monPokedex);
-        GridView gridview = (GridView) parent.findViewById(R.id.newExchange);
+        final GridView gridview = (GridView) parent.findViewById(R.id.newExchange);
         gridview.setAdapter(myPokemonAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -92,11 +88,24 @@ public class NewExchangeFragment extends Fragment {
                 data.putInt("id",monPokedex.get(position).getId());
 
                 //AlertDialog
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Sélectionnez la carte");
+                builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
                 final View customLayout = getActivity().getLayoutInflater().inflate(R.layout.dialog_exchange, null);
 
-                Call<List<Card>> list =  PokemonApp.getPokemonService().getCardsFromId(Integer.parseInt(Account.getInstance().getIdUser()),monPokedex.get(position).getId());
+                builder.setView(customLayout);
+                //builder.show();
+                final AlertDialog dialog=builder.create();
+                dialog.show();
+
+
+                Call<List<Card>> list =  PokemonApp.getPokemonService().getCardsFromId(Integer.parseInt(AccountSingleton.getInstance().getIdUser()),monPokedex.get(position).getId());
 
                 list.enqueue(new Callback<List<Card>>() {
                                  @Override
@@ -108,30 +117,44 @@ public class NewExchangeFragment extends Fragment {
                                          gv_exchange.setAdapter(exchange_cardAdapter);
                                          gv_exchange.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                              @Override
-                                             public void onItemClick(final AdapterView<?> parent, View view, int position, long id) {
-                                                 //------------------TEST POST RETROFIT--------------
+                                             public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
 
-                                                 ExchangePOST request=new ExchangePOST(Integer.parseInt(Account.getInstance().getIdUser()),12,cardsList.get(position).getId());
-                                                 Call<Account> call = PokemonApp.getPokemonService().sendExchangeRequest(request);
-                                                 call.enqueue(new Callback<Account>() {
+
+                                                 final int JOUEUR=12;
+
+
+                                                 ExchangePOST request=new ExchangePOST(Integer.parseInt(AccountSingleton.getInstance().getIdUser()),JOUEUR,cardsList.get(position).getId());
+                                                 Call<AccountModel> call = PokemonApp.getPokemonService().sendExchangeRequest(request);
+                                                 call.enqueue(new Callback<AccountModel>() {
                                                      @Override
-                                                     public void onResponse(retrofit2.Call<Account> call, Response<Account> response) {
-                                                         Account tmpAccount=response.body();
-                                                         Account.getInstance().setListePokemon(tmpAccount.getListePokemon());
-                                                         Account.getInstance().setListeCards(tmpAccount.getListeCards());
+                                                     public void onResponse(retrofit2.Call<AccountModel> call, Response<AccountModel> response) {
+                                                         AccountModel tmpAccount=response.body();
+                                                         AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
+                                                         AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
 
                                                          attachContext.update();
 
-                                                         Toast.makeText(parent.getContext(), ""+response.code(), Toast.LENGTH_SHORT).show();
+                                                         dialog.dismiss();
+
+                                                         //showFragment(new PokedexFragment()); //TEST
+
+                                                         final Snackbar mySnackbar = Snackbar
+                                                                 .make(attachContext.findViewById(R.id.exchangeLayout),"La carte "+cardsList.get(position).getId()+" a été envoyée au joueur "+JOUEUR, Snackbar.LENGTH_LONG)
+                                                                 .setActionTextColor(Color.GREEN)
+                                                                 .setAction("Ok", new View.OnClickListener() {
+                                                                     @Override
+                                                                     public void onClick(View v) {
+                                                                     }
+                                                                 });
+                                                         mySnackbar.show();
                                                      }
 
                                                      @Override
-                                                     public void onFailure(retrofit2.Call<Account> call, Throwable t) {
+                                                     public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
                                                          Toast.makeText(parent.getContext(), "ECHEC", Toast.LENGTH_SHORT).show();
                                                      }
                                                  });
 
-                                                 //--------------------------------------------------
                                              }
                                          });
                                      }
@@ -139,12 +162,9 @@ public class NewExchangeFragment extends Fragment {
 
                                  @Override
                                  public void onFailure(Call<List<Card>> call, Throwable t) {
-                                     System.out.println("CA MARCHE PAS");
+                                     System.out.println("Echec");
                                  }
                              });
-
-                builder.setView(customLayout);
-                builder.show();
 
             }
         });
