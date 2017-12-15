@@ -24,6 +24,7 @@ import retrofit2.Response;
 public class PokedexFragment extends BaseFragment {
     View parent;
     LinearLayout loadingScreen;
+    LinearLayout noPokemon;
     List<Pokemon> pokedexRetrofit;
 
     public PokedexFragment() {
@@ -69,6 +70,7 @@ public class PokedexFragment extends BaseFragment {
         }*/
 
         loadingScreen=(LinearLayout) parent.findViewById(R.id.loadingPokedex);
+        noPokemon=(LinearLayout) parent.findViewById(R.id.noPokemon);
 
 
             Call<List<Pokemon>> pokemons = PokemonApp.getPokemonService().getFromId(AccountSingleton.getInstance().getIdUser());
@@ -79,6 +81,9 @@ public class PokedexFragment extends BaseFragment {
                     if (response.isSuccessful()) {
                         loadingScreen.setVisibility(View.GONE);
                         pokedexRetrofit = response.body();
+                        if(pokedexRetrofit.size()==0){
+                            noPokemon.setVisibility(View.VISIBLE);
+                        }
                         refresh(pokedexRetrofit);
                     }
                 }

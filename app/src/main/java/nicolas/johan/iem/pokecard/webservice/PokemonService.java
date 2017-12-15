@@ -6,6 +6,7 @@ import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Card;
 import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
 import nicolas.johan.iem.pokecard.pojo.FriendAccount;
+import nicolas.johan.iem.pokecard.pojo.LoginClass;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
@@ -42,5 +43,11 @@ public interface PokemonService  {
 
     @POST("verify")
     Call<AccountModel> verifyAccount(@Body VerifyClass request);
+
+    @POST("login")
+    Call<AccountModel> login(@Body LoginClass request);
+
+    @POST("signup")
+    Call<AccountModel> signup(@Body LoginClass request);
 
 }

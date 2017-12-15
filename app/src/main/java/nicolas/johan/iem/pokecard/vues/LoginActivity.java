@@ -1,5 +1,6 @@
 package nicolas.johan.iem.pokecard.vues;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.POSTrequest;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
+import nicolas.johan.iem.pokecard.pojo.LoginClass;
 import nicolas.johan.iem.pokecard.pojo.VerifyClass;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,11 +61,13 @@ public class LoginActivity extends AppCompatActivity {
     GoogleApiClient mGoogleApiClient;
     SignInButton signInButton;
     GoogleSignInAccount acct;
+    Context context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        context=this;
 
         //Init Facebook SDK
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -135,9 +139,7 @@ public class LoginActivity extends AppCompatActivity {
                                                         AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
                                                         AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
 
-                                                        Intent i=new Intent(LoginActivity.this, Accueil.class);
-                                                        startActivity(i);
-                                                        finish();
+                                                        onLoginSuccess();
                                                     }
 
                                                     @Override
@@ -224,35 +226,45 @@ public class LoginActivity extends AppCompatActivity {
         String password = passwordText.getText().toString();
         String result="";
         try {
-            JSONObject jsonParam = new JSONObject();
+            /*JSONObject jsonParam = new JSONObject();
             jsonParam.put("pseudo", pseudo);
             jsonParam.put("password", password);
             result=new POSTrequest().execute("login", jsonParam).get();
 
-            JSONObject objResult=new JSONObject(result);
-            if(objResult.getString("pseudo").equals("false")){
-                Toast.makeText(this, "Pseudo inconnu. Veuillez créer un compte", Toast.LENGTH_LONG).show();
-                loginButton.setEnabled(true);
-            }
-            else if(objResult.getString("pseudo").equals("true") && objResult.getString("password").equals("false")){
-                Toast.makeText(this, "Mot de passe incorrect, veuillez réessayer", Toast.LENGTH_LONG).show();
-                loginButton.setEnabled(true);
-            }
-            else {
+            JSONObject objResult=new JSONObject(result);*/
 
+            LoginClass request=new LoginClass(pseudo, password);
+            Call<AccountModel> call = PokemonApp.getPokemonService().login(request);
+            call.enqueue(new Callback<AccountModel>() {
+                @Override
+                public void onResponse(retrofit2.Call<AccountModel> call, Response<AccountModel> response) {
+                    AccountModel tmpAccount=response.body();
 
-                AccountSingleton.getInstance().setPseudo(objResult.getString("pseudo"));
-                AccountSingleton.getInstance().setPicture(objResult.getString("profilePicture"));
-                AccountSingleton.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
-                AccountSingleton.getInstance().setIdUser(objResult.getString("idUser"));
+                    if(response.code()==400){
+                        Toast.makeText(context, "Login ou mot de passe incorrect", Toast.LENGTH_LONG).show();
+                        loginButton.setEnabled(true);
+                    }
+                    else {
+                        AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
+                        AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
+                        AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
+                        AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
+                        AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
+                        AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
+                        AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
 
-                AccountSingleton.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").replace("[","").replace("]","").replace("\"","").split(","))));
-                AccountSingleton.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").replace("[","").replace("]","").replace("\"","").split(","))));
+                        onLoginSuccess();
+                    }
 
+                }
 
-
-                onLoginSuccess();
-            }
+                @Override
+                public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
+                    Log.e("ERREUR",t.getMessage());
+                    loginButton.setEnabled(true);
+                    Toast.makeText(LoginActivity.this, "Impossible de communiquer avec le serveur", Toast.LENGTH_SHORT).show();
+                }
+            });
         }catch(Exception e){
             Toast.makeText(this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
             loginButton.setEnabled(true);
@@ -319,6 +331,44 @@ public class LoginActivity extends AppCompatActivity {
             acct = result.getSignInAccount();
             //Toast.makeText(this, "Connecté en tant que "+acct.getDisplayName()+" ("+acct.getEmail()+")", Toast.LENGTH_LONG).show();
             signInButton.setVisibility(View.INVISIBLE);
+
+            String photoUrl=acct.getPhotoUrl().toString();
+            if(acct.getPhotoUrl().toString()=="" || acct.getPhotoUrl()==null){
+                photoUrl="https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png";
+            }else{
+                photoUrl=acct.getPhotoUrl().toString();
+            }
+            VerifyClass request=new VerifyClass(acct.getDisplayName(), "google", acct.getId(), photoUrl);
+            Call<AccountModel> call = PokemonApp.getPokemonService().verifyAccount(request);
+            call.enqueue(new Callback<AccountModel>() {
+                @Override
+                public void onResponse(retrofit2.Call<AccountModel> call, Response<AccountModel> response) {
+                    AccountModel tmpAccount=response.body();
+                    AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
+                    AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
+                    AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
+                    AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
+                    AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
+                    AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
+                    AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
+
+                    onLoginSuccess();
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
+                    Log.e("ERREUR",t.getMessage());
+                    mGoogleApiClient.disconnect();
+                    loginButton.setEnabled(true);
+                    Toast.makeText(LoginActivity.this, "Impossible de communiquer avec le serveur", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+
+
+
+/*
             String response="";
             try {
                 JSONObject jsonParam = new JSONObject();
@@ -359,7 +409,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
                 mGoogleApiClient.disconnect();
             }
-
+*/
 
 
         } else {
