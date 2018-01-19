@@ -332,8 +332,13 @@ public class LoginActivity extends AppCompatActivity {
             //Toast.makeText(this, "Connecté en tant que "+acct.getDisplayName()+" ("+acct.getEmail()+")", Toast.LENGTH_LONG).show();
             signInButton.setVisibility(View.INVISIBLE);
 
-            String photoUrl=acct.getPhotoUrl().toString();
-            if(acct.getPhotoUrl().toString()=="" || acct.getPhotoUrl()==null){
+            String photoUrl="";
+            try {
+                photoUrl = acct.getPhotoUrl().toString();
+            }catch(Exception e){
+
+            }
+            if(photoUrl=="" || photoUrl==null){
                 photoUrl="https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png";
             }else{
                 photoUrl=acct.getPhotoUrl().toString();

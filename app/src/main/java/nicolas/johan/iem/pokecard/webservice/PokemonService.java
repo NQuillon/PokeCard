@@ -38,8 +38,8 @@ public interface PokemonService  {
     @POST("exchange/send")
     Call<AccountModel> sendExchangeRequest(@Body ExchangePOST request);
 
-    @GET("user/{idUser}/friends") //a verifier
-    Call<List<FriendAccount>> getFriends(@Path("idUser") int idUser, @Path("idPokemon") int idPokemon);
+    @GET("user/{idUser}/getFriends") //a verifier
+    Call<List<FriendAccount>> getFriends(@Path("idUser") String idUser);
 
     @POST("verify")
     Call<AccountModel> verifyAccount(@Body VerifyClass request);

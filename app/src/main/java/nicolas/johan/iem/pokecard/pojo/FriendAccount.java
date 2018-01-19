@@ -10,26 +10,24 @@ public class FriendAccount {
     String idUser; //id bd
     String pseudo;
     String picture;
-    ArrayList<String> listePokemon=new ArrayList<>();
-    ArrayList<String> listeCards=new ArrayList<>();
+    int nbCartes;
 
-        public FriendAccount(String idUser, String pseudo, String picture, ArrayList<String> listePokemon, ArrayList<String> listeCards, int pokeCoin, String idAccount) {
+        public FriendAccount(String idUser, String pseudo, String picture, int  nbCartes) {
             this.idUser = idUser;
             this.pseudo = pseudo;
             this.picture = picture;
-            this.listePokemon = listePokemon;
-            this.listeCards = listeCards;
+            this.nbCartes=nbCartes;
         }
 
-        public ArrayList<String> getListeCards() {
-            return listeCards;
-        }
+    public int getNbCartes() {
+        return nbCartes;
+    }
 
-        public void setListeCards(ArrayList<String> listeCards) {
-            this.listeCards = listeCards;
-        }
+    public void setNbCartes(int nbCartes) {
+        this.nbCartes = nbCartes;
+    }
 
-        public String getIdUser() {
+    public String getIdUser() {
             return idUser;
         }
 
@@ -51,13 +49,5 @@ public class FriendAccount {
 
         public void setPicture(String picture) {
             this.picture = picture;
-        }
-
-        public ArrayList<String> getListePokemon() {
-            return listePokemon;
-        }
-
-        public void setListePokemon(ArrayList<String> listePokemon) {
-            this.listePokemon = listePokemon;
         }
     }
