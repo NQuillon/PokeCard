@@ -117,7 +117,7 @@ public class DetailsPokemon extends Fragment {
 
     private void refresh(final PokemonDetails pok) {
         Picasso.with(getContext()).load(pok.getUrlPicture()).into(imgPokemon);
-        id.setText(pok.getId());
+        id.setText("(n°"+pok.getId()+")");
         nom.setText(pok.getName());
         type.setText(pok.getType());
         poids.setText(pok.getWeight());

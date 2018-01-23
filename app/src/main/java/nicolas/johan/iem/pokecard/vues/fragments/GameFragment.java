@@ -2,13 +2,26 @@ package nicolas.johan.iem.pokecard.vues.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
+import java.util.List;
+
+import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
+import nicolas.johan.iem.pokecard.adapter.ListCategoryGameAdapter;
+import nicolas.johan.iem.pokecard.pojo.GameCategory;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class GameFragment extends Fragment {
+public class GameFragment extends BaseFragment {
+    View parent;
+    List<GameCategory> liste;
 
     public GameFragment() {
         // Required empty public constructor
@@ -18,8 +31,46 @@ public class GameFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_game, container, false);
+        parent= inflater.inflate(R.layout.fragment_game, container, false);
+
+
+        Call<List<GameCategory>> friends = PokemonApp.getPokemonService().getAllCategories();
+
+        friends.enqueue(new Callback<List<GameCategory>>() {
+            @Override
+            public void onResponse(Call<List<GameCategory>> call, Response<List<GameCategory>> response) {
+                if(response.isSuccessful()){
+                    liste=response.body();
+                    refresh();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GameCategory>> call, Throwable t) {
+
+            }
+        });
+
+
+
+        return parent;
     }
+
+    public void refresh(){
+        ListView lv=parent.findViewById(R.id.listCategoryGame);
+        ListCategoryGameAdapter adapter=new ListCategoryGameAdapter(parent.getContext(),liste);
+        lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle data=new Bundle();
+                data.putString("category", liste.get(position).getId());
+                Fragment f=(Fragment) QuestionGame.newInstance(data);
+                showFragment(f);
+            }
+        });
+    }
+
 
     public static GameFragment newInstance() {
         

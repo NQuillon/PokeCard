@@ -16,8 +16,8 @@ public class BaseActivity extends AppCompatActivity{
     public void showFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(R.id.content_main, fragment)
                 .addToBackStack("Nav")
+                .replace(R.id.content_main, fragment) //replace: recharge la page     add: garde en mémoire
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
     }

@@ -45,35 +45,25 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="22dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Id: "
-                    />
-                <TextView
-                    android:id="@+id/details_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="NULL"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nom: "
-                    />
                 <TextView
                     android:id="@+id/details_nom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="NULL"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/details_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NULL"
+                    android:textSize="12sp"
+                    android:layout_marginLeft="12dp"
                     />
             </LinearLayout>
 
@@ -85,13 +75,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Type: "
-                    />
+                    android:textStyle="italic" />
+
                 <TextView
                     android:id="@+id/details_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="NULL"
-                    />
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -102,12 +93,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Poids: "
-                    />
+                    android:textStyle="italic" />
+
                 <TextView
                     android:id="@+id/details_poids"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="NULL"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text=" kg"
                     />
             </LinearLayout>
 
@@ -119,12 +117,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Taille: "
-                    />
+                    android:textStyle="italic" />
+
                 <TextView
                     android:id="@+id/details_taille"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="NULL"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text=" m"
                     />
             </LinearLayout>
 

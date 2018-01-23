@@ -3,6 +3,7 @@ package nicolas.johan.iem.pokecard.vues.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 import nicolas.johan.iem.pokecard.vues.Accueil;
 
@@ -11,7 +12,7 @@ import nicolas.johan.iem.pokecard.vues.Accueil;
  */
 
 public class BaseFragment extends Fragment {
-    Accueil activity;
+    public Accueil activity;
 
     @Override
     public void onAttach(Context context) {

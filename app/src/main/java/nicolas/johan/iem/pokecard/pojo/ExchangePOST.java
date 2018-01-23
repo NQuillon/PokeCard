@@ -9,15 +9,17 @@ public class ExchangePOST {
     private int idSender;
     private int idReceiver;
     private String idCard;
+    private String status;
 
     public ExchangePOST() {
     }
 
-    public ExchangePOST(int idSender, int idReceiver, String idCard) {
+    public ExchangePOST(int idSender, int idReceiver, String idCard, String status) {
         super();
         this.idSender = idSender;
         this.idReceiver = idReceiver;
         this.idCard = idCard;
+        this.status=status;
     }
 
     public int getIdSender() {
@@ -44,4 +46,11 @@ public class ExchangePOST {
         this.idCard = idCard;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

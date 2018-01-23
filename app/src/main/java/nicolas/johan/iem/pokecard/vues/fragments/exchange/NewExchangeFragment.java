@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +37,6 @@ import retrofit2.Response;
 
 public class NewExchangeFragment extends BaseFragment {
     View parent;
-    Accueil attachContext;
     LinearLayout loadingScreen;
     List<Pokemon> pokedexRetrofit;
     List<Card> cardsList;
@@ -120,10 +121,16 @@ public class NewExchangeFragment extends BaseFragment {
                                              public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
 
 
-                                                 final int JOUEUR=12;
+                                                 //final int JOUEUR=12;
 
+                                                 Bundle data=new Bundle();
+                                                 data.putString("id",cardsList.get(position).getId());
+                                                 dialog.dismiss();
+                                                 activity.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                                 Fragment f = (Fragment) ReceiverExchange.newInstance(data);
+                                                 showFragment(f);
 
-                                                 ExchangePOST request=new ExchangePOST(Integer.parseInt(AccountSingleton.getInstance().getIdUser()),JOUEUR,cardsList.get(position).getId());
+                                                 /*ExchangePOST request=new ExchangePOST(Integer.parseInt(AccountSingleton.getInstance().getIdUser()),JOUEUR,cardsList.get(position).getId());
                                                  Call<AccountModel> call = PokemonApp.getPokemonService().sendExchangeRequest(request);
                                                  call.enqueue(new Callback<AccountModel>() {
                                                      @Override
@@ -153,7 +160,7 @@ public class NewExchangeFragment extends BaseFragment {
                                                      public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
                                                          Toast.makeText(parent.getContext(), "ECHEC", Toast.LENGTH_SHORT).show();
                                                      }
-                                                 });
+                                                 });*/
 
                                              }
                                          });
@@ -170,11 +177,6 @@ public class NewExchangeFragment extends BaseFragment {
         });
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.attachContext=(Accueil) context;
-    }
 
     public static NewExchangeFragment newInstance() {
         

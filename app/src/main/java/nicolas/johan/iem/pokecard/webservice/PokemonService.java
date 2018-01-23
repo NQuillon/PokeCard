@@ -4,12 +4,15 @@ import java.util.List;
 
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Card;
+import nicolas.johan.iem.pokecard.pojo.ExchangeModel;
 import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
 import nicolas.johan.iem.pokecard.pojo.FriendAccount;
+import nicolas.johan.iem.pokecard.pojo.GameCategory;
 import nicolas.johan.iem.pokecard.pojo.LoginClass;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
+import nicolas.johan.iem.pokecard.pojo.QuestionGameModel;
 import nicolas.johan.iem.pokecard.pojo.VerifyClass;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -49,5 +52,17 @@ public interface PokemonService  {
 
     @POST("signup")
     Call<AccountModel> signup(@Body LoginClass request);
+
+    @GET("exchange/{idUser}")
+    Call<List<ExchangeModel>> getAllExchanges(@Path("idUser") String idUser);
+
+    @GET("quizz/category")
+    Call<List<GameCategory>> getAllCategories();
+
+    @GET("quizz/{quizzId}")
+    Call<List<QuestionGameModel>> getQuestionsFromCategory(@Path("quizzId") String quizzId);
+
+    @POST("user/{idUser}/addFriend")
+    Call<FriendAccount> addFriendByPseudo(@Body String request);
 
 }
