@@ -1,6 +1,7 @@
 package nicolas.johan.iem.pokecard.vues.fragments;
 
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -9,31 +10,30 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import org.json.JSONObject;
 
 import java.util.List;
 
-import nicolas.johan.iem.pokecard.POSTrequest;
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.adapter.FriendsAdapter;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.FriendAccount;
-import nicolas.johan.iem.pokecard.pojo.Pokemon;
-import nicolas.johan.iem.pokecard.vues.Accueil;
+import nicolas.johan.iem.pokecard.pojo.ManageFriendsModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FriendsFragment extends Fragment {
     List<FriendAccount> friendsList;
+    ProgressBar loading;
     View parent;
+    ListView listeFriends;
+    FriendsAdapter adapter;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -44,7 +44,52 @@ public class FriendsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         parent=inflater.inflate(R.layout.fragment_friends, container, false);
+        loading=parent.findViewById(R.id.loading_Friends);
 
+        listeFriends=(ListView) parent.findViewById(R.id.listFriends);
+
+        listeFriends.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> par, View view, final int position, long id) {
+                final String tmpPseudo=friendsList.get(position).getPseudo();
+
+                AlertDialog.Builder builder= new AlertDialog.Builder(parent.getContext());
+                builder.setTitle("Suppression d'un ami")
+                        .setMessage(tmpPseudo+" ne sera plus dans votre liste d'amis.\nVous ne pourrez plus lui envoyer de cartes mais il pourra toujours vous en envoyer.")
+                        .setPositiveButton("Supprimer", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                ManageFriendsModel tmp=new ManageFriendsModel(friendsList.get(position).getPseudo());
+                                Call<List<FriendAccount>> delfriend = PokemonApp.getPokemonService().delFriendByPseudo(AccountSingleton.getInstance().getIdUser(),tmp);
+                                delfriend.enqueue(new Callback<List<FriendAccount>>() {
+                                    @Override
+                                    public void onResponse(Call<List<FriendAccount>> call, Response<List<FriendAccount>> response) {
+                                        if(response.isSuccessful()){
+                                            Toast.makeText(parent.getContext(), tmpPseudo+" n'est plus votre ami", Toast.LENGTH_LONG).show();
+                                            friendsList=response.body();
+                                            refresh();
+                                        }else{
+                                            Toast.makeText(parent.getContext(), "Impossible de supprimer cet ami", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<List<FriendAccount>> call, Throwable t) {
+                                        Toast.makeText(parent.getContext(), "Impossible de supprimer cet ami", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("Garder dans mes amis", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                return true;
+            }
+        });
 
 
         Call<List<FriendAccount>> friends = PokemonApp.getPokemonService().getFriends(AccountSingleton.getInstance().getIdUser());
@@ -54,6 +99,7 @@ public class FriendsFragment extends Fragment {
             public void onResponse(Call<List<FriendAccount>> call, Response<List<FriendAccount>> response) {
                 if (response.isSuccessful()) {
                      friendsList = response.body();
+                     loading.setVisibility(View.GONE);
                     refresh();
                 }
             }
@@ -79,19 +125,26 @@ public class FriendsFragment extends Fragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(parent.getContext(), "Requete envoyee", Toast.LENGTH_SHORT).show();
+                        loading.setVisibility(View.VISIBLE);
+                        ManageFriendsModel tmp=new ManageFriendsModel(input.getText().toString());
 
-                        Call<FriendAccount> addfriend = PokemonApp.getPokemonService().addFriendByPseudo(input.getText().toString());
-                        addfriend.enqueue(new Callback<FriendAccount>() {
+                        Call<List<FriendAccount>> addfriend = PokemonApp.getPokemonService().addFriendByPseudo(AccountSingleton.getInstance().getIdUser(),tmp);
+                        addfriend.enqueue(new Callback<List<FriendAccount>>() {
                             @Override
-                            public void onResponse(Call<FriendAccount> call, Response<FriendAccount> response) {
+                            public void onResponse(Call<List<FriendAccount>> call, Response<List<FriendAccount>> response) {
                                 if(response.isSuccessful()){
+                                    Toast.makeText(parent.getContext(), input.getText().toString()+" a été ajouté à vos amis", Toast.LENGTH_LONG).show();
+                                    friendsList=response.body();
                                     refresh();
+                                }else{
+                                    Toast.makeText(parent.getContext(), "Impossible d'ajouter cet ami", Toast.LENGTH_LONG).show();
                                 }
+                                loading.setVisibility(View.GONE);
                             }
 
                             @Override
-                            public void onFailure(Call<FriendAccount> call, Throwable t) {
+                            public void onFailure(Call<List<FriendAccount>> call, Throwable t) {
+                                loading.setVisibility(View.GONE);
                                 Toast.makeText(parent.getContext(), "Impossible d'ajouter cet ami", Toast.LENGTH_LONG).show();
                             }
                         });
@@ -119,8 +172,8 @@ public class FriendsFragment extends Fragment {
     }
 
     public void refresh(){
-        ListView listeFriends=(ListView) parent.findViewById(R.id.listFriends);
-        FriendsAdapter adapter=new FriendsAdapter(parent.getContext(),friendsList);
+        listeFriends=(ListView) parent.findViewById(R.id.listFriends);
+        adapter=new FriendsAdapter(parent.getContext(),friendsList);
         listeFriends.setAdapter(adapter);
     }
 

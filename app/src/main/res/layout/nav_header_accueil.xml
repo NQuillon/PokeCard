@@ -18,12 +18,10 @@
         android:layout_marginTop="22sp"
         android:orientation="horizontal">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profileImage"
             android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:scaleType="fitXY"
-            app:srcCompat="@mipmap/ic_launcher" />
+            android:layout_height="60dp"/>
 
         <TextView
             android:id="@+id/pseudo_header"

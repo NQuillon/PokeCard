@@ -30,6 +30,8 @@ import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
 import nicolas.johan.iem.pokecard.pojo.FriendAccount;
+import nicolas.johan.iem.pokecard.pojo.GetResultQuizzModel;
+import nicolas.johan.iem.pokecard.pojo.PostResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.QuestionGameModel;
 import nicolas.johan.iem.pokecard.vues.LoginActivity;
 import nicolas.johan.iem.pokecard.vues.SplashScreen;
@@ -130,7 +132,7 @@ public class QuestionGame extends BaseFragment {
                     public void run() {
                         try {
                             synchronized (this) {
-                                wait(1500);
+                                wait(1000);
                             }
                         } catch (InterruptedException e) {
                         } finally {
@@ -188,9 +190,55 @@ public class QuestionGame extends BaseFragment {
         btnFalse.setEnabled(true);
         if(numQuestion>=9){
             //afficher les resultats
-            Toast.makeText(activity, "Réponses justes : "+correctAnswers, Toast.LENGTH_LONG).show();
+            Toast.makeText(activity, "Chargement des résultats en cours...", Toast.LENGTH_LONG).show();
             btnTrue.setEnabled(false);
             btnFalse.setEnabled(false);
+
+
+            PostResultQuizzModel tmp=new PostResultQuizzModel(AccountSingleton.getInstance().getIdUser(), correctAnswers);
+            Call<GetResultQuizzModel> request = PokemonApp.getPokemonService().getResultsFromQuizz(tmp);
+            request.enqueue(new Callback<GetResultQuizzModel>() {
+                @Override
+                public void onResponse(Call<GetResultQuizzModel> call, Response<GetResultQuizzModel> response) {
+                    if(response.isSuccessful()){
+                        GetResultQuizzModel tmp=response.body();
+
+                        Bundle data=new Bundle();
+                        data.putInt("correctAnswers",correctAnswers);
+                        data.putString("message", tmp.getMessage());
+                        data.putString("img", tmp.getImg());
+                        data.putInt("pokeCoinsWin",tmp.getPokeCoinsWin());
+                        try {
+                            data.putString("cardsWin1", tmp.getCardsWin().get(0).getUrlPicture());
+                            data.putString("cardsWin2", tmp.getCardsWin().get(1).getUrlPicture());
+                            data.putString("cardsWin3", tmp.getCardsWin().get(2).getUrlPicture());
+                            data.putString("cardsWin4", tmp.getCardsWin().get(3).getUrlPicture());
+                            data.putString("cardsWin5", tmp.getCardsWin().get(4).getUrlPicture());
+
+                            data.putString("idCardsWin1", tmp.getCardsWin().get(0).getId());
+                            data.putString("idCardsWin2", tmp.getCardsWin().get(1).getId());
+                            data.putString("idCardsWin3", tmp.getCardsWin().get(2).getId());
+                            data.putString("idCardsWin4", tmp.getCardsWin().get(3).getId());
+                            data.putString("idCardsWin5", tmp.getCardsWin().get(4).getId());
+                        }
+                        catch (Exception e){
+
+                        }
+                        Fragment f=(Fragment) ResultsGame.newInstance(data);
+                        showFragment(f);
+                    }else{
+                        Toast.makeText(activity, "Une erreur est survenue. Veuillez réessayer dans quelques instants"+correctAnswers, Toast.LENGTH_LONG).show();
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<GetResultQuizzModel> call, Throwable t) {
+                    Toast.makeText(activity, "Une erreur est survenue. Veuillez réessayer dans quelques instants"+correctAnswers, Toast.LENGTH_LONG).show();
+                }
+            });
+
+
         }else{
             numQuestion++;
             numQuestionTv.setText(numQuestion+1+"/10");

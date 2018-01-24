@@ -3,12 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFFFFF"
     tools:context="nicolas.johan.iem.pokecard.vues.fragments.FriendsFragment">
 
     <ListView
         android:id="@+id/listFriends"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ProgressBar
+        android:id="@+id/loading_Friends"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_friend"

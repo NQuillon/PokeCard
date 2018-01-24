@@ -2,20 +2,24 @@ package nicolas.johan.iem.pokecard.webservice;
 
 import java.util.List;
 
-import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Card;
+import nicolas.johan.iem.pokecard.pojo.EditPseudoModel;
 import nicolas.johan.iem.pokecard.pojo.ExchangeModel;
 import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
 import nicolas.johan.iem.pokecard.pojo.FriendAccount;
 import nicolas.johan.iem.pokecard.pojo.GameCategory;
+import nicolas.johan.iem.pokecard.pojo.GetResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.LoginClass;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
+import nicolas.johan.iem.pokecard.pojo.PostResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.QuestionGameModel;
 import nicolas.johan.iem.pokecard.pojo.VerifyClass;
+import nicolas.johan.iem.pokecard.pojo.ManageFriendsModel;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -63,6 +67,18 @@ public interface PokemonService  {
     Call<List<QuestionGameModel>> getQuestionsFromCategory(@Path("quizzId") String quizzId);
 
     @POST("user/{idUser}/addFriend")
-    Call<FriendAccount> addFriendByPseudo(@Body String request);
+    Call<List<FriendAccount>> addFriendByPseudo(@Path("idUser") String id, @Body ManageFriendsModel pseudoFriend);
+
+    @POST("user/{idUser}/delFriend")
+    Call<List<FriendAccount>> delFriendByPseudo(@Path("idUser") String id, @Body ManageFriendsModel pseudoFriend);
+
+    @POST("option/editPseudo")
+    Call<AccountModel> editPseudo(@Body EditPseudoModel newPseudo);
+
+    @POST("quizz/results")
+    Call<GetResultQuizzModel> getResultsFromQuizz(@Body PostResultQuizzModel data);
+
+    @GET("user/{idUser}")
+    Call<AccountModel> majAccount(@Path("idUser") String idUser);
 
 }
