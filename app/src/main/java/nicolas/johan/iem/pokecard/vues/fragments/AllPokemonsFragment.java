@@ -1,11 +1,7 @@
 package nicolas.johan.iem.pokecard.vues.fragments;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +9,14 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import nicolas.johan.iem.pokecard.pojo.Pokemon;
-import nicolas.johan.iem.pokecard.adapter.PokemonAdapter;
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
+import nicolas.johan.iem.pokecard.adapter.PokemonAdapter;
+import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -81,16 +74,24 @@ public class AllPokemonsFragment extends BaseFragment {
             @Override
             public void onResponse(Call<List<Pokemon>> call, Response<List<Pokemon>> response) {
                 if(response.isSuccessful()) {
-                    loadingScreen.setVisibility(View.GONE);
-                    pokedexRetrofit = response.body();
-                    refresh(pokedexRetrofit);
+                    try {
+                        loadingScreen.setVisibility(View.GONE);
+                        pokedexRetrofit = response.body();
+                        refresh(pokedexRetrofit);
+                    }catch(Exception e){
+
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<List<Pokemon>> call, Throwable t) {
-                TextView loadingText=(TextView) parent.findViewById(R.id.loadingTextAllPokemons);
-                loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
+                try {
+                    TextView loadingText = (TextView) parent.findViewById(R.id.loadingTextAllPokemons);
+                    loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
+                }catch(Exception e){
+
+                }
 
             }
         });

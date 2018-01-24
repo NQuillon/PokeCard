@@ -1,10 +1,8 @@
 package nicolas.johan.iem.pokecard.vues.fragments;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +11,13 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import nicolas.johan.iem.pokecard.adapter.CardAdapter;
 import nicolas.johan.iem.pokecard.PokemonApp;
-import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
 import nicolas.johan.iem.pokecard.R;
+import nicolas.johan.iem.pokecard.adapter.CardAdapter;
+import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -99,15 +96,21 @@ public class DetailsPokemon extends Fragment {
             @Override
             public void onResponse(Call<PokemonDetails> call, Response<PokemonDetails> response) {
                 if(response.isSuccessful()) {
-                    loadingScreen.setVisibility(View.GONE);
-                    details = response.body();
-                    refresh(details);
+                    try {
+                        loadingScreen.setVisibility(View.GONE);
+                        details = response.body();
+                        refresh(details);
+                    }catch(Exception e) {
+                    }
                 }
             }
             @Override
             public void onFailure(Call<PokemonDetails> call, Throwable t) {
-                TextView loadingText=(TextView) parent.findViewById(R.id.loadingTextDetails);
-                loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
+                try {
+                    TextView loadingText = (TextView) parent.findViewById(R.id.loadingTextDetails);
+                    loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
+                }catch(Exception e) {
+                }
             }
         });
 

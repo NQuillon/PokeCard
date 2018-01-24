@@ -2,7 +2,6 @@ package nicolas.johan.iem.pokecard.vues.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,14 +33,17 @@ public class GameFragment extends BaseFragment {
         parent= inflater.inflate(R.layout.fragment_game, container, false);
 
 
-        Call<List<GameCategory>> friends = PokemonApp.getPokemonService().getAllCategories();
+        Call<List<GameCategory>> cat = PokemonApp.getPokemonService().getAllCategories();
 
-        friends.enqueue(new Callback<List<GameCategory>>() {
+        cat.enqueue(new Callback<List<GameCategory>>() {
             @Override
             public void onResponse(Call<List<GameCategory>> call, Response<List<GameCategory>> response) {
                 if(response.isSuccessful()){
-                    liste=response.body();
-                    refresh();
+                    try {
+                        liste = response.body();
+                        refresh();
+                    }catch(Exception e) {
+                    }
                 }
             }
 

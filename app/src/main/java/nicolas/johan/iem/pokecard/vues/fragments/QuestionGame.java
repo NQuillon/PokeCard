@@ -1,41 +1,24 @@
 package nicolas.johan.iem.pokecard.vues.fragments;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
-
-import javax.xml.datatype.Duration;
 
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.adapter.FriendsExchangeAdapter;
-import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
-import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
 import nicolas.johan.iem.pokecard.pojo.FriendAccount;
 import nicolas.johan.iem.pokecard.pojo.GetResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.PostResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.QuestionGameModel;
-import nicolas.johan.iem.pokecard.vues.LoginActivity;
-import nicolas.johan.iem.pokecard.vues.SplashScreen;
-import nicolas.johan.iem.pokecard.vues.fragments.exchange.ExchangeFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -161,8 +144,11 @@ public class QuestionGame extends BaseFragment {
             @Override
             public void onResponse(Call<List<QuestionGameModel>> call, Response<List<QuestionGameModel>> response) {
                 if(response.isSuccessful()){
-                    listeQuestions=response.body();
-                    showQuestion();
+                    try {
+                        listeQuestions = response.body();
+                        showQuestion();
+                    }catch(Exception e) {
+                    }
                 }
             }
 
@@ -200,41 +186,48 @@ public class QuestionGame extends BaseFragment {
             request.enqueue(new Callback<GetResultQuizzModel>() {
                 @Override
                 public void onResponse(Call<GetResultQuizzModel> call, Response<GetResultQuizzModel> response) {
-                    if(response.isSuccessful()){
-                        GetResultQuizzModel tmp=response.body();
-
-                        Bundle data=new Bundle();
-                        data.putInt("correctAnswers",correctAnswers);
-                        data.putString("message", tmp.getMessage());
-                        data.putString("img", tmp.getImg());
-                        data.putInt("pokeCoinsWin",tmp.getPokeCoinsWin());
+                    if(response.isSuccessful()) {
                         try {
-                            data.putString("cardsWin1", tmp.getCardsWin().get(0).getUrlPicture());
-                            data.putString("cardsWin2", tmp.getCardsWin().get(1).getUrlPicture());
-                            data.putString("cardsWin3", tmp.getCardsWin().get(2).getUrlPicture());
-                            data.putString("cardsWin4", tmp.getCardsWin().get(3).getUrlPicture());
-                            data.putString("cardsWin5", tmp.getCardsWin().get(4).getUrlPicture());
+                            GetResultQuizzModel tmp = response.body();
 
-                            data.putString("idCardsWin1", tmp.getCardsWin().get(0).getId());
-                            data.putString("idCardsWin2", tmp.getCardsWin().get(1).getId());
-                            data.putString("idCardsWin3", tmp.getCardsWin().get(2).getId());
-                            data.putString("idCardsWin4", tmp.getCardsWin().get(3).getId());
-                            data.putString("idCardsWin5", tmp.getCardsWin().get(4).getId());
-                        }
-                        catch (Exception e){
+                            Bundle data = new Bundle();
+                            data.putInt("correctAnswers", correctAnswers);
+                            data.putString("message", tmp.getMessage());
+                            data.putString("img", tmp.getImg());
+                            data.putInt("pokeCoinsWin", tmp.getPokeCoinsWin());
 
-                        }
-                        Fragment f=(Fragment) ResultsGame.newInstance(data);
+                            try {
+                                data.putString("cardsWin1", tmp.getCardsWin().get(0).getUrlPicture());
+                                data.putString("cardsWin2", tmp.getCardsWin().get(1).getUrlPicture());
+                                data.putString("cardsWin3", tmp.getCardsWin().get(2).getUrlPicture());
+                                data.putString("cardsWin4", tmp.getCardsWin().get(3).getUrlPicture());
+                                data.putString("cardsWin5", tmp.getCardsWin().get(4).getUrlPicture());
+                            }catch (Exception e){
+
+                            }
+                            try {
+                                data.putString("idCardsWin1", tmp.getCardsWin().get(0).getId());
+                                data.putString("idCardsWin2", tmp.getCardsWin().get(1).getId());
+                                data.putString("idCardsWin3", tmp.getCardsWin().get(2).getId());
+                                data.putString("idCardsWin4", tmp.getCardsWin().get(3).getId());
+                                data.putString("idCardsWin5", tmp.getCardsWin().get(4).getId());
+                            }catch (Exception e){
+
+                            }
+
+                        Fragment f = (Fragment) ResultsGame.newInstance(data);
                         showFragment(f);
+                    }catch(Exception e) {
+                    }
                     }else{
-                        Toast.makeText(activity, "Une erreur est survenue. Veuillez réessayer dans quelques instants"+correctAnswers, Toast.LENGTH_LONG).show();
+                        Toast.makeText(activity, "Une erreur est survenue. Veuillez réessayer dans quelques instants", Toast.LENGTH_LONG).show();
                     }
 
                 }
 
                 @Override
                 public void onFailure(Call<GetResultQuizzModel> call, Throwable t) {
-                    Toast.makeText(activity, "Une erreur est survenue. Veuillez réessayer dans quelques instants"+correctAnswers, Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, "Une erreur est survenue. Veuillez réessayer dans quelques instants", Toast.LENGTH_LONG).show();
                 }
             });
 

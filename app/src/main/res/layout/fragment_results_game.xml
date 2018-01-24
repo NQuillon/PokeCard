@@ -21,23 +21,25 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="22dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:gravity="center"
-            android:layout_height="wrap_content"
-            android:text="Quizz terminé "
-            android:textSize="15sp"
-            android:layout_marginBottom="12dp"
-            android:textStyle="italic" />
         <TextView
             android:id="@+id/correctAnswers"
             android:layout_width="match_parent"
             android:gravity="center"
             android:layout_height="wrap_content"
             android:text=""
-            android:textSize="15sp"
+            android:textSize="42sp"
+            android:textStyle="italic|bold" />
+
+        <TextView
+            android:id="@+id/totalQuestions"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:text="/10"
+            android:textSize="35sp"
             android:textStyle="italic" />
 
     </LinearLayout>
@@ -86,7 +88,7 @@
         android:layout_width="match_parent"
         android:background="#D2D2D2D2"
         android:paddingTop="12dp"
-        android:paddingBottom="12dp"
+        android:paddingBottom="2dp"
         android:layout_height="match_parent"
         android:layout_marginTop="22dp"
         android:orientation="vertical">
@@ -127,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="New !"
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/colorAccent"
@@ -150,7 +152,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="New !"
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/colorAccent"
@@ -174,7 +176,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New !"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="@color/colorAccent"
@@ -198,7 +200,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New !"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="@color/colorAccent"
@@ -222,7 +224,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New !"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="@color/colorAccent"
@@ -232,7 +234,20 @@
     </LinearLayout>
     </LinearLayout>
 
+        <TextView
+            android:id="@+id/allOpenBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:padding="12dp"
+            android:text="Ouvrir toutes les pokéballs"
+            android:textAllCaps="true"
+            android:textSize="8sp"
+            android:textStyle="italic" />
+
 </LinearLayout>
+
 </LinearLayout>
     </ScrollView>
 

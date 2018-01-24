@@ -1,7 +1,6 @@
 package nicolas.johan.iem.pokecard.vues.fragments;
 
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -64,9 +63,12 @@ public class FriendsFragment extends Fragment {
                                     @Override
                                     public void onResponse(Call<List<FriendAccount>> call, Response<List<FriendAccount>> response) {
                                         if(response.isSuccessful()){
-                                            Toast.makeText(parent.getContext(), tmpPseudo+" n'est plus votre ami", Toast.LENGTH_LONG).show();
-                                            friendsList=response.body();
-                                            refresh();
+                                            try {
+                                                Toast.makeText(parent.getContext(), tmpPseudo + " n'est plus votre ami", Toast.LENGTH_LONG).show();
+                                                friendsList = response.body();
+                                                refresh();
+                                            }catch(Exception e) {
+                                            }
                                         }else{
                                             Toast.makeText(parent.getContext(), "Impossible de supprimer cet ami", Toast.LENGTH_LONG).show();
                                         }
@@ -98,9 +100,12 @@ public class FriendsFragment extends Fragment {
             @Override
             public void onResponse(Call<List<FriendAccount>> call, Response<List<FriendAccount>> response) {
                 if (response.isSuccessful()) {
-                     friendsList = response.body();
-                     loading.setVisibility(View.GONE);
-                    refresh();
+                    try {
+                        friendsList = response.body();
+                        loading.setVisibility(View.GONE);
+                        refresh();
+                    }catch(Exception e) {
+                    }
                 }
             }
 
@@ -133,25 +138,30 @@ public class FriendsFragment extends Fragment {
                             @Override
                             public void onResponse(Call<List<FriendAccount>> call, Response<List<FriendAccount>> response) {
                                 if(response.isSuccessful()){
-                                    Toast.makeText(parent.getContext(), input.getText().toString()+" a été ajouté à vos amis", Toast.LENGTH_LONG).show();
-                                    friendsList=response.body();
-                                    refresh();
+                                    try {
+                                        Toast.makeText(parent.getContext(), input.getText().toString() + " a été ajouté à vos amis", Toast.LENGTH_LONG).show();
+                                        friendsList = response.body();
+                                        refresh();
+                                    }catch(Exception e) {
+                                    }
                                 }else{
                                     Toast.makeText(parent.getContext(), "Impossible d'ajouter cet ami", Toast.LENGTH_LONG).show();
                                 }
-                                loading.setVisibility(View.GONE);
+                                try {
+                                    loading.setVisibility(View.GONE);
+                                }catch(Exception e) {
+                                }
                             }
 
                             @Override
                             public void onFailure(Call<List<FriendAccount>> call, Throwable t) {
-                                loading.setVisibility(View.GONE);
-                                Toast.makeText(parent.getContext(), "Impossible d'ajouter cet ami", Toast.LENGTH_LONG).show();
+                                try {
+                                    loading.setVisibility(View.GONE);
+                                    Toast.makeText(parent.getContext(), "Impossible d'ajouter cet ami", Toast.LENGTH_LONG).show();
+                                }catch(Exception e) {
+                                }
                             }
                         });
-
-
-
-
                         refresh();
                     }
                 });

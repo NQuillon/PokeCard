@@ -1,14 +1,12 @@
 package nicolas.johan.iem.pokecard.vues.fragments;
 
 import android.app.AlertDialog;
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,20 +14,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
-import java.util.List;
-
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
-import nicolas.johan.iem.pokecard.pojo.FriendAccount;
-import nicolas.johan.iem.pokecard.pojo.GetResultQuizzModel;
-import nicolas.johan.iem.pokecard.pojo.PostResultQuizzModel;
-import nicolas.johan.iem.pokecard.pojo.QuestionGameModel;
-import nicolas.johan.iem.pokecard.vues.LoginActivity;
-import nicolas.johan.iem.pokecard.vues.SplashScreen;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,6 +29,12 @@ public class ResultsGame extends BaseFragment {
     boolean card3open=false;
     boolean card4open=false;
     boolean card5open=false;
+    ImageView imgCard1;
+    ImageView imgCard2;
+    ImageView imgCard3;
+    ImageView imgCard4;
+    ImageView imgCard5;
+    TextView allOpenBtn;
 
     public ResultsGame() {
         // Required empty public constructor
@@ -51,13 +45,36 @@ public class ResultsGame extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         parent=inflater.inflate(R.layout.fragment_results_game, container, false);
+        allOpenBtn=parent.findViewById(R.id.allOpenBtn);
         final Bundle data=getArguments();
 
-        TextView messageResult=(TextView) parent.findViewById(R.id.message_result);
+        final TextView messageResult=(TextView) parent.findViewById(R.id.message_result);
         messageResult.setText(data.getString("message"));
 
         TextView correctAnswers=(TextView) parent.findViewById(R.id.correctAnswers);
-        correctAnswers.setText("avec "+data.getInt("correctAnswers")+" réponses correctes !");
+        correctAnswers.setText(""+data.getInt("correctAnswers"));
+
+        final TextView totalQuestions=parent.findViewById(R.id.totalQuestions);
+
+        switch (data.getInt("correctAnswers")) {
+            case 1: case 2: case 3: case 4:
+                correctAnswers.setTextColor(Color.parseColor("#e81b1b"));
+                totalQuestions.setTextColor(Color.parseColor("#e81b1b"));
+                messageResult.setTextColor(Color.parseColor("#e81b1b"));
+                break;
+            case 5:case 6:case 7:
+                correctAnswers.setTextColor(Color.parseColor("#394eef"));
+                totalQuestions.setTextColor(Color.parseColor("#394eef"));
+                messageResult.setTextColor(Color.parseColor("#394eef"));
+                break;
+            case 8: case 9: case 10:
+                correctAnswers.setTextColor(Color.parseColor("#2cf755"));
+                totalQuestions.setTextColor(Color.parseColor("#2cf755"));
+                messageResult.setTextColor(Color.parseColor("#2cf755"));
+                break;
+            default:
+                //
+        }
 
         TextView pokeCoinsWin=(TextView) parent.findViewById(R.id.pokecoinswin);
         pokeCoinsWin.setText(""+data.getInt("pokeCoinsWin"));
@@ -67,35 +84,7 @@ public class ResultsGame extends BaseFragment {
         Glide.with(this).load(data.getString("img")).into(imageViewTarget);
 
 
-        //Maj du Compte
-        Call<AccountModel> request = PokemonApp.getPokemonService().majAccount(AccountSingleton.getInstance().getIdUser());
-        request.enqueue(new Callback<AccountModel>() {
-            @Override
-            public void onResponse(Call<AccountModel> call, Response<AccountModel> response) {
-                if(response.isSuccessful()){
-                    AccountModel tmpAccount=response.body();
-                    AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
-                    AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
-                    AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
-                    AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
-                    AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
-                    AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
-                    AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
-                    activity.update();
-                }else{
-                    Toast.makeText(activity, "Impossible de mettre à jour le compte", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AccountModel> call, Throwable t) {
-                Toast.makeText(activity, "Impossible de mettre à jour le compte", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-
-        final ImageView imgCard1=parent.findViewById(R.id.cardwin1);
+        imgCard1=parent.findViewById(R.id.cardwin1);
         if(data.get("cardsWin1")!=null){
 
             imgCard1.setOnClickListener(new View.OnClickListener() {
@@ -108,8 +97,8 @@ public class ResultsGame extends BaseFragment {
                             TextView tmpNew=parent.findViewById(R.id.newCard1);
                             tmpNew.setVisibility(View.VISIBLE);
                         }
-
                         card1open=true;
+                        majProfil();
                     }
                     else{
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -125,9 +114,11 @@ public class ResultsGame extends BaseFragment {
             });
         }else{
             imgCard1.setImageResource(R.mipmap.no_card_win);
+            card1open=true;
+            majProfil();
         }
 
-        final ImageView imgCard2=parent.findViewById(R.id.cardwin2);
+        imgCard2=parent.findViewById(R.id.cardwin2);
         if(data.get("cardsWin2")!=null){
 
             imgCard2.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +132,7 @@ public class ResultsGame extends BaseFragment {
                             tmpNew.setVisibility(View.VISIBLE);
                         }
                         card2open=true;
+                        majProfil();
                     }
                     else{
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -156,9 +148,11 @@ public class ResultsGame extends BaseFragment {
             });
         }else{
             imgCard2.setImageResource(R.mipmap.no_card_win);
+            card2open=true;
+            majProfil();
         }
 
-        final ImageView imgCard3=parent.findViewById(R.id.cardwin3);
+        imgCard3=parent.findViewById(R.id.cardwin3);
         if(data.get("cardsWin3")!=null){
 
             imgCard3.setOnClickListener(new View.OnClickListener() {
@@ -172,6 +166,7 @@ public class ResultsGame extends BaseFragment {
                             tmpNew.setVisibility(View.VISIBLE);
                         }
                         card3open=true;
+                        majProfil();
                     }
                     else{
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -187,9 +182,11 @@ public class ResultsGame extends BaseFragment {
             });
         }else{
             imgCard3.setImageResource(R.mipmap.no_card_win);
+            card3open=true;
+            majProfil();
         }
 
-        final ImageView imgCard4=parent.findViewById(R.id.cardwin4);
+        imgCard4=parent.findViewById(R.id.cardwin4);
         if(data.get("cardsWin4")!=null){
 
             imgCard4.setOnClickListener(new View.OnClickListener() {
@@ -202,6 +199,7 @@ public class ResultsGame extends BaseFragment {
                             tmpNew.setVisibility(View.VISIBLE);
                         }
                         card4open=true;
+                        majProfil();
                     }
                     else{
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -217,9 +215,11 @@ public class ResultsGame extends BaseFragment {
             });
         }else{
             imgCard4.setImageResource(R.mipmap.no_card_win);
+            card4open=true;
+            majProfil();
         }
 
-        final ImageView imgCard5=parent.findViewById(R.id.cardwin5);
+        imgCard5=parent.findViewById(R.id.cardwin5);
         if(data.get("cardsWin5")!=null){
 
             imgCard5.setOnClickListener(new View.OnClickListener() {
@@ -232,6 +232,7 @@ public class ResultsGame extends BaseFragment {
                             tmpNew.setVisibility(View.VISIBLE);
                         }
                         card5open=true;
+                        majProfil();
                     }
                     else{
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -247,10 +248,19 @@ public class ResultsGame extends BaseFragment {
             });
         }else{
             imgCard5.setImageResource(R.mipmap.no_card_win);
+            card5open=true;
+            majProfil();
         }
 
-
-
+        allOpenBtn=parent.findViewById(R.id.allOpenBtn);
+        allOpenBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allOpen();
+                allOpenBtn.setEnabled(false);
+                allOpenBtn.setVisibility(View.GONE);
+            }
+        });
 
         return parent;
 
@@ -260,6 +270,58 @@ public class ResultsGame extends BaseFragment {
         ResultsGame fragment = new ResultsGame();
         fragment.setArguments(data);
         return fragment;
+    }
+
+    public void allOpen(){
+        if(!card1open) {
+            imgCard1.performClick();
+        }
+        if(!card2open) {
+            imgCard2.performClick();
+        }
+        if(!card3open) {
+            imgCard3.performClick();
+        }
+        if(!card4open) {
+            imgCard4.performClick();
+        }
+        if(!card5open) {
+            imgCard5.performClick();
+        }
+    }
+
+    public void majProfil(){
+        if(card1open&&card2open&&card3open&&card4open&&card5open) {
+            allOpenBtn.setEnabled(false);
+            allOpenBtn.setVisibility(View.GONE);
+            Call<AccountModel> request = PokemonApp.getPokemonService().majAccount(AccountSingleton.getInstance().getIdUser());
+            request.enqueue(new Callback<AccountModel>() {
+                @Override
+                public void onResponse(Call<AccountModel> call, Response<AccountModel> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            AccountModel tmpAccount = response.body();
+                            AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
+                            AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
+                            AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
+                            AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
+                            AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
+                            AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
+                            AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
+                            activity.update();
+                        } catch (Exception e) {
+                        }
+                    } else {
+                        Toast.makeText(activity, "Impossible de mettre à jour le compte", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AccountModel> call, Throwable t) {
+                    Toast.makeText(activity, "Impossible de mettre à jour le compte", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
 

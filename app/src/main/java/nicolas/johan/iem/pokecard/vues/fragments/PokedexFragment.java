@@ -79,19 +79,25 @@ public class PokedexFragment extends BaseFragment {
                 @Override
                 public void onResponse(Call<List<Pokemon>> call, Response<List<Pokemon>> response) {
                     if (response.isSuccessful()) {
-                        loadingScreen.setVisibility(View.GONE);
-                        pokedexRetrofit = response.body();
-                        if(pokedexRetrofit.size()==0){
-                            noPokemon.setVisibility(View.VISIBLE);
-                        }
-                        refresh(pokedexRetrofit);
+                        try {
+                            loadingScreen.setVisibility(View.GONE);
+                            pokedexRetrofit = response.body();
+                            if (pokedexRetrofit.size() == 0) {
+                                noPokemon.setVisibility(View.VISIBLE);
+                            }
+                            refresh(pokedexRetrofit);
+                        }catch(Exception e){}
                     }
                 }
 
                 @Override
                 public void onFailure(Call<List<Pokemon>> call, Throwable t) {
-                    TextView loadingText = (TextView) parent.findViewById(R.id.loadingTextPokedex);
-                    loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
+                    try{
+                        TextView loadingText = (TextView) parent.findViewById(R.id.loadingTextPokedex);
+                        loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
+                    }catch(Exception e){
+
+                    }
                 }
             });
 

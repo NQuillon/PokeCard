@@ -1,6 +1,5 @@
 package nicolas.johan.iem.pokecard.vues;
 
-import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -13,9 +12,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
-import nicolas.johan.iem.pokecard.POSTrequest;
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
@@ -124,6 +120,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
                 Log.e("ERREUR",t.getMessage());
+                signupButton.setEnabled(true);
                 Toast.makeText(SignUpActivity.this, "Impossible de communiquer avec le serveur", Toast.LENGTH_SHORT).show();
             }
         });

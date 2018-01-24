@@ -1,6 +1,5 @@
 package nicolas.johan.iem.pokecard.pojo;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -36,7 +35,11 @@ public class GetResultQuizzModel {
     }
 
     public void setCardsWin(List<Card> cardsWin) {
-        this.cardsWin = cardsWin;
+        try {
+            this.cardsWin = cardsWin;
+        }catch (Exception e){
+
+        }
     }
 
     public String getMessage() {
