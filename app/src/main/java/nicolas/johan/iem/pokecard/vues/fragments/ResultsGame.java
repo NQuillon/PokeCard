@@ -14,10 +14,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
+import nicolas.johan.iem.pokecard.pojo.Card;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,6 +38,7 @@ public class ResultsGame extends BaseFragment {
     ImageView imgCard4;
     ImageView imgCard5;
     TextView allOpenBtn;
+    ArrayList<String> oldCards;
 
     public ResultsGame() {
         // Required empty public constructor
@@ -45,6 +49,11 @@ public class ResultsGame extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         parent=inflater.inflate(R.layout.fragment_results_game, container, false);
+
+        oldCards=AccountSingleton.getInstance().getListeCards();
+
+        activity.update();
+
         allOpenBtn=parent.findViewById(R.id.allOpenBtn);
         final Bundle data=getArguments();
 
@@ -93,12 +102,12 @@ public class ResultsGame extends BaseFragment {
                     if(!card1open){
                         Picasso.with(getContext()).load(data.get("cardsWin1").toString()).into(imgCard1);
 
-                        if(!AccountSingleton.getInstance().getListeCards().contains(data.getString("idCardsWin1"))){
+                        if(!oldCards.contains(data.getString("idCardsWin1"))){
                             TextView tmpNew=parent.findViewById(R.id.newCard1);
                             tmpNew.setVisibility(View.VISIBLE);
                         }
                         card1open=true;
-                        majProfil();
+                        verifOpen();
                     }
                     else{
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -115,7 +124,7 @@ public class ResultsGame extends BaseFragment {
         }else{
             imgCard1.setImageResource(R.mipmap.no_card_win);
             card1open=true;
-            majProfil();
+            verifOpen();
         }
 
         imgCard2=parent.findViewById(R.id.cardwin2);
@@ -127,12 +136,12 @@ public class ResultsGame extends BaseFragment {
                     if(!card2open){
                         Picasso.with(getContext()).load(data.get("cardsWin2").toString()).into(imgCard2);
 
-                        if(!AccountSingleton.getInstance().getListeCards().contains(data.getString("idCardsWin2"))){
+                        if(!oldCards.contains(data.getString("idCardsWin2"))){
                             TextView tmpNew=parent.findViewById(R.id.newCard2);
                             tmpNew.setVisibility(View.VISIBLE);
                         }
                         card2open=true;
-                        majProfil();
+                        verifOpen();
                     }
                     else{
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -149,7 +158,7 @@ public class ResultsGame extends BaseFragment {
         }else{
             imgCard2.setImageResource(R.mipmap.no_card_win);
             card2open=true;
-            majProfil();
+            verifOpen();
         }
 
         imgCard3=parent.findViewById(R.id.cardwin3);
@@ -161,12 +170,12 @@ public class ResultsGame extends BaseFragment {
                     if(!card3open){
                         Picasso.with(getContext()).load(data.get("cardsWin3").toString()).into(imgCard3);
 
-                        if(!AccountSingleton.getInstance().getListeCards().contains(data.getString("idCardsWin3"))){
+                        if(!oldCards.contains(data.getString("idCardsWin3"))){
                             TextView tmpNew=parent.findViewById(R.id.newCard3);
                             tmpNew.setVisibility(View.VISIBLE);
                         }
                         card3open=true;
-                        majProfil();
+                        verifOpen();
                     }
                     else{
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -183,7 +192,7 @@ public class ResultsGame extends BaseFragment {
         }else{
             imgCard3.setImageResource(R.mipmap.no_card_win);
             card3open=true;
-            majProfil();
+            verifOpen();
         }
 
         imgCard4=parent.findViewById(R.id.cardwin4);
@@ -194,12 +203,12 @@ public class ResultsGame extends BaseFragment {
                 public void onClick(View v) {
                     if(!card4open){
                         Picasso.with(getContext()).load(data.get("cardsWin4").toString()).into(imgCard4);
-                        if(!AccountSingleton.getInstance().getListeCards().contains(data.getString("idCardsWin4"))){
+                        if(!oldCards.contains(data.getString("idCardsWin4"))){
                             TextView tmpNew=parent.findViewById(R.id.newCard4);
                             tmpNew.setVisibility(View.VISIBLE);
                         }
                         card4open=true;
-                        majProfil();
+                        verifOpen();
                     }
                     else{
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -216,7 +225,7 @@ public class ResultsGame extends BaseFragment {
         }else{
             imgCard4.setImageResource(R.mipmap.no_card_win);
             card4open=true;
-            majProfil();
+            verifOpen();
         }
 
         imgCard5=parent.findViewById(R.id.cardwin5);
@@ -227,12 +236,12 @@ public class ResultsGame extends BaseFragment {
                 public void onClick(View v) {
                     if(!card5open){
                         Picasso.with(getContext()).load(data.get("cardsWin5").toString()).into(imgCard5);
-                        if(!AccountSingleton.getInstance().getListeCards().contains(data.getString("idCardsWin5"))){
+                        if(!oldCards.contains(data.getString("idCardsWin5"))){
                             TextView tmpNew=parent.findViewById(R.id.newCard5);
                             tmpNew.setVisibility(View.VISIBLE);
                         }
                         card5open=true;
-                        majProfil();
+                        verifOpen();
                     }
                     else{
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -249,7 +258,7 @@ public class ResultsGame extends BaseFragment {
         }else{
             imgCard5.setImageResource(R.mipmap.no_card_win);
             card5open=true;
-            majProfil();
+            verifOpen();
         }
 
         allOpenBtn=parent.findViewById(R.id.allOpenBtn);
@@ -290,37 +299,10 @@ public class ResultsGame extends BaseFragment {
         }
     }
 
-    public void majProfil(){
+    public void verifOpen(){
         if(card1open&&card2open&&card3open&&card4open&&card5open) {
             allOpenBtn.setEnabled(false);
             allOpenBtn.setVisibility(View.GONE);
-            Call<AccountModel> request = PokemonApp.getPokemonService().majAccount(AccountSingleton.getInstance().getIdUser());
-            request.enqueue(new Callback<AccountModel>() {
-                @Override
-                public void onResponse(Call<AccountModel> call, Response<AccountModel> response) {
-                    if (response.isSuccessful()) {
-                        try {
-                            AccountModel tmpAccount = response.body();
-                            AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
-                            AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
-                            AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
-                            AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
-                            AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
-                            AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
-                            AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
-                            activity.update();
-                        } catch (Exception e) {
-                        }
-                    } else {
-                        Toast.makeText(activity, "Impossible de mettre à jour le compte", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<AccountModel> call, Throwable t) {
-                    Toast.makeText(activity, "Impossible de mettre à jour le compte", Toast.LENGTH_SHORT).show();
-                }
-            });
         }
     }
 

@@ -13,9 +13,30 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="end">
+
+        <ImageView
+            android:id="@+id/imgMeteo"
+            android:layout_width="30dp"
+            android:layout_gravity="center"
+            android:layout_height="30dp"/>
+
+        <TextView
+            android:id="@+id/tempMeteo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="12sp"
+            android:textStyle="italic" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22sp"
         android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -28,8 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="12sp"
-            android:paddingTop="12sp"
-            android:paddingBottom="10sp"
+            android:layout_gravity="center"
             android:text="Pseudo"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="18sp"
@@ -39,8 +59,8 @@
             android:layout_width="20dp"
             android:id="@+id/modify_header"
             android:layout_height="20dp"
+            android:layout_gravity="center"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="12sp"
             app:srcCompat="@mipmap/modify" />
 
     </LinearLayout>

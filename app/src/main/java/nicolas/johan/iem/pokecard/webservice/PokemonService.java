@@ -2,6 +2,7 @@ package nicolas.johan.iem.pokecard.webservice;
 
 import java.util.List;
 
+import nicolas.johan.iem.pokecard.pojo.BuyModel;
 import nicolas.johan.iem.pokecard.pojo.Card;
 import nicolas.johan.iem.pokecard.pojo.EditPseudoModel;
 import nicolas.johan.iem.pokecard.pojo.ExchangeModel;
@@ -10,13 +11,17 @@ import nicolas.johan.iem.pokecard.pojo.FriendAccount;
 import nicolas.johan.iem.pokecard.pojo.GameCategory;
 import nicolas.johan.iem.pokecard.pojo.GetResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.LoginClass;
+import nicolas.johan.iem.pokecard.pojo.MeteoModel;
+import nicolas.johan.iem.pokecard.pojo.ModifyZIPModel;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.PostResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.QuestionGameModel;
+import nicolas.johan.iem.pokecard.pojo.StoreItem;
 import nicolas.johan.iem.pokecard.pojo.VerifyClass;
 import nicolas.johan.iem.pokecard.pojo.ManageFriendsModel;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -81,4 +86,15 @@ public interface PokemonService  {
     @GET("user/{idUser}")
     Call<AccountModel> majAccount(@Path("idUser") String idUser);
 
+    @GET("/cards/list/boosters")
+    Call<List<StoreItem>> getItemsStore();
+
+    @POST("cards/buy")
+    Call<List<Card>> buyBooster(@Body BuyModel buyModel);
+
+    @GET("weather/{idUser}")
+    Call<MeteoModel> getMeteoFromId(@Path("idUser") String idUser);
+
+    @POST("/option/editZipCode")
+    Call<ResponseBody> setZipCode(@Body ModifyZIPModel newZip);
 }

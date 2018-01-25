@@ -20,11 +20,11 @@ import nicolas.johan.iem.pokecard.pojo.Card;
  * Created by iem on 14/11/2017.
  */
 
-public class ExchangeCardAdapter extends ArrayAdapter<Card>{
+public class GridViewAlertCardAdapter extends ArrayAdapter<Card>{
     PokemonViewHolder viewHolder;
     Context context;
 
-    public ExchangeCardAdapter(Context context, List<Card> cartes) {
+    public GridViewAlertCardAdapter(Context context, List<Card> cartes) {
         super(context, 0, cartes);
         this.context=context;
     }

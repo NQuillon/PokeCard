@@ -330,7 +330,7 @@ public class LoginActivity extends AppCompatActivity {
             // Signed in successfully, show authenticated UI.
             acct = result.getSignInAccount();
             //Toast.makeText(this, "Connecté en tant que "+acct.getDisplayName()+" ("+acct.getEmail()+")", Toast.LENGTH_LONG).show();
-            signInButton.setVisibility(View.INVISIBLE);
+            //  signInButton.setVisibility(View.INVISIBLE);
 
             String photoUrl="";
             try {
@@ -356,6 +356,7 @@ public class LoginActivity extends AppCompatActivity {
                     AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
                     AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
                     AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
+                    AccountSingleton.getInstance().setZipCode((tmpAccount.getZipCode()));
 
                     onLoginSuccess();
                 }

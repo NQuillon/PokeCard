@@ -13,13 +13,14 @@ public class AccountSingleton {
     private ArrayList<String> listePokemon=new ArrayList<>();
     private ArrayList<String> listeCards=new ArrayList<>();
     private int pokeCoin;
+    private String zipCode;
     private String idAccount; //id facebook/google
 
     /** Constructeur privé */
     private AccountSingleton()
     {}
 
-    public AccountSingleton(String idUser, String pseudo, String picture, ArrayList<String> listePokemon, ArrayList<String> listeCards, int pokeCoin, String idAccount) {
+    public AccountSingleton(String idUser, String pseudo, String picture, ArrayList<String> listePokemon, ArrayList<String> listeCards, int pokeCoin, String idAccount, String zipCode) {
         this.idUser = idUser;
         this.pseudo = pseudo;
         this.picture = picture;
@@ -27,6 +28,15 @@ public class AccountSingleton {
         this.listeCards = listeCards;
         this.pokeCoin = pokeCoin;
         this.idAccount = idAccount;
+        this.zipCode=zipCode;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 
     /** Instance unique non préinitialisée */

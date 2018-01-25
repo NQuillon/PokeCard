@@ -103,7 +103,7 @@ public class ExchangeFragment extends BaseFragment {
         return fragment;
     }
 
-    private void refreshView() {
+    public void refreshView() {
         ListExchangeAdapter adapter=new ListExchangeAdapter(getActivity(), listeEchanges);
         ListView listview = (ListView) parent.findViewById(R.id.list_exchange);
         listview.setAdapter(adapter);

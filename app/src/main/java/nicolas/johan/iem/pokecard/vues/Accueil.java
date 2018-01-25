@@ -22,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -30,6 +32,7 @@ import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.EditPseudoModel;
+import nicolas.johan.iem.pokecard.pojo.MeteoModel;
 import nicolas.johan.iem.pokecard.vues.fragments.AllPokemonsFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.exchange.ExchangeFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.FriendsFragment;
@@ -49,7 +52,6 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
     TextView pokecoin;
     TextView nbCards;
     ImageView profileImage;
-    Bitmap bitprofile;
     ImageView modify_header;
 
     @Override
@@ -83,10 +85,10 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
         pseudo_header = (TextView) header.findViewById(R.id.pseudo_header);
         pseudo_header.setText(AccountSingleton.getInstance().getPseudo());
         pokecoin = (TextView) header.findViewById(R.id.pokecoin_header);
-        pokecoin.setText(""+ AccountSingleton.getInstance().getPokeCoin());
 
         nbCards = (TextView) header.findViewById(R.id.nbCards_header);
-        nbCards.setText(""+ AccountSingleton.getInstance().getListeCards().size());
+
+        update();
 
 
         modify_header=(ImageView) header.findViewById(R.id.modify_header);
@@ -175,25 +177,9 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
         pseudo_header.setOnClickListener(modify_listener);
         modify_header.setOnClickListener(modify_listener);
 
-        new chargeProfilePicture().execute();
+        Picasso.with(this).load(AccountSingleton.getInstance().getPicture()).into(profileImage);
 
         navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    private class chargeProfilePicture extends AsyncTask<String, Void, Void> {
-        @Override
-        protected Void doInBackground(String... strings) {
-            try {
-                URL imageURL = new URL(AccountSingleton.getInstance().getPicture().toString());
-                bitprofile = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-            }catch (Exception e){}
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result){
-            profileImage.setImageBitmap(bitprofile);
-        }
     }
 
     @Override
@@ -258,7 +244,9 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
             getSupportActionBar().setTitle("Mes amis");
         } else if (id == R.id.nav_params) {
             clearBackstack();
-            showFragment(SettingsFragment.newInstance());
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.content_main, new SettingsFragment())
+                    .commit();
             getSupportActionBar().setTitle("Paramètres");
         } else if (id == R.id.nav_deco) {
             clearBackstack();
@@ -274,8 +262,66 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
     }
 
     public void update() {
-        nbCards.setText(""+ AccountSingleton.getInstance().getListeCards().size());
+        if(AccountSingleton.getInstance().getListeCards().get(0).equals("")){
+            nbCards.setText("0");
+        }else{
+            nbCards.setText(""+ AccountSingleton.getInstance().getListeCards().size());
+        }
         pokecoin.setText(""+AccountSingleton.getInstance().getPokeCoin());
+
+
+        Call<AccountModel> request = PokemonApp.getPokemonService().majAccount(AccountSingleton.getInstance().getIdUser());
+        request.enqueue(new Callback<AccountModel>() {
+            @Override
+            public void onResponse(Call<AccountModel> call, Response<AccountModel> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        AccountModel tmpAccount = response.body();
+                        AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
+                        AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
+                        AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
+                        AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
+                        AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
+                        AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
+                        AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
+                    } catch (Exception e) {
+                    }
+                } else {
+                    Toast.makeText(getBaseContext(), "Impossible de mettre à jour le compte", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AccountModel> call, Throwable t) {
+                Toast.makeText(getBaseContext(), "Impossible de mettre à jour le compte", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Call<MeteoModel> getMeteo = PokemonApp.getPokemonService().getMeteoFromId(AccountSingleton.getInstance().getIdUser());
+        getMeteo.enqueue(new Callback<MeteoModel>() {
+            @Override
+            public void onResponse(Call<MeteoModel> call, Response<MeteoModel> response) {
+                if(response.isSuccessful()){
+                    try{
+                        ImageView imgMeteo=(ImageView) findViewById(R.id.imgMeteo);
+                        TextView tempMeteo=(TextView) findViewById(R.id.tempMeteo);
+
+                        MeteoModel tmp=response.body();
+
+                        tempMeteo.setText(tmp.getTemp());
+                        Picasso.with(getBaseContext()).load(tmp.getImg()).into(imgMeteo);
+                    }catch (Exception e){
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MeteoModel> call, Throwable t) {
+
+            }
+        });
+
     }
 
 }

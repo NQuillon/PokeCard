@@ -83,13 +83,13 @@ public class ReceiverExchange extends BaseFragment {
 
 
                                     activity.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                                    Fragment f = (Fragment) ExchangeFragment.newInstance();
+                                    ExchangeFragment f = ExchangeFragment.newInstance();
                                     showFragment(f);
                                 }
 
                                 @Override
                                 public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
-                                    Toast.makeText(parent.getContext(), "ECHEC", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(parent.getContext(), "Impossible d'effectuer l'échange", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }

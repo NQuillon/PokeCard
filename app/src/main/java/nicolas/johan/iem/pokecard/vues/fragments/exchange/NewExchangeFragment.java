@@ -1,11 +1,8 @@
 package nicolas.johan.iem.pokecard.vues.fragments.exchange;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -15,22 +12,17 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.adapter.ExchangeCardAdapter;
+import nicolas.johan.iem.pokecard.adapter.GridViewAlertCardAdapter;
 import nicolas.johan.iem.pokecard.adapter.PokemonAdapter;
-import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Card;
-import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
-import nicolas.johan.iem.pokecard.vues.Accueil;
 import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
-import nicolas.johan.iem.pokecard.vues.fragments.PokedexFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -113,8 +105,8 @@ public class NewExchangeFragment extends BaseFragment {
                                  public void onResponse(Call<List<Card>> call, Response<List<Card>> response) {
                                      if(response.isSuccessful()) {
                                          cardsList = response.body();
-                                         GridView gv_exchange = (GridView) customLayout.findViewById(R.id.exchange_cards);
-                                         ExchangeCardAdapter exchange_cardAdapter=new ExchangeCardAdapter(getActivity(),cardsList);
+                                         GridView gv_exchange = (GridView) customLayout.findViewById(R.id.gridview_cards);
+                                         GridViewAlertCardAdapter exchange_cardAdapter=new GridViewAlertCardAdapter(getActivity(),cardsList);
                                          gv_exchange.setAdapter(exchange_cardAdapter);
                                          gv_exchange.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                              @Override
