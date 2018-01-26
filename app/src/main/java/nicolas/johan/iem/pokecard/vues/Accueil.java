@@ -2,11 +2,13 @@ package nicolas.johan.iem.pokecard.vues;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -62,6 +64,11 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
         setSupportActionBar(toolbar);
         toolbar.setLogo(R.mipmap.ic_launcher);
 
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor prefsEdit=prefs.edit();
+        prefsEdit.putString("idUser", AccountSingleton.getInstance().getIdUser());
+        prefsEdit.commit();
+
         showFragment(PokedexFragment.newInstance());
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -90,9 +97,6 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
 
         update();
 
-
-        modify_header=(ImageView) header.findViewById(R.id.modify_header);
-
         profileImage = (ImageView) header.findViewById(R.id.profileImage);
 
         /*profileImage.setOnClickListener(new View.OnClickListener() {
@@ -104,78 +108,6 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
             }
         });*/
-
-
-
-
-
-        View.OnClickListener modify_listener=new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(Accueil.this);
-                builder.setTitle("Entrez votre nouveau pseudo");
-
-                final EditText input = new EditText(Accueil.this);
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-                input.setText(AccountSingleton.getInstance().getPseudo());
-                builder.setView(input);
-
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //AccountSingleton.getInstance().setPseudo(input.getText().toString());
-                        //pseudo_header.setText(input.getText().toString());
-                        /*try{
-                            JSONObject jsonParam = new JSONObject();
-                            jsonParam.put("idUser", AccountSingleton.getInstance().getIdUser());
-                            jsonParam.put("pseudo", input.getText().toString());
-                            new POSTrequest().execute("option/editPseudo",jsonParam);
-                        }catch (Exception e){
-
-                        }*/
-
-                        EditPseudoModel tmp=new EditPseudoModel(AccountSingleton.getInstance().getIdUser(),input.getText().toString());
-                        Call<AccountModel> editPseudo = PokemonApp.getPokemonService().editPseudo(tmp);
-                        editPseudo.enqueue(new Callback<AccountModel>() {
-                            @Override
-                            public void onResponse(Call<AccountModel> call, Response<AccountModel> response) {
-                                if(response.isSuccessful()){
-                                    AccountModel tmpAccount=response.body();
-                                    AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
-                                    AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
-                                    AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
-                                    AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
-                                    AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
-                                    AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
-                                    AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
-                                    pseudo_header.setText(AccountSingleton.getInstance().getPseudo());
-                                    Toast.makeText(Accueil.this, "Pseudo modifié", Toast.LENGTH_SHORT).show();
-                                }else{
-                                    Toast.makeText(Accueil.this, "Impossible de modifier le pseudo", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<AccountModel> call, Throwable t) {
-                                Toast.makeText(Accueil.this, "Impossible de modifier le pseudo", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                    }
-                });
-                builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-                builder.show();
-            }
-        };
-
-        pseudo_header.setOnClickListener(modify_listener);
-        modify_header.setOnClickListener(modify_listener);
 
         Picasso.with(this).load(AccountSingleton.getInstance().getPicture()).into(profileImage);
 
@@ -284,6 +216,10 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
                         AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
                         AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
                         AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
+
+                        Picasso.with(getBaseContext()).load(AccountSingleton.getInstance().getPicture()).into(profileImage);
+                        pseudo_header.setText(AccountSingleton.getInstance().getPseudo());
+
                     } catch (Exception e) {
                     }
                 } else {

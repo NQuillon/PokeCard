@@ -13,10 +13,12 @@ import nicolas.johan.iem.pokecard.pojo.GetResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.LoginClass;
 import nicolas.johan.iem.pokecard.pojo.MeteoModel;
 import nicolas.johan.iem.pokecard.pojo.ModifyZIPModel;
+import nicolas.johan.iem.pokecard.pojo.NewPictureModel;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.PostResultQuizzModel;
+import nicolas.johan.iem.pokecard.pojo.ProfilPicture;
 import nicolas.johan.iem.pokecard.pojo.QuestionGameModel;
 import nicolas.johan.iem.pokecard.pojo.StoreItem;
 import nicolas.johan.iem.pokecard.pojo.VerifyClass;
@@ -97,4 +99,10 @@ public interface PokemonService  {
 
     @POST("/option/editZipCode")
     Call<ResponseBody> setZipCode(@Body ModifyZIPModel newZip);
+
+    @GET("user/picture/list")
+    Call<List<ProfilPicture>> getListPicturess();
+
+    @POST("/option/editProfilPicture")
+    Call<ResponseBody> setNewProfilPicture(@Body NewPictureModel newPicture);
 }

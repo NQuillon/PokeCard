@@ -69,6 +69,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         context=this;
 
+
+
         //Init Facebook SDK
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
