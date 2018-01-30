@@ -2,8 +2,10 @@ package nicolas.johan.iem.pokecard.webservice;
 
 import java.util.List;
 
+import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.BuyModel;
 import nicolas.johan.iem.pokecard.pojo.Card;
+import nicolas.johan.iem.pokecard.pojo.ChuckNorrisFactsModel;
 import nicolas.johan.iem.pokecard.pojo.EditPseudoModel;
 import nicolas.johan.iem.pokecard.pojo.ExchangeModel;
 import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
@@ -11,22 +13,20 @@ import nicolas.johan.iem.pokecard.pojo.FriendAccount;
 import nicolas.johan.iem.pokecard.pojo.GameCategory;
 import nicolas.johan.iem.pokecard.pojo.GetResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.LoginClass;
+import nicolas.johan.iem.pokecard.pojo.ManageFriendsModel;
 import nicolas.johan.iem.pokecard.pojo.MeteoModel;
 import nicolas.johan.iem.pokecard.pojo.ModifyZIPModel;
 import nicolas.johan.iem.pokecard.pojo.NewPictureModel;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
-import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.PostResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.ProfilPicture;
 import nicolas.johan.iem.pokecard.pojo.QuestionGameModel;
 import nicolas.johan.iem.pokecard.pojo.StoreItem;
 import nicolas.johan.iem.pokecard.pojo.VerifyClass;
-import nicolas.johan.iem.pokecard.pojo.ManageFriendsModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -105,4 +105,7 @@ public interface PokemonService  {
 
     @POST("/option/editProfilPicture")
     Call<ResponseBody> setNewProfilPicture(@Body NewPictureModel newPicture);
+
+    @GET("/chuckNorris/{idUser}/random")
+    Call<ChuckNorrisFactsModel> getChuckNorrisFact(@Path("idUser") String idUser);
 }

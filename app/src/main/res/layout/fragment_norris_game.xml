@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:gravity="center"
+    tools:context="nicolas.johan.iem.pokecard.vues.fragments.games.ChuckNorrisFragment">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="Chuck Norris Facts"
+                android:textStyle="italic"/>
+
+        <ImageView
+            android:id="@+id/imgNorris"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            />
+
+
+        <TextView
+            android:id="@+id/norris_fact"
+            android:layout_width="match_parent"
+            android:layout_height="214dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="22dp"
+            android:gravity="center"
+            android:text="Chargement du Chuck Norris Fact..."
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="22sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="#D2D2D2D2"
+            android:gravity="center"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"/>
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/pokecoin"/>
+
+            <TextView
+                android:id="@+id/pokecoinswinnorris"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:text="0"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_norris_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/round_button_null"
+            android:padding="12dp"
+            android:text="Voir un autre Chuck Norris Fact !"
+            android:textAllCaps="false"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

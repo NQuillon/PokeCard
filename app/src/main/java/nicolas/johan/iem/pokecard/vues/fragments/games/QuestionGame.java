@@ -1,4 +1,4 @@
-package nicolas.johan.iem.pokecard.vues.fragments;
+package nicolas.johan.iem.pokecard.vues.fragments.games;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +19,7 @@ import nicolas.johan.iem.pokecard.pojo.FriendAccount;
 import nicolas.johan.iem.pokecard.pojo.GetResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.PostResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.QuestionGameModel;
+import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

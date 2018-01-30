@@ -2,6 +2,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
+    android:orientation="vertical" >
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="horizontal" >
 
     <ImageView
@@ -51,5 +57,17 @@
             android:textStyle="italic" />
 
     </LinearLayout>
+
+</LinearLayout>
+
+    <TextView
+        android:id="@+id/exchangeMessage"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textSize="12sp"
+        android:text="Pensez à renvoyer une carte en retour..."
+        android:textStyle="italic" />
 
 </LinearLayout>

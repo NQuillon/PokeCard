@@ -1,4 +1,4 @@
-package nicolas.johan.iem.pokecard.vues.fragments;
+package nicolas.johan.iem.pokecard.vues.fragments.games;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,15 +14,16 @@ import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.adapter.ListCategoryGameAdapter;
 import nicolas.johan.iem.pokecard.pojo.GameCategory;
+import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GameFragment extends BaseFragment {
+public class CategoriesFragment extends BaseFragment {
     View parent;
     List<GameCategory> liste;
 
-    public GameFragment() {
+    public CategoriesFragment() {
         // Required empty public constructor
     }
 
@@ -30,7 +31,7 @@ public class GameFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        parent= inflater.inflate(R.layout.fragment_game, container, false);
+        parent= inflater.inflate(R.layout.categories_game, container, false);
 
 
         Call<List<GameCategory>> cat = PokemonApp.getPokemonService().getAllCategories();
@@ -74,11 +75,11 @@ public class GameFragment extends BaseFragment {
     }
 
 
-    public static GameFragment newInstance() {
+    public static CategoriesFragment newInstance() {
         
         Bundle args = new Bundle();
         
-        GameFragment fragment = new GameFragment();
+        CategoriesFragment fragment = new CategoriesFragment();
         fragment.setArguments(args);
         return fragment;
     }

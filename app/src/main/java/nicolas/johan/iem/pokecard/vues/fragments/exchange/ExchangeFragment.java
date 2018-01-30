@@ -3,8 +3,6 @@ package nicolas.johan.iem.pokecard.vues.fragments.exchange;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +18,6 @@ import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.adapter.ListExchangeAdapter;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.ExchangeModel;
-import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -110,7 +107,7 @@ public class ExchangeFragment extends BaseFragment {
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
-
+                //todo
             }
         });
     }

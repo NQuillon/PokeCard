@@ -1,45 +1,32 @@
 package nicolas.johan.iem.pokecard.vues;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONObject;
-
-import java.net.URL;
-
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
-import nicolas.johan.iem.pokecard.pojo.EditPseudoModel;
 import nicolas.johan.iem.pokecard.pojo.MeteoModel;
 import nicolas.johan.iem.pokecard.vues.fragments.AllPokemonsFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.exchange.ExchangeFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.FriendsFragment;
-import nicolas.johan.iem.pokecard.vues.fragments.GameFragment;
-import nicolas.johan.iem.pokecard.POSTrequest;
+import nicolas.johan.iem.pokecard.vues.fragments.games.GameFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.PokedexFragment;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.vues.fragments.SettingsFragment;

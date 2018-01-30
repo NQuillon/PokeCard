@@ -1,4 +1,4 @@
-package nicolas.johan.iem.pokecard.vues.fragments;
+package nicolas.johan.iem.pokecard.vues.fragments.games;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -16,14 +15,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
-import nicolas.johan.iem.pokecard.pojo.Card;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
 
 public class ResultsGame extends BaseFragment {
     View parent;
