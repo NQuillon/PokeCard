@@ -1,11 +1,20 @@
 package nicolas.johan.iem.pokecard.vues;
 
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,11 +28,16 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.MeteoModel;
 import nicolas.johan.iem.pokecard.vues.fragments.AllPokemonsFragment;
+import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
+import nicolas.johan.iem.pokecard.vues.fragments.ScanFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.exchange.ExchangeFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.FriendsFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.games.GameFragment;
@@ -41,7 +55,8 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
     TextView pokecoin;
     TextView nbCards;
     ImageView profileImage;
-    ImageView modify_header;
+    NfcAdapter mAdapter;
+    PendingIntent mPendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +65,17 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setLogo(R.mipmap.ic_launcher);
+
+
+        //NFC
+        mAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (mAdapter == null) {
+            //nfc not support your device.
+            return;
+        }
+        mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this,
+                getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
 
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor prefsEdit=prefs.edit();
@@ -161,6 +187,10 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
             clearBackstack();
             showFragment(FriendsFragment.newInstance());
             getSupportActionBar().setTitle("Mes amis");
+        } else if (id == R.id.nav_scan) {
+            clearBackstack();
+            showFragment(ScanFragment.newInstance());
+            getSupportActionBar().setTitle("Scan NFC");
         } else if (id == R.id.nav_params) {
             clearBackstack();
             getFragmentManager().beginTransaction()
@@ -246,4 +276,30 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter.enableForegroundDispatch(this, mPendingIntent, null, null);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mAdapter != null) {
+            mAdapter.disableForegroundDispatch(this);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent){
+        getTagInfo(intent);
+    }
+
+    private void getTagInfo(Intent intent) {
+        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+        //Ndef ndef = Ndef.get(tag);
+        //NdefMessage ndefMessage = ndef.getCachedNdefMessage();
+
+        Toast.makeText(this, tag.toString(), Toast.LENGTH_SHORT).show();
+    }
 }
