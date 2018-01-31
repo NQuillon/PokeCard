@@ -107,6 +107,9 @@ public class StoreFragment extends BaseFragment {
 
                         Toast.makeText(activity, "Chargement en cours", Toast.LENGTH_SHORT).show();
 
+                        int tmpPokecoin=AccountSingleton.getInstance().getPokeCoin()-items.get(position).getPrice();
+                        mypokecoinValue.setText(""+tmpPokecoin);
+
                         Call<List<Card>> buyRequest = PokemonApp.getPokemonService().buyBooster(new BuyModel(AccountSingleton.getInstance().getIdUser(),items.get(position).getNbCartes()));
                         buyRequest.enqueue(new Callback<List<Card>>() {
                             @Override

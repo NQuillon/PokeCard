@@ -181,12 +181,6 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
     }
 
     public void update() {
-        if(AccountSingleton.getInstance().getListeCards().get(0).equals("")){
-            nbCards.setText("0");
-        }else{
-            nbCards.setText(""+ AccountSingleton.getInstance().getListeCards().size());
-        }
-        pokecoin.setText(""+AccountSingleton.getInstance().getPokeCoin());
 
 
         Call<AccountModel> request = PokemonApp.getPokemonService().majAccount(AccountSingleton.getInstance().getIdUser());
@@ -206,7 +200,12 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
 
                         Picasso.with(getBaseContext()).load(AccountSingleton.getInstance().getPicture()).into(profileImage);
                         pseudo_header.setText(AccountSingleton.getInstance().getPseudo());
-
+                        if(AccountSingleton.getInstance().getListeCards().get(0).equals("")){
+                            nbCards.setText("0");
+                        }else{
+                            nbCards.setText(""+ AccountSingleton.getInstance().getListeCards().size());
+                        }
+                        pokecoin.setText(""+AccountSingleton.getInstance().getPokeCoin());
                     } catch (Exception e) {
                     }
                 } else {
