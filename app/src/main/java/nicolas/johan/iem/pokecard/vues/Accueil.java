@@ -1,20 +1,16 @@
 package nicolas.johan.iem.pokecard.vues;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -28,23 +24,19 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Type;
-import java.util.Arrays;
-
 import nicolas.johan.iem.pokecard.PokemonApp;
+import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.MeteoModel;
 import nicolas.johan.iem.pokecard.vues.fragments.AllPokemonsFragment;
-import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
-import nicolas.johan.iem.pokecard.vues.fragments.ScanFragment;
-import nicolas.johan.iem.pokecard.vues.fragments.exchange.ExchangeFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.FriendsFragment;
-import nicolas.johan.iem.pokecard.vues.fragments.games.GameFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.PokedexFragment;
-import nicolas.johan.iem.pokecard.R;
+import nicolas.johan.iem.pokecard.vues.fragments.ScanFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.SettingsFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.StoreFragment;
+import nicolas.johan.iem.pokecard.vues.fragments.exchange.ExchangeFragment;
+import nicolas.johan.iem.pokecard.vues.fragments.games.GameFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -187,10 +179,6 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
             clearBackstack();
             showFragment(FriendsFragment.newInstance());
             getSupportActionBar().setTitle("Mes amis");
-        } else if (id == R.id.nav_scan) {
-            clearBackstack();
-            showFragment(ScanFragment.newInstance());
-            getSupportActionBar().setTitle("Scan NFC");
         } else if (id == R.id.nav_params) {
             clearBackstack();
             getFragmentManager().beginTransaction()
@@ -297,9 +285,21 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
 
     private void getTagInfo(Intent intent) {
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-        //Ndef ndef = Ndef.get(tag);
+        Ndef ndef = Ndef.get(tag);
         //NdefMessage ndefMessage = ndef.getCachedNdefMessage();
+        try {
+            ndef.connect();
+            NdefMessage ndefMessage = ndef.getNdefMessage();
+            String message = new String(ndefMessage.getRecords()[0].getPayload());
+            System.out.println(message);
+            ndef.close();
+            clearBackstack();
+            Bundle data=new Bundle();
+            data.putString("message",message);
+            showFragment(ScanFragment.newInstance(data));
+            getSupportActionBar().setTitle("Scan NFC");
+        }catch (Exception e){
 
-        Toast.makeText(this, tag.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

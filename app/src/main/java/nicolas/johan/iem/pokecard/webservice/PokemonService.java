@@ -5,6 +5,7 @@ import java.util.List;
 import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.BuyModel;
 import nicolas.johan.iem.pokecard.pojo.Card;
+import nicolas.johan.iem.pokecard.pojo.CardNFC;
 import nicolas.johan.iem.pokecard.pojo.ChuckNorrisFactsModel;
 import nicolas.johan.iem.pokecard.pojo.EditPseudoModel;
 import nicolas.johan.iem.pokecard.pojo.ExchangeModel;
@@ -108,4 +109,7 @@ public interface PokemonService  {
 
     @GET("/chuckNorris/{idUser}/random")
     Call<ChuckNorrisFactsModel> getChuckNorrisFact(@Path("idUser") String idUser);
+
+    @POST("/user/addCardNFC")
+    Call<Card> addCardFromNFC(@Body CardNFC card);
 }
