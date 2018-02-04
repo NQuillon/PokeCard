@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <PreferenceCategory android:title="Profil">
+
+    <Preference
+        android:key="profil_pseudo"
+        android:title="Pseudo"
+        android:summary="Modifier mon pseudo"
+        />
+    <Preference
+        android:key="profil_picture"
+        android:title="Photo de profil"
+        android:summary="Choisir l'image de profil"
+        />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Météo">
+    <EditTextPreference
+        android:persistent="false"
+        android:inputType="number"
+        android:key="zipCode"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:summary="Le code postal est requis pour afficher la météo"
+        android:title="Code Postal" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Application">>
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="keepConnected"
+            android:title="Rester connecté" />
+    </PreferenceCategory>
+</PreferenceScreen>

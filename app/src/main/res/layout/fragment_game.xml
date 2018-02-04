@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:gravity="center"
+    tools:context="nicolas.johan.iem.pokecard.vues.fragments.games.GameFragment">
+
+<LinearLayout
+    android:id="@+id/games_questions"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="52dp"
+    android:paddingRight="52dp"
+    android:paddingBottom="12dp"
+    android:paddingTop="12dp"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="@drawable/round_button_null"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@mipmap/questions"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Questions"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+</LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/games_chucknorris"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:paddingLeft="52dp"
+        android:paddingRight="52dp"
+        android:paddingBottom="12dp"
+        android:paddingTop="12dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/round_button_null"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/norris"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chuck Norris Facts"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>
