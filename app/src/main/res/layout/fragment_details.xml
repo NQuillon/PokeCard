@@ -1,0 +1,154 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    tools:context="nicolas.johan.iem.pokecard.vues.fragments.PokedexFragment">
+
+    <LinearLayout
+        android:id="@+id/loadingDetails"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/loadingTextDetails"
+            android:layout_marginLeft="12px"
+            android:text="Chargement en cours..."/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:id="@+id/details_imgPokemon"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="22dp">
+
+                <TextView
+                    android:id="@+id/details_nom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NULL"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/details_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NULL"
+                    android:textSize="12sp"
+                    android:layout_marginLeft="12dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Type: "
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/details_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NULL"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Poids: "
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/details_poids"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NULL"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text=" kg"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Taille: "
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/details_taille"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NULL"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text=" m"
+                    />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/details_cartes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="110dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="8dp"
+        android:horizontalSpacing="5dp"
+        android:stretchMode="spacingWidth"
+        android:gravity="center">
+    </GridView>
+
+
+</LinearLayout>

@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">PokeCard</string>
+
+    <string name="title_activity_splash_screen">PokéCard</string>
+    <string name="title_activity_login">Connexion</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Mot de passe (optionnel)</string>
+    <string name="action_sign_in">Se connecter</string>
+    <string name="action_sign_in_short">Se connecter</string>
+    <string name="error_invalid_email">Adresse email invalide</string>
+    <string name="error_invalid_password">Mot de passe trop court</string>
+    <string name="error_incorrect_password">Mot de passe incorrect</string>
+    <string name="error_field_required">Champs requis</string>
+    <string name="title_activity_accueil">Accueil</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="facebook_app_id">1612749665455033</string>
+    <string name="fb_login_protocol_scheme">fb1612749665455033</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_details_pokemon">DetailsPokemon</string>
+
 </resources>
