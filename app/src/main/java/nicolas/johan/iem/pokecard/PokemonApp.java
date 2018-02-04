@@ -22,8 +22,8 @@ public class PokemonApp extends Application {
         super.onCreate();
         Retrofit.Builder mBuilder =
                 new Retrofit.Builder()
-                        .baseUrl("http://81.67.198.72:3000/")  //http://192.168.43.200:3000/
-                        .addConverterFactory(GsonConverterFactory.create()); //http://192.168.43.200
+                        .baseUrl("http://192.168.0.33:3000/")  //adresse serveur: 81.67.198.72
+                        .addConverterFactory(GsonConverterFactory.create());
 
         OkHttpClient.Builder okBuilder = new OkHttpClient.Builder();
 
