@@ -1,5 +1,6 @@
 package nicolas.johan.iem.pokecard.vues;
 
+import android.accounts.Account;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,9 +27,9 @@ import com.squareup.picasso.Picasso;
 
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.pojo.AccountModel;
+import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
-import nicolas.johan.iem.pokecard.pojo.MeteoModel;
+import nicolas.johan.iem.pokecard.pojo.Model.MeteoModel;
 import nicolas.johan.iem.pokecard.vues.fragments.AllPokemonsFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.FriendsFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.PokedexFragment;
@@ -37,11 +38,13 @@ import nicolas.johan.iem.pokecard.vues.fragments.SettingsFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.StoreFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.exchange.ExchangeFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.games.GameFragment;
+import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
+import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Accueil extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Accueil extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, webServiceInterface {
 
     TextView pseudo_header;
     TextView pokecoin;
@@ -49,15 +52,16 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
     ImageView profileImage;
     NfcAdapter mAdapter;
     PendingIntent mPendingIntent;
+    NavigationView navigationView;
+    Toolbar toolbar;
+    View header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accueil);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setLogo(R.mipmap.ic_launcher);
 
+        init();
 
         //NFC
         mAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -65,58 +69,37 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
             //nfc not support your device.
             return;
         }
-        mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this,
-                getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-
+        mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor prefsEdit=prefs.edit();
         prefsEdit.putString("idUser", AccountSingleton.getInstance().getIdUser());
-        prefsEdit.commit();
+        prefsEdit.apply();
 
         showFragment(PokedexFragment.newInstance());
-
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        View header = navigationView.getHeaderView(0);
-        header.setBackgroundColor(Color.rgb(246, 186, 44));
-        pseudo_header = (TextView) header.findViewById(R.id.pseudo_header);
-        pseudo_header.setText(AccountSingleton.getInstance().getPseudo());
-        pokecoin = (TextView) header.findViewById(R.id.pokecoin_header);
-
-        nbCards = (TextView) header.findViewById(R.id.nbCards_header);
 
         update();
 
         profileImage = (ImageView) header.findViewById(R.id.profileImage);
-
-        /*profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-            }
-        });*/
-
         Picasso.with(this).load(AccountSingleton.getInstance().getPicture()).into(profileImage);
-
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void init() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setLogo(R.mipmap.ic_launcher);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        header = navigationView.getHeaderView(0);
+        header.setBackgroundColor(Color.rgb(246, 186, 44));
+        pseudo_header = (TextView) header.findViewById(R.id.pseudo_header);
+        pseudo_header.setText(AccountSingleton.getInstance().getPseudo());
+        pokecoin = (TextView) header.findViewById(R.id.pokecoin_header);
+        nbCards = (TextView) header.findViewById(R.id.nbCards_header);
     }
 
     @Override
@@ -142,10 +125,6 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        /*if (id == R.id.action_settings) {
-            return true;
-        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -199,69 +178,8 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
     }
 
     public void update() {
-
-
-        Call<AccountModel> request = PokemonApp.getPokemonService().majAccount(AccountSingleton.getInstance().getIdUser());
-        request.enqueue(new Callback<AccountModel>() {
-            @Override
-            public void onResponse(Call<AccountModel> call, Response<AccountModel> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        AccountModel tmpAccount = response.body();
-                        AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
-                        AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
-                        AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
-                        AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
-                        AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
-                        AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
-                        AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
-
-                        Picasso.with(getBaseContext()).load(AccountSingleton.getInstance().getPicture()).into(profileImage);
-                        pseudo_header.setText(AccountSingleton.getInstance().getPseudo());
-                        if(AccountSingleton.getInstance().getListeCards().get(0).equals("")){
-                            nbCards.setText("0");
-                        }else{
-                            nbCards.setText(""+ AccountSingleton.getInstance().getListeCards().size());
-                        }
-                        pokecoin.setText(""+AccountSingleton.getInstance().getPokeCoin());
-                    } catch (Exception e) {
-                    }
-                } else {
-                    Toast.makeText(getBaseContext(), "Impossible de mettre à jour le compte", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AccountModel> call, Throwable t) {
-                Toast.makeText(getBaseContext(), "Impossible de mettre à jour le compte", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        Call<MeteoModel> getMeteo = PokemonApp.getPokemonService().getMeteoFromId(AccountSingleton.getInstance().getIdUser());
-        getMeteo.enqueue(new Callback<MeteoModel>() {
-            @Override
-            public void onResponse(Call<MeteoModel> call, Response<MeteoModel> response) {
-                if(response.isSuccessful()){
-                    try{
-                        ImageView imgMeteo=(ImageView) findViewById(R.id.imgMeteo);
-                        TextView tempMeteo=(TextView) findViewById(R.id.tempMeteo);
-
-                        MeteoModel tmp=response.body();
-
-                        tempMeteo.setText(tmp.getTemp());
-                        Picasso.with(getBaseContext()).load(tmp.getImg()).into(imgMeteo);
-                    }catch (Exception e){
-
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MeteoModel> call, Throwable t) {
-
-            }
-        });
-
+        ManagerPokemonService.getInstance().getUserAccount(AccountSingleton.getInstance().getIdUser(), this);
+        ManagerPokemonService.getInstance().getMeteo(AccountSingleton.getInstance().getIdUser(), this);
     }
 
     @Override
@@ -301,5 +219,29 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
         }catch (Exception e){
 
         }
+    }
+
+    @Override
+    public void onSuccess() {
+        Picasso.with(getBaseContext()).load(AccountSingleton.getInstance().getPicture()).into(profileImage);
+        pseudo_header.setText(AccountSingleton.getInstance().getPseudo());
+        if(AccountSingleton.getInstance().getListeCards().get(0).equals("")){
+            nbCards.setText("0");
+        }else{
+            nbCards.setText(""+ AccountSingleton.getInstance().getListeCards().size());
+        }
+        pokecoin.setText(""+AccountSingleton.getInstance().getPokeCoin());
+    }
+
+    @Override
+    public void onFailure() {
+        Toast.makeText(getBaseContext(), "Impossible de mettre à jour le compte", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onMeteo(MeteoModel meteoModel){
+        ImageView imgMeteo=(ImageView) findViewById(R.id.imgMeteo);
+        TextView tempMeteo=(TextView) findViewById(R.id.tempMeteo);
+        tempMeteo.setText(meteoModel.getTemp());
+        Picasso.with(getBaseContext()).load(meteoModel.getImg()).into(imgMeteo);
     }
 }

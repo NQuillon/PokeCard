@@ -28,26 +28,26 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/noPokemon"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:gravity="center">
+            android:id="@+id/noPokemon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:gravity="center">
 
-        <ImageView
-            android:layout_height="150dp"
-            android:src="@mipmap/no_pokemon"
-            android:layout_width="100dp"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/loadingTextDetails"
-            android:gravity="center"
-            android:textSize="22sp"
-            android:text="Votre pokédex est vide... \nRendez vous vite dans la boutique pour obtenir des pokémons !"/>
+            <ImageView
+                android:layout_height="150dp"
+                android:src="@mipmap/no_pokemon"
+                android:layout_width="100dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/loadingTextDetails"
+                android:gravity="center"
+                android:textSize="22sp"
+                android:text="Votre pokédex est vide... \nRendez vous vite dans la boutique pour obtenir des pokémons !"/>
 
     </LinearLayout>
 

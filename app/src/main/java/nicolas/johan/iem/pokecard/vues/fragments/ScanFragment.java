@@ -13,48 +13,29 @@ import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Card;
-import nicolas.johan.iem.pokecard.pojo.CardNFC;
+import nicolas.johan.iem.pokecard.pojo.Model.CardNFC;
+import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
+import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ScanFragment extends BaseFragment {
+public class ScanFragment extends BaseFragment implements webServiceInterface {
     View parent;
-
-
-    public ScanFragment() {
-        // Required empty public constructor
-    }
-
+    ImageView cardTv;
+    public ScanFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         parent=inflater.inflate(R.layout.fragment_scan, container, false);
+
         Bundle data=getArguments();
         String msg=data.getString("message");
-        final ImageView cardTv=parent.findViewById(R.id.cardNFC);
 
-        Call<Card> request= PokemonApp.getPokemonService().addCardFromNFC(new CardNFC(AccountSingleton.getInstance().getIdUser(),msg));
-        request.enqueue(new Callback<Card>() {
-            @Override
-            public void onResponse(Call<Card> call, Response<Card> response) {
-                if(response.isSuccessful()){
-                    try{
-                        Picasso.with(activity).load(response.body().getUrlPicture()).into(cardTv);
-                        activity.update();
-                        Toast.makeText(activity, "Carte ajouté à votre pokedex !", Toast.LENGTH_SHORT).show();
-                    }catch(Exception e){
+        cardTv=parent.findViewById(R.id.cardNFC);
 
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Card> call, Throwable t) {
-
-            }
-        });
+        ManagerPokemonService.getInstance().addCardNFC(msg, this);
 
         return parent;
     }
@@ -65,4 +46,20 @@ public class ScanFragment extends BaseFragment {
         return fragment;
     }
 
+    public void afficheCard(Card card){
+        try{
+            Picasso.with(activity).load(card.getUrlPicture()).into(cardTv);
+        }catch(Exception e){}
+    }
+
+    @Override
+    public void onSuccess() {
+            activity.update();
+            Toast.makeText(activity, "Carte ajouté à votre pokedex !", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFailure() {
+
+    }
 }

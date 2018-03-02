@@ -20,21 +20,25 @@ import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.adapter.GridViewAlertCardAdapter;
 import nicolas.johan.iem.pokecard.adapter.StoreAdapter;
-import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
-import nicolas.johan.iem.pokecard.pojo.BuyModel;
+import nicolas.johan.iem.pokecard.pojo.Model.BuyModel;
 import nicolas.johan.iem.pokecard.pojo.Card;
 import nicolas.johan.iem.pokecard.pojo.StoreItem;
+import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
+import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class StoreFragment extends BaseFragment {
+public class StoreFragment extends BaseFragment implements webServiceInterface {
     View parent;
+    View customLayout;
     List<StoreItem> items;
     FrameLayout pokecoins;
     List<Card> cardsWin;
     TextView mypokecoinValue;
+    GridView gridView;
+    StoreFragment that;
 
     public StoreFragment() {
         // Required empty public constructor
@@ -48,42 +52,26 @@ public class StoreFragment extends BaseFragment {
         mypokecoinValue=parent.findViewById(R.id.nbMyPokecoin);
         mypokecoinValue.setText(""+AccountSingleton.getInstance().getPokeCoin());
         pokecoins=parent.findViewById(R.id.myPokecoinFrame);
+        that = this;
 
-        Call<List<StoreItem>> listeItems = PokemonApp.getPokemonService().getItemsStore();
-        listeItems.enqueue(new Callback<List<StoreItem>>() {
-            @Override
-            public void onResponse(Call<List<StoreItem>> call, Response<List<StoreItem>> response) {
-                if(response.isSuccessful()){
-                    try {
-                        items = response.body();
-                        refresh();
-                    }catch (Exception e){
-
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<StoreItem>> call, Throwable t) {
-
-            }
-        });
+        ManagerPokemonService.getInstance().getListBoosters(this);
 
         return parent;
     }
 
 
-    public void refresh(){
-            StoreAdapter adapter=new StoreAdapter(parent.getContext(), items);
-            final GridView gridview = (GridView) parent.findViewById(R.id.gridStore);
-            gridview.setAdapter(adapter);
+    public void refresh(List<StoreItem> storeItems){
+            items = storeItems;
+            StoreAdapter adapter=new StoreAdapter(parent.getContext(), storeItems);
+            gridView = (GridView) parent.findViewById(R.id.gridStore);
+            gridView.setAdapter(adapter);
 
-            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
                     final FrameLayout btn=(FrameLayout)view.findViewById(R.id.btnStore);
                     if(items.get(position).getPrice()<= AccountSingleton.getInstance().getPokeCoin()){
-                        gridview.setEnabled(false);
+                        gridView.setEnabled(false);
                         btn.setBackgroundResource(R.drawable.round_button_true);
 
                         //AlertDialog
@@ -97,46 +85,20 @@ public class StoreFragment extends BaseFragment {
                             }
                         });
 
-                        final View customLayout = getActivity().getLayoutInflater().inflate(R.layout.dialog_exchange, null);
+                        customLayout = getActivity().getLayoutInflater().inflate(R.layout.dialog_exchange, null);
 
                         builder.setView(customLayout);
-                        //builder.show();
+
                         final AlertDialog dialog=builder.create();
                         dialog.setCancelable(false);
                         dialog.show();
 
                         Toast.makeText(activity, "Chargement en cours", Toast.LENGTH_SHORT).show();
 
-                        int tmpPokecoin=AccountSingleton.getInstance().getPokeCoin()-items.get(position).getPrice();
+                        int tmpPokecoin = AccountSingleton.getInstance().getPokeCoin()-items.get(position).getPrice();
                         mypokecoinValue.setText(""+tmpPokecoin);
-
-                        Call<List<Card>> buyRequest = PokemonApp.getPokemonService().buyBooster(new BuyModel(AccountSingleton.getInstance().getIdUser(),items.get(position).getNbCartes()));
-                        buyRequest.enqueue(new Callback<List<Card>>() {
-                            @Override
-                            public void onResponse(Call<List<Card>> call, Response<List<Card>> response) {
-                                if(response.isSuccessful()){
-                                    try{
-                                        cardsWin=response.body();
-
-                                        GridView gv_cardsWin = (GridView) customLayout.findViewById(R.id.gridview_cards);
-                                        GridViewAlertCardAdapter cardAdapter=new GridViewAlertCardAdapter(getActivity(),cardsWin);
-                                        gv_cardsWin.setAdapter(cardAdapter);
-                                        gridview.setEnabled(true);
-
-                                        activity.update();
-
-                                    }catch (Exception e){
-
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<List<Card>> call, Throwable t) {
-
-                            }
-                        });
-
+                        BuyModel tmp = new BuyModel(AccountSingleton.getInstance().getIdUser(),items.get(position).getNbCartes());
+                        ManagerPokemonService.getInstance().buyBooster(tmp, that);
                     }else{
                         btn.setBackgroundResource(R.drawable.round_button_false);
                         pokecoins.setBackgroundResource(R.drawable.round_button_false);
@@ -171,6 +133,14 @@ public class StoreFragment extends BaseFragment {
             });
     }
 
+    public void onBuy(List<Card> newCards){
+        cardsWin=newCards;
+        GridView gv_cardsWin = (GridView) customLayout.findViewById(R.id.gridview_cards);
+        GridViewAlertCardAdapter cardAdapter=new GridViewAlertCardAdapter(getActivity(),cardsWin);
+        gv_cardsWin.setAdapter(cardAdapter);
+        gridView.setEnabled(true);
+    }
+
     public static StoreFragment newInstance() {
         
         Bundle args = new Bundle();
@@ -180,4 +150,13 @@ public class StoreFragment extends BaseFragment {
         return fragment;
     }
 
+    @Override
+    public void onSuccess() {
+        activity.update();
+    }
+
+    @Override
+    public void onFailure() {
+
+    }
 }
