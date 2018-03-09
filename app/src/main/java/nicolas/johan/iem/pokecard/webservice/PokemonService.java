@@ -5,11 +5,11 @@ import java.util.List;
 import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.Model.BuyModel;
 import nicolas.johan.iem.pokecard.pojo.Card;
-import nicolas.johan.iem.pokecard.pojo.Model.CardNFC;
+import nicolas.johan.iem.pokecard.pojo.Model.CardNFCModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ChuckNorrisFactsModel;
 import nicolas.johan.iem.pokecard.pojo.Model.EditPseudoModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ExchangeModel;
-import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
+import nicolas.johan.iem.pokecard.pojo.Model.ExchangePOSTModel;
 import nicolas.johan.iem.pokecard.pojo.FriendAccount;
 import nicolas.johan.iem.pokecard.pojo.GameCategory;
 import nicolas.johan.iem.pokecard.pojo.Model.GetResultQuizzModel;
@@ -51,7 +51,7 @@ public interface PokemonService  {
     Call<List<Card>> getCardsFromId(@Path("idUser") int idUser, @Path("idPokemon") int idPokemon);
 
     @POST("exchange/send")
-    Call<AccountModel> sendExchangeRequest(@Body ExchangePOST request);
+    Call<AccountModel> sendExchangeRequest(@Body ExchangePOSTModel request);
 
     @GET("user/{idUser}/getFriends") //a verifier
     Call<List<FriendAccount>> getFriends(@Path("idUser") String idUser);
@@ -111,5 +111,5 @@ public interface PokemonService  {
     Call<ChuckNorrisFactsModel> getChuckNorrisFact(@Path("idUser") String idUser);
 
     @POST("/user/addCardNFC")
-    Call<Card> addCardFromNFC(@Body CardNFC card);
+    Call<Card> addCardFromNFC(@Body CardNFCModel card);
 }

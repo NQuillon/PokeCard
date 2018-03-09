@@ -147,7 +147,7 @@ public class SettingsFragment extends PreferenceFragment implements webServiceIn
         gv_pictures.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                NewPictureModel tmp=new NewPictureModel(AccountSingleton.getInstance().getIdUser(),listPictures.get(position).getUrl());
+                NewPictureModel tmp=new NewPictureModel(AccountSingleton.getInstance().getIdUser(),listPictures.get(position).getBase64());
                 ManagerPokemonService.getInstance().editProfilPicture(tmp, that);
             }
         });

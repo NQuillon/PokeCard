@@ -1,38 +1,23 @@
 package nicolas.johan.iem.pokecard.webservice;
 
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import nicolas.johan.iem.pokecard.PokemonApp;
-import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.adapter.GridViewAlertCardAdapter;
-import nicolas.johan.iem.pokecard.adapter.GridViewProfilePicture;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Card;
-import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
+import nicolas.johan.iem.pokecard.pojo.Model.ExchangePOSTModel;
 import nicolas.johan.iem.pokecard.pojo.FriendAccount;
 import nicolas.johan.iem.pokecard.pojo.GameCategory;
+import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.Model.BuyModel;
-import nicolas.johan.iem.pokecard.pojo.Model.CardNFC;
+import nicolas.johan.iem.pokecard.pojo.Model.CardNFCModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ChuckNorrisFactsModel;
 import nicolas.johan.iem.pokecard.pojo.Model.EditPseudoModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ExchangeModel;
 import nicolas.johan.iem.pokecard.pojo.Model.GetResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.Model.LoginModel;
-import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.Model.LoginSpecialModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ManageFriendsModel;
 import nicolas.johan.iem.pokecard.pojo.Model.MeteoModel;
@@ -50,7 +35,6 @@ import nicolas.johan.iem.pokecard.vues.SignUpActivity;
 import nicolas.johan.iem.pokecard.vues.fragments.AllPokemonsFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.DetailsPokemon;
 import nicolas.johan.iem.pokecard.vues.fragments.FriendsFragment;
-import nicolas.johan.iem.pokecard.vues.fragments.PokedexFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.ScanFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.SettingsFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.StoreFragment;
@@ -60,7 +44,6 @@ import nicolas.johan.iem.pokecard.vues.fragments.exchange.ReceiverExchange;
 import nicolas.johan.iem.pokecard.vues.fragments.games.CategoriesFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.games.ChuckNorrisFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.games.QuestionGame;
-import nicolas.johan.iem.pokecard.vues.fragments.games.ResultsGame;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -352,7 +335,7 @@ public class ManagerPokemonService {
         });
     }
     public void addCardNFC(String message, final ScanFragment callback){
-        Call<Card> request= PokemonApp.getPokemonService().addCardFromNFC(new CardNFC(AccountSingleton.getInstance().getIdUser(), message));
+        Call<Card> request= PokemonApp.getPokemonService().addCardFromNFC(new CardNFCModel(AccountSingleton.getInstance().getIdUser(), message));
         request.enqueue(new Callback<Card>() {
             @Override
             public void onResponse(Call<Card> call, Response<Card> response) {
@@ -427,8 +410,8 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void sendExchange(ExchangePOST exchangePOST, final ReceiverExchange callback){
-        Call<AccountModel> call = PokemonApp.getPokemonService().sendExchangeRequest(exchangePOST);
+    public void sendExchange(ExchangePOSTModel exchangePOSTModel, final ReceiverExchange callback){
+        Call<AccountModel> call = PokemonApp.getPokemonService().sendExchangeRequest(exchangePOSTModel);
         call.enqueue(new Callback<AccountModel>() {
             @Override
             public void onResponse(retrofit2.Call<AccountModel> call, Response<AccountModel> response) {

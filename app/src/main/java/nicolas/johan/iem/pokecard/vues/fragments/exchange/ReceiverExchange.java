@@ -12,20 +12,16 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.adapter.FriendsExchangeAdapter;
 import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
-import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
+import nicolas.johan.iem.pokecard.pojo.Model.ExchangePOSTModel;
 import nicolas.johan.iem.pokecard.pojo.FriendAccount;
 import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
 import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
 import nicolas.johan.iem.pokecard.webservice.getFriendsInterface;
 import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ReceiverExchange extends BaseFragment implements webServiceInterface, getFriendsInterface {
     List<FriendAccount> friendsList;
@@ -33,6 +29,7 @@ public class ReceiverExchange extends BaseFragment implements webServiceInterfac
     String idPokemon;
     String nomJoueur="";
     LinearLayout loadingScreen;
+    LinearLayout noFriend;
     ReceiverExchange that;
 
     public ReceiverExchange() {}
@@ -48,6 +45,7 @@ public class ReceiverExchange extends BaseFragment implements webServiceInterfac
         that = this;
 
         loadingScreen=(LinearLayout) parent.findViewById(R.id.loadingFriendExchange);
+        noFriend=(LinearLayout) parent.findViewById(R.id.noFriend);
 
         ManagerPokemonService.getInstance().getFriends(this, this);
         return parent;
@@ -80,10 +78,14 @@ public class ReceiverExchange extends BaseFragment implements webServiceInterfac
         FriendsExchangeAdapter adapter=new FriendsExchangeAdapter(parent.getContext(),friendsList);
         listeFriends.setAdapter(adapter);
 
+        if(friendsList.size() == 0){
+            noFriend.setVisibility(View.VISIBLE);
+        }
+
         listeFriends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(final AdapterView<?> parent, View view, int position, long id) {
-                ExchangePOST request=new ExchangePOST(Integer.parseInt(AccountSingleton.getInstance().getIdUser()),Integer.parseInt(friendsList.get(position).getIdUser()),idPokemon, "send"); //a modifier si remerciement !
+                ExchangePOSTModel request=new ExchangePOSTModel(Integer.parseInt(AccountSingleton.getInstance().getIdUser()),Integer.parseInt(friendsList.get(position).getIdUser()),idPokemon, "send"); //a modifier si remerciement !
                 nomJoueur=friendsList.get(position).getPseudo();
                 ManagerPokemonService.getInstance().sendExchange(request, that);
             }

@@ -9,16 +9,10 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Card;
-import nicolas.johan.iem.pokecard.pojo.Model.CardNFC;
 import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
 import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ScanFragment extends BaseFragment implements webServiceInterface {
     View parent;

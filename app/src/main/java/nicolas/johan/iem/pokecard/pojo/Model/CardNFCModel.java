@@ -4,14 +4,14 @@ package nicolas.johan.iem.pokecard.pojo.Model;
  * Created by Johan on 31/01/2018.
  */
 
-public class CardNFC {
+public class CardNFCModel {
     String idUser;
     String idCard;
 
-    public CardNFC() {
+    public CardNFCModel() {
     }
 
-    public CardNFC(String idUser, String idCard) {
+    public CardNFCModel(String idUser, String idCard) {
         this.idUser = idUser;
         this.idCard = idCard;
     }
