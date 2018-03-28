@@ -15,7 +15,7 @@ import java.util.List;
 
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
-import nicolas.johan.iem.pokecard.pojo.ExchangeModel;
+import nicolas.johan.iem.pokecard.pojo.Model.ExchangeModel;
 
 /**
  * Created by iem on 19/01/2018.

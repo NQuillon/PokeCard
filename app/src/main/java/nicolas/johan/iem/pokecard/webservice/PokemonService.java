@@ -2,29 +2,29 @@ package nicolas.johan.iem.pokecard.webservice;
 
 import java.util.List;
 
-import nicolas.johan.iem.pokecard.pojo.AccountModel;
-import nicolas.johan.iem.pokecard.pojo.BuyModel;
+import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
+import nicolas.johan.iem.pokecard.pojo.Model.BuyModel;
 import nicolas.johan.iem.pokecard.pojo.Card;
-import nicolas.johan.iem.pokecard.pojo.CardNFC;
-import nicolas.johan.iem.pokecard.pojo.ChuckNorrisFactsModel;
-import nicolas.johan.iem.pokecard.pojo.EditPseudoModel;
-import nicolas.johan.iem.pokecard.pojo.ExchangeModel;
-import nicolas.johan.iem.pokecard.pojo.ExchangePOST;
+import nicolas.johan.iem.pokecard.pojo.Model.CardNFCModel;
+import nicolas.johan.iem.pokecard.pojo.Model.ChuckNorrisFactsModel;
+import nicolas.johan.iem.pokecard.pojo.Model.EditPseudoModel;
+import nicolas.johan.iem.pokecard.pojo.Model.ExchangeModel;
+import nicolas.johan.iem.pokecard.pojo.Model.ExchangePOSTModel;
 import nicolas.johan.iem.pokecard.pojo.FriendAccount;
 import nicolas.johan.iem.pokecard.pojo.GameCategory;
-import nicolas.johan.iem.pokecard.pojo.GetResultQuizzModel;
-import nicolas.johan.iem.pokecard.pojo.LoginClass;
-import nicolas.johan.iem.pokecard.pojo.ManageFriendsModel;
-import nicolas.johan.iem.pokecard.pojo.MeteoModel;
-import nicolas.johan.iem.pokecard.pojo.ModifyZIPModel;
-import nicolas.johan.iem.pokecard.pojo.NewPictureModel;
+import nicolas.johan.iem.pokecard.pojo.Model.GetResultQuizzModel;
+import nicolas.johan.iem.pokecard.pojo.Model.LoginModel;
+import nicolas.johan.iem.pokecard.pojo.Model.ManageFriendsModel;
+import nicolas.johan.iem.pokecard.pojo.Model.MeteoModel;
+import nicolas.johan.iem.pokecard.pojo.Model.ModifyZIPModel;
+import nicolas.johan.iem.pokecard.pojo.Model.NewPictureModel;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
-import nicolas.johan.iem.pokecard.pojo.PostResultQuizzModel;
+import nicolas.johan.iem.pokecard.pojo.Model.PostResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.ProfilPicture;
-import nicolas.johan.iem.pokecard.pojo.QuestionGameModel;
+import nicolas.johan.iem.pokecard.pojo.Model.QuestionGameModel;
 import nicolas.johan.iem.pokecard.pojo.StoreItem;
-import nicolas.johan.iem.pokecard.pojo.VerifyClass;
+import nicolas.johan.iem.pokecard.pojo.Model.LoginSpecialModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -51,19 +51,19 @@ public interface PokemonService  {
     Call<List<Card>> getCardsFromId(@Path("idUser") int idUser, @Path("idPokemon") int idPokemon);
 
     @POST("exchange/send")
-    Call<AccountModel> sendExchangeRequest(@Body ExchangePOST request);
+    Call<AccountModel> sendExchangeRequest(@Body ExchangePOSTModel request);
 
     @GET("user/{idUser}/getFriends") //a verifier
     Call<List<FriendAccount>> getFriends(@Path("idUser") String idUser);
 
     @POST("verify")
-    Call<AccountModel> verifyAccount(@Body VerifyClass request);
+    Call<AccountModel> verifyAccount(@Body LoginSpecialModel request);
 
     @POST("login")
-    Call<AccountModel> login(@Body LoginClass request);
+    Call<AccountModel> login(@Body LoginModel request);
 
     @POST("signup")
-    Call<AccountModel> signup(@Body LoginClass request);
+    Call<AccountModel> signup(@Body LoginModel request);
 
     @GET("exchange/{idUser}")
     Call<List<ExchangeModel>> getAllExchanges(@Path("idUser") String idUser);
@@ -102,7 +102,7 @@ public interface PokemonService  {
     Call<ResponseBody> setZipCode(@Body ModifyZIPModel newZip);
 
     @GET("user/picture/list")
-    Call<List<ProfilPicture>> getListPicturess();
+    Call<List<ProfilPicture>> getListPictures();
 
     @POST("/option/editProfilPicture")
     Call<ResponseBody> setNewProfilPicture(@Body NewPictureModel newPicture);
@@ -111,5 +111,5 @@ public interface PokemonService  {
     Call<ChuckNorrisFactsModel> getChuckNorrisFact(@Path("idUser") String idUser);
 
     @POST("/user/addCardNFC")
-    Call<Card> addCardFromNFC(@Body CardNFC card);
+    Call<Card> addCardFromNFC(@Body CardNFCModel card);
 }

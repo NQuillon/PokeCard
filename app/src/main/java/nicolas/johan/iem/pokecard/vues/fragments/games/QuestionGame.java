@@ -16,15 +16,17 @@ import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.FriendAccount;
-import nicolas.johan.iem.pokecard.pojo.GetResultQuizzModel;
-import nicolas.johan.iem.pokecard.pojo.PostResultQuizzModel;
-import nicolas.johan.iem.pokecard.pojo.QuestionGameModel;
+import nicolas.johan.iem.pokecard.pojo.Model.GetResultQuizzModel;
+import nicolas.johan.iem.pokecard.pojo.Model.PostResultQuizzModel;
+import nicolas.johan.iem.pokecard.pojo.Model.QuestionGameModel;
 import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
+import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
+import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class QuestionGame extends BaseFragment {
+public class QuestionGame extends BaseFragment implements webServiceInterface {
     List<FriendAccount> friendsList;
     View parent;
     List<QuestionGameModel> listeQuestions;
@@ -84,7 +86,7 @@ public class QuestionGame extends BaseFragment {
                                 public void run() {
                                     btnTrue.setBackgroundResource(R.drawable.round_button_null);
                                     btnFalse.setBackgroundResource(R.drawable.round_button_null);
-                                    showQuestion();
+                                    showQuestion(listeQuestions);
                                 }
                             });
 
@@ -125,7 +127,7 @@ public class QuestionGame extends BaseFragment {
                                 public void run() {
                                     btnTrue.setBackgroundResource(R.drawable.round_button_null);
                                     btnFalse.setBackgroundResource(R.drawable.round_button_null);
-                                    showQuestion();
+                                    showQuestion(listeQuestions);
                                 }
                             });
 
@@ -138,28 +140,8 @@ public class QuestionGame extends BaseFragment {
             }
         });
 
-
-        Call<List<QuestionGameModel>> questions = PokemonApp.getPokemonService().getQuestionsFromCategory(data.getString("category"));
-
-        questions.enqueue(new Callback<List<QuestionGameModel>>() {
-            @Override
-            public void onResponse(Call<List<QuestionGameModel>> call, Response<List<QuestionGameModel>> response) {
-                if(response.isSuccessful()){
-                    try {
-                        listeQuestions = response.body();
-                        showQuestion();
-                    }catch(Exception e) {
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<QuestionGameModel>> call, Throwable t) {
-
-            }
-        });
-
-
+        String category = data.getString("category");
+        ManagerPokemonService.getInstance().getQuestions(category, this);
 
         return parent;
 
@@ -172,7 +154,8 @@ public class QuestionGame extends BaseFragment {
         return fragment;
     }
 
-    public void showQuestion(){
+    public void showQuestion(List<QuestionGameModel> listQuestions){
+        listeQuestions = listQuestions;
         btnTrue.setEnabled(true);
         btnFalse.setEnabled(true);
         if(numQuestion>=9){
@@ -183,55 +166,7 @@ public class QuestionGame extends BaseFragment {
 
 
             PostResultQuizzModel tmp=new PostResultQuizzModel(AccountSingleton.getInstance().getIdUser(), correctAnswers);
-            Call<GetResultQuizzModel> request = PokemonApp.getPokemonService().getResultsFromQuizz(tmp);
-            request.enqueue(new Callback<GetResultQuizzModel>() {
-                @Override
-                public void onResponse(Call<GetResultQuizzModel> call, Response<GetResultQuizzModel> response) {
-                    if(response.isSuccessful()) {
-                        try {
-                            GetResultQuizzModel tmp = response.body();
-
-                            Bundle data = new Bundle();
-                            data.putInt("correctAnswers", correctAnswers);
-                            data.putString("message", tmp.getMessage());
-                            data.putString("img", tmp.getImg());
-                            data.putInt("pokeCoinsWin", tmp.getPokeCoinsWin());
-
-                            try {
-                                data.putString("cardsWin1", tmp.getCardsWin().get(0).getUrlPicture());
-                                data.putString("cardsWin2", tmp.getCardsWin().get(1).getUrlPicture());
-                                data.putString("cardsWin3", tmp.getCardsWin().get(2).getUrlPicture());
-                                data.putString("cardsWin4", tmp.getCardsWin().get(3).getUrlPicture());
-                                data.putString("cardsWin5", tmp.getCardsWin().get(4).getUrlPicture());
-                            }catch (Exception e){
-
-                            }
-                            try {
-                                data.putString("idCardsWin1", tmp.getCardsWin().get(0).getId());
-                                data.putString("idCardsWin2", tmp.getCardsWin().get(1).getId());
-                                data.putString("idCardsWin3", tmp.getCardsWin().get(2).getId());
-                                data.putString("idCardsWin4", tmp.getCardsWin().get(3).getId());
-                                data.putString("idCardsWin5", tmp.getCardsWin().get(4).getId());
-                            }catch (Exception e){
-
-                            }
-
-                        Fragment f = (Fragment) ResultsGame.newInstance(data);
-                        showFragment(f);
-                    }catch(Exception e) {
-                    }
-                    }else{
-                        Toast.makeText(activity, "Une erreur est survenue. Veuillez réessayer dans quelques instants", Toast.LENGTH_LONG).show();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Call<GetResultQuizzModel> call, Throwable t) {
-                    Toast.makeText(activity, "Une erreur est survenue. Veuillez réessayer dans quelques instants", Toast.LENGTH_LONG).show();
-                }
-            });
-
+            ManagerPokemonService.getInstance().getResults(tmp, this);
 
         }else{
             numQuestion++;
@@ -241,5 +176,39 @@ public class QuestionGame extends BaseFragment {
         tvQuestion.setText(listeQuestions.get(numQuestion).getQuestion());
     }
 
+    public void showResults(GetResultQuizzModel results){
+        Bundle data = new Bundle();
+        data.putInt("correctAnswers", correctAnswers);
+        data.putString("message", results.getMessage());
+        data.putString("img", results.getImg());
+        data.putInt("pokeCoinsWin", results.getPokeCoinsWin());
 
+        try {
+            data.putString("cardsWin1", results.getCardsWin().get(0).getUrlPicture());
+            data.putString("cardsWin2", results.getCardsWin().get(1).getUrlPicture());
+            data.putString("cardsWin3", results.getCardsWin().get(2).getUrlPicture());
+            data.putString("cardsWin4", results.getCardsWin().get(3).getUrlPicture());
+            data.putString("cardsWin5", results.getCardsWin().get(4).getUrlPicture());
+        }catch (Exception e){}
+        try {
+            data.putString("idCardsWin1", results.getCardsWin().get(0).getId());
+            data.putString("idCardsWin2", results.getCardsWin().get(1).getId());
+            data.putString("idCardsWin3", results.getCardsWin().get(2).getId());
+            data.putString("idCardsWin4", results.getCardsWin().get(3).getId());
+            data.putString("idCardsWin5", results.getCardsWin().get(4).getId());
+        }catch (Exception e){}
+
+        Fragment f = (Fragment) ResultsGame.newInstance(data);
+        showFragment(f);
+    }
+
+    @Override
+    public void onSuccess() {
+
+    }
+
+    @Override
+    public void onFailure() {
+        Toast.makeText(activity, "Une erreur est survenue. Veuillez réessayer dans quelques instants", Toast.LENGTH_LONG).show();
+    }
 }

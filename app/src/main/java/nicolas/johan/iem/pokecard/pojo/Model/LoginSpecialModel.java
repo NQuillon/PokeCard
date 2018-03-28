@@ -1,19 +1,19 @@
-package nicolas.johan.iem.pokecard.pojo;
+package nicolas.johan.iem.pokecard.pojo.Model;
 
 /**
  * Created by iem on 13/12/2017.
  */
 
-public class VerifyClass {
+public class LoginSpecialModel {
     private String pseudo;
     private String password;
     private String idUser;
     private String picture;
 
-    public VerifyClass() {
+    public LoginSpecialModel() {
     }
 
-    public VerifyClass(String pseudo, String password, String idUser, String picture) {
+    public LoginSpecialModel(String pseudo, String password, String idUser, String picture) {
         this.pseudo = pseudo;
         this.password = password;
         this.idUser = idUser;

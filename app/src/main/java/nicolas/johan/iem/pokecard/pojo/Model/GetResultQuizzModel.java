@@ -1,6 +1,8 @@
-package nicolas.johan.iem.pokecard.pojo;
+package nicolas.johan.iem.pokecard.pojo.Model;
 
 import java.util.List;
+
+import nicolas.johan.iem.pokecard.pojo.Card;
 
 /**
  * Created by iem on 24/01/2018.

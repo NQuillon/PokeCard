@@ -1,17 +1,17 @@
-package nicolas.johan.iem.pokecard.pojo;
+package nicolas.johan.iem.pokecard.pojo.Model;
 
 /**
  * Created by iem on 13/12/2017.
  */
 
-public class LoginClass {
+public class LoginModel {
     private String pseudo;
     private String password;
 
-    public LoginClass() {
+    public LoginModel() {
     }
 
-    public LoginClass(String pseudo, String password) {
+    public LoginModel(String pseudo, String password) {
         this.pseudo = pseudo;
         this.password = password;
     }

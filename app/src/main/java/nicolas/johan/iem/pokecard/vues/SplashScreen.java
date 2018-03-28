@@ -1,6 +1,5 @@
 package nicolas.johan.iem.pokecard.vues;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -20,7 +19,7 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.pojo.AccountModel;
+import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import retrofit2.Call;
 import retrofit2.Callback;

@@ -17,41 +17,38 @@ import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.adapter.ListExchangeAdapter;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
-import nicolas.johan.iem.pokecard.pojo.ExchangeModel;
+import nicolas.johan.iem.pokecard.pojo.Model.ExchangeModel;
 import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
+import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
+import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ExchangeFragment extends BaseFragment {
+public class ExchangeFragment extends BaseFragment implements webServiceInterface {
     View parent;
     List<ExchangeModel> listeEchanges;
+    ExchangeFragment that;
 
-    public ExchangeFragment() {
-        // Required empty public constructor
-    }
+    public ExchangeFragment() {}
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         parent=inflater.inflate(R.layout.fragment_exchange, container, false);
+        that = this;
 
-
-        refreshData();
+        ManagerPokemonService.getInstance().getAllExchange(this);
 
         final SwipeRefreshLayout swipeRefresh=(SwipeRefreshLayout) parent.findViewById(R.id.swiperefresh);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshData();
+                ManagerPokemonService.getInstance().getAllExchange(that);
                 swipeRefresh.setRefreshing(false);
             }
         });
-
-
-
-
 
         FloatingActionButton fb_exchange=(FloatingActionButton) parent.findViewById(R.id.fb_exchange);
         fb_exchange.setOnClickListener(new View.OnClickListener() {
@@ -59,36 +56,10 @@ public class ExchangeFragment extends BaseFragment {
             public void onClick(View v) {
                 Fragment f = (Fragment) new NewExchangeFragment();
                 showFragment(f);
-                /*FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.content_main, f);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();*/
             }
         });
-
 
         return parent;
-    }
-
-    public void refreshData(){
-        Call<List<ExchangeModel>> exchanges =  PokemonApp.getPokemonService().getAllExchanges(AccountSingleton.getInstance().getIdUser());
-
-        exchanges.enqueue(new Callback<List<ExchangeModel>>() {
-            @Override
-            public void onResponse(Call<List<ExchangeModel>> call, Response<List<ExchangeModel>> response) {
-                if(response.isSuccessful()) {
-                    listeEchanges=response.body();
-                    refreshView();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ExchangeModel>> call, Throwable t) {
-                TextView loadingText=(TextView) parent.findViewById(R.id.loadingTextNewExchange);
-                loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
-            }
-        });
     }
 
     public static ExchangeFragment newInstance() {
@@ -100,7 +71,8 @@ public class ExchangeFragment extends BaseFragment {
         return fragment;
     }
 
-    public void refreshView() {
+    public void refreshView(List<ExchangeModel> listEchanges) {
+        listeEchanges = listEchanges;
         ListExchangeAdapter adapter=new ListExchangeAdapter(getActivity(), listeEchanges);
         ListView listview = (ListView) parent.findViewById(R.id.list_exchange);
         listview.setAdapter(adapter);
@@ -113,6 +85,14 @@ public class ExchangeFragment extends BaseFragment {
     }
 
 
+    @Override
+    public void onSuccess() {
 
+    }
 
+    @Override
+    public void onFailure() {
+        TextView loadingText=(TextView) parent.findViewById(R.id.loadingTextNewExchange);
+        loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
+    }
 }

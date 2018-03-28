@@ -17,24 +17,22 @@ import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.adapter.PokemonAdapter;
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
+import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
+import nicolas.johan.iem.pokecard.webservice.getUserPokemonInterface;
+import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PokedexFragment extends BaseFragment {
+public class PokedexFragment extends BaseFragment implements webServiceInterface, getUserPokemonInterface {
     View parent;
     LinearLayout loadingScreen;
     LinearLayout noPokemon;
-    List<Pokemon> pokedexRetrofit;
 
-    public PokedexFragment() {
-        // Required empty public constructor
-    }
+    public PokedexFragment() {}
 
     public static PokedexFragment newInstance() {
-
         Bundle args = new Bundle();
-
         PokedexFragment fragment = new PokedexFragment();
         fragment.setArguments(args);
         return fragment;
@@ -45,69 +43,16 @@ public class PokedexFragment extends BaseFragment {
         // Inflate the layout for this fragment
         parent=inflater.inflate(R.layout.fragment_pokedex, container, false);
         getActivity().setTitle("Mon Pokédex");
-        /*final ArrayList<Pokemon> monPokedex;
-        String result="";
-        try{
-            result=new GETrequest().execute("user/"+AccountSingleton.getInstance().getIdUser()+"/pokedex").get();
-        }catch (Exception e){
-
-        }
-        monPokedex=new ArrayList<Pokemon>();
-        try{
-            JSONObject resp = new JSONObject(result);
-            JSONArray jArray = resp.getJSONArray("pokedex");
-
-            for (int i=0; i < jArray.length(); i++) {
-                Pokemon tmp=new Pokemon();
-                JSONObject oneObject = jArray.getJSONObject(i);
-                tmp.setId(oneObject.getInt("id"));
-                tmp.setName(oneObject.getString("name"));
-                tmp.setUrlPicture(oneObject.getString("urlPicture"));
-                monPokedex.add(tmp);
-            }
-        }catch (Exception e){
-
-        }*/
 
         loadingScreen=(LinearLayout) parent.findViewById(R.id.loadingPokedex);
         noPokemon=(LinearLayout) parent.findViewById(R.id.noPokemon);
 
-
-            Call<List<Pokemon>> pokemons = PokemonApp.getPokemonService().getFromId(AccountSingleton.getInstance().getIdUser());
-
-            pokemons.enqueue(new Callback<List<Pokemon>>() {
-                @Override
-                public void onResponse(Call<List<Pokemon>> call, Response<List<Pokemon>> response) {
-                    if (response.isSuccessful()) {
-                        try {
-                            loadingScreen.setVisibility(View.GONE);
-                            pokedexRetrofit = response.body();
-                            if (pokedexRetrofit.size() == 0) {
-                                noPokemon.setVisibility(View.VISIBLE);
-                            }
-                            refresh(pokedexRetrofit);
-                        }catch(Exception e){}
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<Pokemon>> call, Throwable t) {
-                    try{
-                        TextView loadingText = (TextView) parent.findViewById(R.id.loadingTextPokedex);
-                        loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
-                    }catch(Exception e){
-
-                    }
-                }
-            });
-
-
-
+        ManagerPokemonService.getInstance().getUserPokemon(this, this);
 
         return parent;
     }
 
-    private void refresh(final List<Pokemon> monPokedex) {
+    public void refresh(final List<Pokemon> monPokedex) {
         PokemonAdapter myPokemonAdapter=new PokemonAdapter(getActivity(), monPokedex);
         GridView gridview = (GridView) parent.findViewById(R.id.myPokedex);
         gridview.setAdapter(myPokemonAdapter);
@@ -120,15 +65,22 @@ public class PokedexFragment extends BaseFragment {
 
                 Fragment f = DetailsPokemon.newInstance(data);
                 showFragment(f);
-
-                /*FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                f.setArguments(data);
-                fragmentTransaction.replace(R.id.content_main, f);
-                fragmentTransaction.addToBackStack("Nav");
-                fragmentTransaction.commit();*/
             }
         });
     }
 
+    public void onNoPokemon(){
+        noPokemon.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onSuccess() {
+        loadingScreen.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onFailure() {
+        TextView loadingText = (TextView) parent.findViewById(R.id.loadingTextPokedex);
+        loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
+    }
 }

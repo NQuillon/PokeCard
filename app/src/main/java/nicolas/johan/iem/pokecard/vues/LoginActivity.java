@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,19 +33,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONObject;
 
-import nicolas.johan.iem.pokecard.PokemonApp;
-import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.pojo.AccountModel;
-import nicolas.johan.iem.pokecard.pojo.LoginClass;
-import nicolas.johan.iem.pokecard.pojo.VerifyClass;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import nicolas.johan.iem.pokecard.pojo.Model.LoginModel;
+import nicolas.johan.iem.pokecard.pojo.Model.LoginSpecialModel;
+import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
 
 
 public class LoginActivity extends AppCompatActivity {
-    private static final int REQUEST_SIGNUP = 0;
 
     EditText pseudoText;
     EditText passwordText;
@@ -58,15 +51,21 @@ public class LoginActivity extends AppCompatActivity {
     SignInButton signInButton;
     GoogleSignInAccount acct;
     Context context;
+    TextView logo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        initVariables();
+        initInterface();
+        initFacebook();
+        initGoogle();
+    }
+
+    private void initVariables() {
         context=this;
-
-
-
         //Init Facebook SDK
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -78,115 +77,10 @@ public class LoginActivity extends AppCompatActivity {
         signupLink=(TextView) findViewById(R.id.link_signup);
         signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         loginButtonFacebook = (LoginButton) findViewById(R.id.login_button_facebook);
-        loginButtonFacebook.setReadPermissions("email");
-        loginButtonFacebook.setReadPermissions("public_profile");
+        logo=(TextView) findViewById(R.id.logo);
 
-        TextView textView = (TextView) signInButton.getChildAt(0);
-        textView.setText("Continuer avec Google");
-
-        //Mise en place de la police d'écriture du logo
-        Typeface tf = Typeface.createFromAsset(getAssets(),"Pokemon Solid.ttf");
-        TextView logo=(TextView) findViewById(R.id.logo);
-        logo.setTypeface(tf);
-
-        //CallBack Login Facebook
-        callbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        GraphRequest grequest = GraphRequest.newMeRequest(loginResult.getAccessToken(),
-                                new GraphRequest.GraphJSONObjectCallback() {
-                                    @Override
-                                    public void onCompleted(
-                                            JSONObject object,
-                                            GraphResponse response) {
-                                            try {
-                                                Profile profile=Profile.getCurrentProfile();
-                                                /*JSONObject jsonParam = new JSONObject();
-                                                jsonParam.put("pseudo", object.getString("first_name")+" "+object.getString("last_name"));
-                                                jsonParam.put("password", "facebook");
-                                                jsonParam.put("idUser", object.getString("id"));
-                                                jsonParam.put("profilePicture", profile.getProfilePictureUri(150,150).toString());
-
-                                                String resp=new POSTrequest().execute("verify", jsonParam).get();
-
-                                                JSONObject objResult=new JSONObject(resp);
-
-                                                AccountSingleton.getInstance().setPseudo(objResult.getString("pseudo"));
-                                                AccountSingleton.getInstance().setIdAccount(object.getString("id"));
-                                                AccountSingleton.getInstance().setPicture(objResult.getString("profilePicture"));
-                                                AccountSingleton.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
-                                                AccountSingleton.getInstance().setIdUser(objResult.getString("idUser"));
-
-                                                AccountSingleton.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").replace("[","").replace("]","").replace("\"","").split(","))));
-                                                AccountSingleton.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").split(","))));
-                                                */
-
-                                                VerifyClass request=new VerifyClass(object.getString("first_name")+" "+object.getString("last_name"), "facebook", object.getString("id"), profile.getProfilePictureUri(150,150).toString());
-                                                Call<AccountModel> call = PokemonApp.getPokemonService().verifyAccount(request);
-                                                call.enqueue(new Callback<AccountModel>() {
-                                                    @Override
-                                                    public void onResponse(retrofit2.Call<AccountModel> call, Response<AccountModel> response) {
-                                                        AccountModel tmpAccount=response.body();
-                                                        AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
-                                                        AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
-                                                        AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
-                                                        AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
-                                                        AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
-                                                        AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
-                                                        AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
-
-                                                        onLoginSuccess();
-                                                    }
-
-                                                    @Override
-                                                    public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
-                                                        Log.e("ERREUR",t.getMessage());
-                                                        Toast.makeText(LoginActivity.this, "Impossible de communiquer avec le serveur", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                            }catch(Exception e){
-                                                Toast.makeText(LoginActivity.this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
-                                            }
-                                        LoginManager.getInstance().logOut(); //déconnexion facebook
-                                    }
-                                });
-                        Bundle parameters = new Bundle();
-                        parameters.putString("fields", "email,first_name,last_name,id"); // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-                        grequest.setParameters(parameters);
-                        grequest.executeAsync();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Toast.makeText(LoginActivity.this, "Annulé", Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                        Toast.makeText(LoginActivity.this, "Erreur"+exception, Toast.LENGTH_LONG).show();
-                    }
-                });
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                login();
-            }
-        });
-
-        signupLink.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // Start the Signup activity
-                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-                startActivity(intent);
-            }
-        });
-
+    }
+    private void initGoogle() {
         //Login Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -209,6 +103,76 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+    private void initFacebook() {
+        //CallBack Login Facebook
+        callbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        GraphRequest grequest = GraphRequest.newMeRequest(loginResult.getAccessToken(),
+                                new GraphRequest.GraphJSONObjectCallback() {
+                                    @Override
+                                    public void onCompleted(
+                                            JSONObject object,
+                                            GraphResponse response) {
+                                            try {
+                                                Profile profile=Profile.getCurrentProfile();
+                                                LoginSpecialModel request = new LoginSpecialModel(object.getString("first_name")+" "+object.getString("last_name"), "facebook", object.getString("id"), profile.getProfilePictureUri(150,150).toString());
+                                                ManagerPokemonService.getInstance().loginSpecial(request, (LoginActivity) context);
+                                            }catch(Exception e){
+                                                Toast.makeText(LoginActivity.this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
+                                            }
+                                        LoginManager.getInstance().logOut(); //déconnexion facebook
+                                    }
+                                });
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "email,first_name,last_name,id"); // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
+                        grequest.setParameters(parameters);
+                        grequest.executeAsync();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(LoginActivity.this, "Annulé", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        Toast.makeText(LoginActivity.this, "Erreur"+exception, Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+    private void initInterface() {
+
+        loginButtonFacebook.setReadPermissions("email");
+        loginButtonFacebook.setReadPermissions("public_profile");
+
+        TextView textView = (TextView) signInButton.getChildAt(0);
+        textView.setText("Continuer avec Google");
+
+        //Mise en place de la police d'écriture du logo
+        Typeface tf = Typeface.createFromAsset(getAssets(),"Pokemon Solid.ttf");
+        logo.setTypeface(tf);
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                login();
+            }
+        });
+
+        signupLink.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // Start the Signup activity
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
 
     public void login() {
 
@@ -222,47 +186,9 @@ public class LoginActivity extends AppCompatActivity {
 
         String pseudo = pseudoText.getText().toString();
         String password = passwordText.getText().toString();
-        String result="";
         try {
-            /*JSONObject jsonParam = new JSONObject();
-            jsonParam.put("pseudo", pseudo);
-            jsonParam.put("password", password);
-            result=new POSTrequest().execute("login", jsonParam).get();
-
-            JSONObject objResult=new JSONObject(result);*/
-
-            LoginClass request=new LoginClass(pseudo, password);
-            Call<AccountModel> call = PokemonApp.getPokemonService().login(request);
-            call.enqueue(new Callback<AccountModel>() {
-                @Override
-                public void onResponse(retrofit2.Call<AccountModel> call, Response<AccountModel> response) {
-                    AccountModel tmpAccount=response.body();
-
-                    if(response.code()==400){
-                        Toast.makeText(context, "Login ou mot de passe incorrect", Toast.LENGTH_LONG).show();
-                        loginButton.setEnabled(true);
-                    }
-                    else {
-                        AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
-                        AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
-                        AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
-                        AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
-                        AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
-                        AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
-                        AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
-
-                        onLoginSuccess();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
-                    Log.e("ERREUR",t.getMessage());
-                    loginButton.setEnabled(true);
-                    Toast.makeText(LoginActivity.this, "Impossible de communiquer avec le serveur", Toast.LENGTH_SHORT).show();
-                }
-            });
+            LoginModel request=new LoginModel(pseudo, password);
+            ManagerPokemonService.getInstance().login(request, (LoginActivity) context);
         }catch(Exception e){
             Toast.makeText(this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
             loginButton.setEnabled(true);
@@ -282,10 +208,15 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
-
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Echec", Toast.LENGTH_LONG).show();
-
+        if(mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+        loginButton.setEnabled(true);
+    }
+    public void onBadLogin(){
+        Toast.makeText(context, "Login ou mot de passe incorrect", Toast.LENGTH_LONG).show();
         loginButton.setEnabled(true);
     }
 
@@ -327,100 +258,17 @@ public class LoginActivity extends AppCompatActivity {
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             acct = result.getSignInAccount();
-            //Toast.makeText(this, "Connecté en tant que "+acct.getDisplayName()+" ("+acct.getEmail()+")", Toast.LENGTH_LONG).show();
-            //  signInButton.setVisibility(View.INVISIBLE);
-
-            String photoUrl="";
+            String photoUrl;
             try {
                 photoUrl = acct.getPhotoUrl().toString();
-            }catch(Exception e){
-
+            }catch(Exception e) {
+                photoUrl = "https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png";
             }
-            if(photoUrl=="" || photoUrl==null){
-                photoUrl="https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png";
-            }else{
-                photoUrl=acct.getPhotoUrl().toString();
-            }
-            VerifyClass request=new VerifyClass(acct.getDisplayName(), "google", acct.getId(), photoUrl);
-            Call<AccountModel> call = PokemonApp.getPokemonService().verifyAccount(request);
-            call.enqueue(new Callback<AccountModel>() {
-                @Override
-                public void onResponse(retrofit2.Call<AccountModel> call, Response<AccountModel> response) {
-                    AccountModel tmpAccount=response.body();
-                    AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
-                    AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
-                    AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
-                    AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
-                    AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
-                    AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
-                    AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
-                    AccountSingleton.getInstance().setZipCode((tmpAccount.getZipCode()));
-
-                    onLoginSuccess();
-                }
-
-                @Override
-                public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
-                    Log.e("ERREUR",t.getMessage());
-                    mGoogleApiClient.disconnect();
-                    loginButton.setEnabled(true);
-                    Toast.makeText(LoginActivity.this, "Impossible de communiquer avec le serveur", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-
-
-
-
-/*
-            String response="";
-            try {
-                JSONObject jsonParam = new JSONObject();
-                jsonParam.put("pseudo", acct.getDisplayName());
-                jsonParam.put("password", "google");
-                jsonParam.put("idUser", acct.getId());
-                String url="";
-                try{
-                    jsonParam.put("profilePicture", acct.getPhotoUrl().toString());
-                }catch(Exception e){
-                    jsonParam.put("profilePicture", "https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png");
-                }
-                response=new POSTrequest().execute("verify", jsonParam).get();
-                //Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
-            }catch(Exception e){}
-            AccountSingleton.getInstance().setIdAccount(acct.getId());
-            String url="";
-            try{
-                url=acct.getPhotoUrl().toString();
-            }catch(Exception e){
-                url="https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png";
-            }
-
-            AccountSingleton.getInstance().setPicture(url);
-            try {
-                JSONObject objResult = new JSONObject(response);
-                AccountSingleton.getInstance().setPseudo(objResult.getString("pseudo"));
-                AccountSingleton.getInstance().setPokeCoin(objResult.getInt("pokecoin"));
-                AccountSingleton.getInstance().setIdUser(objResult.getString("idUser"));
-
-                AccountSingleton.getInstance().setListeCards(new ArrayList<String>(Arrays.asList(objResult.getString("cards").replace("[","").replace("]","").replace("\"","").split(","))));
-                AccountSingleton.getInstance().setListePokemon(new ArrayList<String>(Arrays.asList(objResult.getString("pokemon").replace("[","").replace("]","").replace("\"","").split(","))));
-
-                Intent i=new Intent(LoginActivity.this, Accueil.class);
-                startActivity(i);
-                finish();
-            }catch(Exception e){
-                Toast.makeText(this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
-                mGoogleApiClient.disconnect();
-            }
-*/
-
-
+            LoginSpecialModel request=new LoginSpecialModel(acct.getDisplayName(), "google", acct.getId(), photoUrl);
+            ManagerPokemonService.getInstance().loginSpecial(request, (LoginActivity) context);
         } else {
             Toast.makeText(this, "Echec, vous n'êtes pas connecté", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
 }

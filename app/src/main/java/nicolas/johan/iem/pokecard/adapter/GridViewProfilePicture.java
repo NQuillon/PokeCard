@@ -1,6 +1,9 @@
 package nicolas.johan.iem.pokecard.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +12,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import nicolas.johan.iem.pokecard.R;
@@ -41,10 +45,12 @@ public class GridViewProfilePicture extends ArrayAdapter<ProfilPicture>{
             convertView.setTag(viewHolder);
         }
 
-        ProfilPicture tmppicture = getItem(position);
+        ProfilPicture tmpPicture = getItem(position);
 
+        byte[] imageBytes = Base64.decode(tmpPicture.getBase64(), Base64.DEFAULT);
+        Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        viewHolder.img.setImageBitmap(decodedImage);
 
-        Picasso.with(context).load(tmppicture.getUrl()).into(viewHolder.img);
         return convertView;
     }
 
