@@ -7,18 +7,24 @@ import java.util.ArrayList;
  */
 
 public class AccountSingleton {
+    /**
+     * Instance unique non préinitialisée
+     */
+    private static AccountSingleton INSTANCE = null;
     private String idUser; //id bd
     private String pseudo;
     private String picture;
-    private ArrayList<String> listePokemon=new ArrayList<>();
-    private ArrayList<String> listeCards=new ArrayList<>();
+    private ArrayList<String> listePokemon = new ArrayList<>();
+    private ArrayList<String> listeCards = new ArrayList<>();
     private int pokeCoin;
     private String zipCode;
     private String idAccount; //id facebook/google
 
-    /** Constructeur privé */
-    private AccountSingleton()
-    {}
+    /**
+     * Constructeur privé
+     */
+    private AccountSingleton() {
+    }
 
     public AccountSingleton(String idUser, String pseudo, String picture, ArrayList<String> listePokemon, ArrayList<String> listeCards, int pokeCoin, String idAccount, String zipCode) {
         this.idUser = idUser;
@@ -28,7 +34,17 @@ public class AccountSingleton {
         this.listeCards = listeCards;
         this.pokeCoin = pokeCoin;
         this.idAccount = idAccount;
-        this.zipCode=zipCode;
+        this.zipCode = zipCode;
+    }
+
+    /**
+     * Point d'accès pour l'instance unique du singleton
+     */
+    public static AccountSingleton getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new AccountSingleton();
+        }
+        return INSTANCE;
     }
 
     public String getZipCode() {
@@ -37,18 +53,6 @@ public class AccountSingleton {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
-    }
-
-    /** Instance unique non préinitialisée */
-    private static AccountSingleton INSTANCE = null;
-
-    /** Point d'accès pour l'instance unique du singleton */
-    public static AccountSingleton getInstance()
-    {
-        if (INSTANCE == null)
-        { 	INSTANCE = new AccountSingleton();
-        }
-        return INSTANCE;
     }
 
     public ArrayList<String> getListeCards() {

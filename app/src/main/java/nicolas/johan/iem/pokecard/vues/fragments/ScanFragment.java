@@ -19,25 +19,8 @@ import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
 public class ScanFragment extends BaseFragment implements webServiceInterface {
     View parent;
     ImageView cardTv;
-    public ScanFragment() {}
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        parent=inflater.inflate(R.layout.fragment_scan, container, false);
-
-        Bundle data=getArguments();
-        String msg=data.getString("message");
-
-        ImageView nfcGif=(ImageView)parent.findViewById(R.id.nfcGif);
-        GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(nfcGif);
-        Glide.with(this).load(R.raw.nfc).into(imageViewTarget);
-
-        cardTv=parent.findViewById(R.id.cardNFC);
-
-        ManagerPokemonService.getInstance().addCardNFC(msg, this);
-
-        return parent;
+    public ScanFragment() {
     }
 
     public static ScanFragment newInstance(Bundle data) {
@@ -46,16 +29,36 @@ public class ScanFragment extends BaseFragment implements webServiceInterface {
         return fragment;
     }
 
-    public void afficheCard(Card card){
-        try{
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        parent = inflater.inflate(R.layout.fragment_scan, container, false);
+
+        Bundle data = getArguments();
+        String msg = data.getString("message");
+
+        ImageView nfcGif = (ImageView) parent.findViewById(R.id.nfcGif);
+        GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(nfcGif);
+        Glide.with(this).load(R.raw.nfc).into(imageViewTarget);
+
+        cardTv = parent.findViewById(R.id.cardNFC);
+
+        ManagerPokemonService.getInstance().addCardNFC(msg, this);
+
+        return parent;
+    }
+
+    public void afficheCard(Card card) {
+        try {
             Picasso.with(activity).load(card.getUrlPicture()).into(cardTv);
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
     }
 
     @Override
     public void onSuccess() {
-            activity.update();
-            Toast.makeText(activity, "Carte ajouté à votre pokedex !", Toast.LENGTH_SHORT).show();
+        activity.update();
+        Toast.makeText(activity, "Carte ajouté à votre pokedex !", Toast.LENGTH_SHORT).show();
     }
 
     @Override

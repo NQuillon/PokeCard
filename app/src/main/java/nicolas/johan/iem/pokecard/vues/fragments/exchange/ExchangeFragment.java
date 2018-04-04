@@ -13,35 +13,39 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.adapter.ListExchangeAdapter;
-import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Model.ExchangeModel;
 import nicolas.johan.iem.pokecard.vues.fragments.BaseFragment;
 import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
 import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ExchangeFragment extends BaseFragment implements webServiceInterface {
     View parent;
     List<ExchangeModel> listeEchanges;
     ExchangeFragment that;
 
-    public ExchangeFragment() {}
+    public ExchangeFragment() {
+    }
 
+    public static ExchangeFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        ExchangeFragment fragment = new ExchangeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        parent=inflater.inflate(R.layout.fragment_exchange, container, false);
+        parent = inflater.inflate(R.layout.fragment_exchange, container, false);
         that = this;
 
         ManagerPokemonService.getInstance().getAllExchange(this);
 
-        final SwipeRefreshLayout swipeRefresh=(SwipeRefreshLayout) parent.findViewById(R.id.swiperefresh);
+        final SwipeRefreshLayout swipeRefresh = (SwipeRefreshLayout) parent.findViewById(R.id.swiperefresh);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -50,7 +54,7 @@ public class ExchangeFragment extends BaseFragment implements webServiceInterfac
             }
         });
 
-        FloatingActionButton fb_exchange=(FloatingActionButton) parent.findViewById(R.id.fb_exchange);
+        FloatingActionButton fb_exchange = (FloatingActionButton) parent.findViewById(R.id.fb_exchange);
         fb_exchange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,23 +66,14 @@ public class ExchangeFragment extends BaseFragment implements webServiceInterfac
         return parent;
     }
 
-    public static ExchangeFragment newInstance() {
-
-        Bundle args = new Bundle();
-        
-        ExchangeFragment fragment = new ExchangeFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     public void refreshView(List<ExchangeModel> listEchanges) {
         listeEchanges = listEchanges;
-        ListExchangeAdapter adapter=new ListExchangeAdapter(getActivity(), listeEchanges);
+        ListExchangeAdapter adapter = new ListExchangeAdapter(getActivity(), listeEchanges);
         ListView listview = (ListView) parent.findViewById(R.id.list_exchange);
         listview.setAdapter(adapter);
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 //todo
             }
         });
@@ -92,7 +87,7 @@ public class ExchangeFragment extends BaseFragment implements webServiceInterfac
 
     @Override
     public void onFailure() {
-        TextView loadingText=(TextView) parent.findViewById(R.id.loadingTextNewExchange);
+        TextView loadingText = (TextView) parent.findViewById(R.id.loadingTextNewExchange);
         loadingText.setText("Une erreur est survenue, veuillez réessayer dans un moment.");
     }
 }

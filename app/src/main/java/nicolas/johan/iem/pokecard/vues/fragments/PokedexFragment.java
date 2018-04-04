@@ -16,9 +16,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import nicolas.johan.iem.pokecard.pojo.Pokemon;
-import nicolas.johan.iem.pokecard.adapter.PokemonAdapter;
 import nicolas.johan.iem.pokecard.R;
+import nicolas.johan.iem.pokecard.adapter.PokemonAdapter;
+import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
 import nicolas.johan.iem.pokecard.webservice.getUserPokemonInterface;
 import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
@@ -29,7 +29,8 @@ public class PokedexFragment extends BaseFragment implements webServiceInterface
     LinearLayout noPokemon;
     List<Pokemon> listPokemons;
 
-    public PokedexFragment() {}
+    public PokedexFragment() {
+    }
 
     public static PokedexFragment newInstance() {
         Bundle args = new Bundle();
@@ -39,18 +40,18 @@ public class PokedexFragment extends BaseFragment implements webServiceInterface
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        parent=inflater.inflate(R.layout.fragment_pokedex, container, false);
-        listPokemons =new ArrayList<>();
+        parent = inflater.inflate(R.layout.fragment_pokedex, container, false);
+        listPokemons = new ArrayList<>();
         getActivity().setTitle("Mon Pokédex");
 
-        loadingScreen=(LinearLayout) parent.findViewById(R.id.loadingPokedex);
-        noPokemon=(LinearLayout) parent.findViewById(R.id.noPokemon);
+        loadingScreen = (LinearLayout) parent.findViewById(R.id.loadingPokedex);
+        noPokemon = (LinearLayout) parent.findViewById(R.id.noPokemon);
 
         ManagerPokemonService.getInstance().getUserPokemon(this, this);
 
-        EditText searchBar=(EditText)parent.findViewById(R.id.searchBar_Pokedex);
+        EditText searchBar = (EditText) parent.findViewById(R.id.searchBar_Pokedex);
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -59,9 +60,9 @@ public class PokedexFragment extends BaseFragment implements webServiceInterface
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                List<Pokemon> tmp=new ArrayList<>();
-                for(int i=0; i< listPokemons.size(); i++){
-                    if(listPokemons.get(i).getName().contains(s.toString().toLowerCase())){
+                List<Pokemon> tmp = new ArrayList<>();
+                for (int i = 0; i < listPokemons.size(); i++) {
+                    if (listPokemons.get(i).getName().contains(s.toString().toLowerCase())) {
                         tmp.add(listPokemons.get(i));
                     }
                 }
@@ -78,19 +79,19 @@ public class PokedexFragment extends BaseFragment implements webServiceInterface
     }
 
     public void refresh(final List<Pokemon> monPokedex) {
-        if(listPokemons.size()==0){
-            listPokemons=monPokedex;
+        if (listPokemons.size() == 0) {
+            listPokemons = monPokedex;
         }
 
-        PokemonAdapter myPokemonAdapter=new PokemonAdapter(getActivity(), monPokedex);
+        PokemonAdapter myPokemonAdapter = new PokemonAdapter(getActivity(), monPokedex);
         GridView gridview = (GridView) parent.findViewById(R.id.myPokedex);
         gridview.setAdapter(myPokemonAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
-                Bundle data=new Bundle();
-                data.putInt("id",monPokedex.get(position).getId());
+                Bundle data = new Bundle();
+                data.putInt("id", monPokedex.get(position).getId());
 
                 Fragment f = DetailsPokemon.newInstance(data);
                 showFragment(f);
@@ -98,7 +99,7 @@ public class PokedexFragment extends BaseFragment implements webServiceInterface
         });
     }
 
-    public void onNoPokemon(){
+    public void onNoPokemon() {
         noPokemon.setVisibility(View.VISIBLE);
     }
 

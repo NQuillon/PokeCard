@@ -11,7 +11,7 @@ import nicolas.johan.iem.pokecard.R;
  * Created by iem on 13/12/2017.
  */
 
-public class BaseActivity extends AppCompatActivity{
+public class BaseActivity extends AppCompatActivity {
 
     public void showFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();

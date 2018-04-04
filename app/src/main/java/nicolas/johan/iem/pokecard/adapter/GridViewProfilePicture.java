@@ -10,9 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
-
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import nicolas.johan.iem.pokecard.R;
@@ -22,13 +19,13 @@ import nicolas.johan.iem.pokecard.pojo.ProfilPicture;
  * Created by iem on 14/11/2017.
  */
 
-public class GridViewProfilePicture extends ArrayAdapter<ProfilPicture>{
+public class GridViewProfilePicture extends ArrayAdapter<ProfilPicture> {
     PictureViewHolder viewHolder;
     Context context;
 
     public GridViewProfilePicture(Context context, List<ProfilPicture> pictures) {
         super(context, 0, pictures);
-        this.context=context;
+        this.context = context;
     }
 
     @Override

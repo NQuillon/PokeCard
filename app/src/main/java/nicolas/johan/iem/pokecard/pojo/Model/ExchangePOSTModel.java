@@ -1,9 +1,5 @@
 package nicolas.johan.iem.pokecard.pojo.Model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 public class ExchangePOSTModel {
 
     private int idSender;
@@ -19,7 +15,7 @@ public class ExchangePOSTModel {
         this.idSender = idSender;
         this.idReceiver = idReceiver;
         this.idCard = idCard;
-        this.status=status;
+        this.status = status;
     }
 
     public int getIdSender() {

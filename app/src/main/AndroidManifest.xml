@@ -5,7 +5,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.NFC" />
 
-    <uses-feature android:name="android.hardware.nfc" android:required="true" />
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
 
 
     <application
@@ -57,12 +59,12 @@
             android:name=".vues.Accueil"
             android:label="@string/title_activity_accueil"
             android:theme="@style/AppTheme.NoActionBar">
-        <intent-filter>
-            <action android:name="android.nfc.action.TAG_DISCOVERED"/>
-            <category android:name="android.intent.category.DEFAULT"/>
-            <data android:mimeType="text/plain"/>
-        </intent-filter>
-    </activity>
+            <intent-filter>
+                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

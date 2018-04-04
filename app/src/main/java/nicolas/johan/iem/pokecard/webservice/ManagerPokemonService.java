@@ -7,7 +7,6 @@ import java.util.List;
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Card;
-import nicolas.johan.iem.pokecard.pojo.Model.ExchangePOSTModel;
 import nicolas.johan.iem.pokecard.pojo.FriendAccount;
 import nicolas.johan.iem.pokecard.pojo.GameCategory;
 import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
@@ -16,6 +15,7 @@ import nicolas.johan.iem.pokecard.pojo.Model.CardNFCModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ChuckNorrisFactsModel;
 import nicolas.johan.iem.pokecard.pojo.Model.EditPseudoModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ExchangeModel;
+import nicolas.johan.iem.pokecard.pojo.Model.ExchangePOSTModel;
 import nicolas.johan.iem.pokecard.pojo.Model.GetResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.Model.LoginModel;
 import nicolas.johan.iem.pokecard.pojo.Model.LoginSpecialModel;
@@ -56,9 +56,11 @@ import retrofit2.Response;
 public class ManagerPokemonService {
 
     private static ManagerPokemonService INSTANCE = null;
-    private ManagerPokemonService() {}
 
-    public static ManagerPokemonService getInstance(){
+    private ManagerPokemonService() {
+    }
+
+    public static ManagerPokemonService getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new ManagerPokemonService();
         }
@@ -67,13 +69,13 @@ public class ManagerPokemonService {
 
     //region AUTHENTIFICATION
 
-    public void login(LoginModel loginModel, final LoginActivity callback){
+    public void login(LoginModel loginModel, final LoginActivity callback) {
         Call<AccountModel> call = PokemonApp.getPokemonService().login(loginModel);
         call.enqueue(new Callback<AccountModel>() {
             @Override
             public void onResponse(retrofit2.Call<AccountModel> call, Response<AccountModel> response) {
-                AccountModel tmpAccount=response.body();
-                if(response.code()==400){
+                AccountModel tmpAccount = response.body();
+                if (response.code() == 400) {
                     callback.onBadLogin();
                 } else {
                     AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
@@ -89,17 +91,18 @@ public class ManagerPokemonService {
 
             @Override
             public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
-                Log.e("ERREUR",t.getMessage());
+                Log.e("ERREUR", t.getMessage());
                 callback.onLoginFailed();
             }
         });
     }
-    public void loginSpecial(LoginSpecialModel account, final LoginActivity callback){
+
+    public void loginSpecial(LoginSpecialModel account, final LoginActivity callback) {
         Call<AccountModel> call = PokemonApp.getPokemonService().verifyAccount(account);
         call.enqueue(new Callback<AccountModel>() {
             @Override
             public void onResponse(Call<AccountModel> call, Response<AccountModel> response) {
-                AccountModel tmpAccount=response.body();
+                AccountModel tmpAccount = response.body();
                 AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
                 AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
                 AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
@@ -113,22 +116,22 @@ public class ManagerPokemonService {
 
             @Override
             public void onFailure(Call<AccountModel> call, Throwable t) {
-                Log.e("ERREUR",t.getMessage());
+                Log.e("ERREUR", t.getMessage());
                 callback.onLoginFailed();
             }
         });
     }
-    public void signUp(LoginModel loginModel, final SignUpActivity callback){
+
+    public void signUp(LoginModel loginModel, final SignUpActivity callback) {
         Call<AccountModel> call = PokemonApp.getPokemonService().signup(loginModel);
         call.enqueue(new Callback<AccountModel>() {
             @Override
             public void onResponse(retrofit2.Call<AccountModel> call, Response<AccountModel> response) {
-                AccountModel tmpAccount=response.body();
+                AccountModel tmpAccount = response.body();
 
-                if(response.code()==400){
+                if (response.code() == 400) {
                     callback.onBadSignup();
-                }
-                else {
+                } else {
                     AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
                     AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
                     AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
@@ -144,7 +147,7 @@ public class ManagerPokemonService {
 
             @Override
             public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
-                Log.e("ERREUR",t.getMessage());
+                Log.e("ERREUR", t.getMessage());
                 callback.onSignupFailed();
             }
         });
@@ -154,7 +157,7 @@ public class ManagerPokemonService {
 
     //region USER
 
-    public void getUserAccount(String idUser, final webServiceInterface callback){
+    public void getUserAccount(String idUser, final webServiceInterface callback) {
         Call<AccountModel> request = PokemonApp.getPokemonService().majAccount(idUser);
         request.enqueue(new Callback<AccountModel>() {
             @Override
@@ -184,7 +187,8 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void getFriends(final getFriendsInterface callback, final webServiceInterface callbackWeb){
+
+    public void getFriends(final getFriendsInterface callback, final webServiceInterface callbackWeb) {
         Call<List<FriendAccount>> friends = PokemonApp.getPokemonService().getFriends(AccountSingleton.getInstance().getIdUser());
         friends.enqueue(new Callback<List<FriendAccount>>() {
             @Override
@@ -193,7 +197,8 @@ public class ManagerPokemonService {
                     try {
                         callbackWeb.onSuccess();
                         callback.refresh(response.body());
-                    }catch(Exception e) {}
+                    } catch (Exception e) {
+                    }
                 }
             }
 
@@ -203,18 +208,20 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void addFriend(final ManageFriendsModel friend, final FriendsFragment callback){
+
+    public void addFriend(final ManageFriendsModel friend, final FriendsFragment callback) {
         Call<List<FriendAccount>> addfriend = PokemonApp.getPokemonService().addFriendByPseudo(AccountSingleton.getInstance().getIdUser(), friend);
         addfriend.enqueue(new Callback<List<FriendAccount>>() {
             @Override
             public void onResponse(Call<List<FriendAccount>> call, Response<List<FriendAccount>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     try {
                         callback.onSuccess();
                         callback.onAddFriend(friend.getPseudoFriend());
                         callback.refresh(response.body());
-                    }catch(Exception e) {}
-                }else{
+                    } catch (Exception e) {
+                    }
+                } else {
                     callback.onFailure();
                 }
             }
@@ -225,18 +232,19 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void delFriend(final ManageFriendsModel friend, final FriendsFragment callback){
+
+    public void delFriend(final ManageFriendsModel friend, final FriendsFragment callback) {
         Call<List<FriendAccount>> delfriend = PokemonApp.getPokemonService().delFriendByPseudo(AccountSingleton.getInstance().getIdUser(), friend);
         delfriend.enqueue(new Callback<List<FriendAccount>>() {
             @Override
             public void onResponse(Call<List<FriendAccount>> call, Response<List<FriendAccount>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     try {
                         callback.onDelFriend(friend.getPseudoFriend());
                         callback.refresh(response.body());
-                    }catch(Exception e) {
+                    } catch (Exception e) {
                     }
-                }else{
+                } else {
                     callback.onFailure();
                 }
             }
@@ -252,16 +260,17 @@ public class ManagerPokemonService {
 
     //region POKEMON
 
-    public void getAllPokemon(final AllPokemonsFragment callback){
-        Call<List<Pokemon>> pokemons =  PokemonApp.getPokemonService().getAll();
+    public void getAllPokemon(final AllPokemonsFragment callback) {
+        Call<List<Pokemon>> pokemons = PokemonApp.getPokemonService().getAll();
         pokemons.enqueue(new Callback<List<Pokemon>>() {
             @Override
             public void onResponse(Call<List<Pokemon>> call, Response<List<Pokemon>> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     try {
                         callback.refresh(response.body());
                         callback.onSuccess();
-                    }catch(Exception e){}
+                    } catch (Exception e) {
+                    }
                 }
             }
 
@@ -271,7 +280,8 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void getUserPokemon(final getUserPokemonInterface callback, final webServiceInterface callbackWeb){
+
+    public void getUserPokemon(final getUserPokemonInterface callback, final webServiceInterface callbackWeb) {
         Call<List<Pokemon>> pokemons = PokemonApp.getPokemonService().getFromId(AccountSingleton.getInstance().getIdUser());
         pokemons.enqueue(new Callback<List<Pokemon>>() {
             @Override
@@ -283,30 +293,35 @@ public class ManagerPokemonService {
                         if (response.body().size() == 0) {
                             callback.onNoPokemon();
                         }
-                    }catch(Exception e){}
+                    } catch (Exception e) {
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<List<Pokemon>> call, Throwable t) {
-                try{
+                try {
                     callbackWeb.onFailure();
-                }catch(Exception e){}
+                } catch (Exception e) {
+                }
             }
         });
     }
-    public void getPokemonDetails(int idPokemon, final DetailsPokemon callback){
-        Call<PokemonDetails> pokdet =  PokemonApp.getPokemonService().getDetails(idPokemon);
+
+    public void getPokemonDetails(int idPokemon, final DetailsPokemon callback) {
+        Call<PokemonDetails> pokdet = PokemonApp.getPokemonService().getDetails(idPokemon);
         pokdet.enqueue(new Callback<PokemonDetails>() {
             @Override
             public void onResponse(Call<PokemonDetails> call, Response<PokemonDetails> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     try {
                         callback.onSuccess();
                         callback.refresh(response.body());
-                    }catch(Exception e) {}
+                    } catch (Exception e) {
+                    }
                 }
             }
+
             @Override
             public void onFailure(Call<PokemonDetails> call, Throwable t) {
                 callback.onFailure();
@@ -318,12 +333,12 @@ public class ManagerPokemonService {
 
     //region CARDS
 
-    public void getCardsById(int idUser, int Id, final NewExchangeFragment callback){
-        Call<List<Card>> list =  PokemonApp.getPokemonService().getCardsFromId(idUser, Id);
+    public void getCardsById(int idUser, int Id, final NewExchangeFragment callback) {
+        Call<List<Card>> list = PokemonApp.getPokemonService().getCardsFromId(idUser, Id);
         list.enqueue(new Callback<List<Card>>() {
             @Override
             public void onResponse(Call<List<Card>> call, Response<List<Card>> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     callback.showListCards(response.body());
                 }
             }
@@ -334,12 +349,13 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void addCardNFC(String message, final ScanFragment callback){
-        Call<Card> request= PokemonApp.getPokemonService().addCardFromNFC(new CardNFCModel(AccountSingleton.getInstance().getIdUser(), message));
+
+    public void addCardNFC(String message, final ScanFragment callback) {
+        Call<Card> request = PokemonApp.getPokemonService().addCardFromNFC(new CardNFCModel(AccountSingleton.getInstance().getIdUser(), message));
         request.enqueue(new Callback<Card>() {
             @Override
             public void onResponse(Call<Card> call, Response<Card> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     callback.onSuccess();
                     callback.afficheCard(response.body());
                 }
@@ -351,15 +367,16 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void getListBoosters(final StoreFragment callback){
+
+    public void getListBoosters(final StoreFragment callback) {
         Call<List<StoreItem>> listeItems = PokemonApp.getPokemonService().getItemsStore();
         listeItems.enqueue(new Callback<List<StoreItem>>() {
             @Override
             public void onResponse(Call<List<StoreItem>> call, Response<List<StoreItem>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     try {
                         callback.refresh(response.body());
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                 }
@@ -371,12 +388,13 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void buyBooster(BuyModel buyModel, final StoreFragment callback){
+
+    public void buyBooster(BuyModel buyModel, final StoreFragment callback) {
         Call<List<Card>> buyRequest = PokemonApp.getPokemonService().buyBooster(buyModel);
         buyRequest.enqueue(new Callback<List<Card>>() {
             @Override
             public void onResponse(Call<List<Card>> call, Response<List<Card>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     callback.onBuy(response.body());
                     callback.onSuccess();
                 }
@@ -393,13 +411,13 @@ public class ManagerPokemonService {
 
     //region EXCHANGE
 
-    public void getAllExchange(final ExchangeFragment callback){
-        Call<List<ExchangeModel>> exchanges =  PokemonApp.getPokemonService().getAllExchanges(AccountSingleton.getInstance().getIdUser());
+    public void getAllExchange(final ExchangeFragment callback) {
+        Call<List<ExchangeModel>> exchanges = PokemonApp.getPokemonService().getAllExchanges(AccountSingleton.getInstance().getIdUser());
 
         exchanges.enqueue(new Callback<List<ExchangeModel>>() {
             @Override
             public void onResponse(Call<List<ExchangeModel>> call, Response<List<ExchangeModel>> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     callback.refreshView(response.body());
                 }
             }
@@ -410,7 +428,8 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void sendExchange(ExchangePOSTModel exchangePOSTModel, final ReceiverExchange callback){
+
+    public void sendExchange(ExchangePOSTModel exchangePOSTModel, final ReceiverExchange callback) {
         Call<AccountModel> call = PokemonApp.getPokemonService().sendExchangeRequest(exchangePOSTModel);
         call.enqueue(new Callback<AccountModel>() {
             @Override
@@ -429,12 +448,12 @@ public class ManagerPokemonService {
 
     //region GAMES
 
-    public void getListCategories(final CategoriesFragment callback){
+    public void getListCategories(final CategoriesFragment callback) {
         Call<List<GameCategory>> cat = PokemonApp.getPokemonService().getAllCategories();
         cat.enqueue(new Callback<List<GameCategory>>() {
             @Override
             public void onResponse(Call<List<GameCategory>> call, Response<List<GameCategory>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     callback.refresh(response.body());
                 }
             }
@@ -445,12 +464,13 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void getQuestions(String category, final QuestionGame callback){
+
+    public void getQuestions(String category, final QuestionGame callback) {
         Call<List<QuestionGameModel>> questions = PokemonApp.getPokemonService().getQuestionsFromCategory(category);
         questions.enqueue(new Callback<List<QuestionGameModel>>() {
             @Override
             public void onResponse(Call<List<QuestionGameModel>> call, Response<List<QuestionGameModel>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     callback.showQuestion(response.body());
                 }
             }
@@ -461,14 +481,15 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void getResults(PostResultQuizzModel postResultQuizzModel, final QuestionGame callback){
+
+    public void getResults(PostResultQuizzModel postResultQuizzModel, final QuestionGame callback) {
         Call<GetResultQuizzModel> request = PokemonApp.getPokemonService().getResultsFromQuizz(postResultQuizzModel);
         request.enqueue(new Callback<GetResultQuizzModel>() {
             @Override
             public void onResponse(Call<GetResultQuizzModel> call, Response<GetResultQuizzModel> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     callback.showResults(response.body());
-                }else{
+                } else {
                     callback.onFailure();
                 }
 
@@ -480,17 +501,18 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void getChuckNorrisFact(final ChuckNorrisFragment callback){
+
+    public void getChuckNorrisFact(final ChuckNorrisFragment callback) {
         Call<ChuckNorrisFactsModel> request = PokemonApp.getPokemonService().getChuckNorrisFact(AccountSingleton.getInstance().getIdUser());
         request.enqueue(new Callback<ChuckNorrisFactsModel>() {
             @Override
             public void onResponse(Call<ChuckNorrisFactsModel> call, Response<ChuckNorrisFactsModel> response) {
-                if(response.isSuccessful()){
-                    try{
-                        ChuckNorrisFactsModel tmp=response.body();
+                if (response.isSuccessful()) {
+                    try {
+                        ChuckNorrisFactsModel tmp = response.body();
                         callback.loadFact(tmp);
                         callback.onSuccess();
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         callback.onFailure();
                     }
                 }
@@ -507,14 +529,14 @@ public class ManagerPokemonService {
 
     //region OPTION
 
-    public void editPseudo(EditPseudoModel pseudoModel, final SettingsFragment callback){
+    public void editPseudo(EditPseudoModel pseudoModel, final SettingsFragment callback) {
         Call<AccountModel> editPseudo = PokemonApp.getPokemonService().editPseudo(pseudoModel);
         editPseudo.enqueue(new Callback<AccountModel>() {
             @Override
             public void onResponse(Call<AccountModel> call, Response<AccountModel> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     callback.onSuccess();
-                }else{
+                } else {
                     callback.onFailure();
                 }
             }
@@ -525,14 +547,15 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void editZipCode(ModifyZIPModel modifyZIPModel, final  SettingsFragment callback){
+
+    public void editZipCode(ModifyZIPModel modifyZIPModel, final SettingsFragment callback) {
         Call<ResponseBody> editZIP = PokemonApp.getPokemonService().setZipCode(modifyZIPModel);
         editZIP.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful() && response.code()!=400){
+                if (response.isSuccessful() && response.code() != 400) {
                     callback.onSuccess();
-                }else{
+                } else {
                     callback.onFailure();
                 }
             }
@@ -543,6 +566,7 @@ public class ManagerPokemonService {
             }
         });
     }
+
     public void editProfilPicture(NewPictureModel newPictureModel, final SettingsFragment callback) {
         Call<ResponseBody> setNewPicture = PokemonApp.getPokemonService().setNewProfilPicture(newPictureModel);
         setNewPicture.enqueue(new Callback<ResponseBody>() {
@@ -559,15 +583,17 @@ public class ManagerPokemonService {
             }
         });
     }
-    public void getListPictures(final SettingsFragment callback){
+
+    public void getListPictures(final SettingsFragment callback) {
         Call<List<ProfilPicture>> getList = PokemonApp.getPokemonService().getListPictures();
         getList.enqueue(new Callback<List<ProfilPicture>>() {
             @Override
             public void onResponse(Call<List<ProfilPicture>> call, Response<List<ProfilPicture>> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     callback.initListPictures(response.body());
                 }
             }
+
             @Override
             public void onFailure(Call<List<ProfilPicture>> call, Throwable t) {
                 callback.onFailure();
@@ -580,20 +606,23 @@ public class ManagerPokemonService {
 
     //region METEO
 
-    public void getMeteo(String idUser, final Accueil accueil){
+    public void getMeteo(String idUser, final Accueil accueil) {
         Call<MeteoModel> getMeteo = PokemonApp.getPokemonService().getMeteoFromId(idUser);
         getMeteo.enqueue(new Callback<MeteoModel>() {
             @Override
             public void onResponse(Call<MeteoModel> call, Response<MeteoModel> response) {
-                if(response.isSuccessful()){
-                    try{
-                        MeteoModel tmp=response.body();
+                if (response.isSuccessful()) {
+                    try {
+                        MeteoModel tmp = response.body();
                         accueil.onMeteo(tmp);
-                    }catch (Exception e){}
+                    } catch (Exception e) {
+                    }
                 }
             }
+
             @Override
-            public void onFailure(Call<MeteoModel> call, Throwable t) {}
+            public void onFailure(Call<MeteoModel> call, Throwable t) {
+            }
         });
     }
 

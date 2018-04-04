@@ -1,6 +1,5 @@
 package nicolas.johan.iem.pokecard.vues;
 
-import android.accounts.Account;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,9 +28,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Model.MeteoModel;
 import nicolas.johan.iem.pokecard.vues.fragments.AllPokemonsFragment;
@@ -44,9 +41,6 @@ import nicolas.johan.iem.pokecard.vues.fragments.exchange.ExchangeFragment;
 import nicolas.johan.iem.pokecard.vues.fragments.games.GameFragment;
 import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
 import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Accueil extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, webServiceInterface {
 
@@ -75,8 +69,8 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
         }
         mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
-        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor prefsEdit=prefs.edit();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor prefsEdit = prefs.edit();
         prefsEdit.putString("idUser", AccountSingleton.getInstance().getIdUser());
         prefsEdit.apply();
 
@@ -170,8 +164,8 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
             getSupportActionBar().setTitle("Paramètres");
         } else if (id == R.id.nav_deco) {
             clearBackstack();
-            SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
-            SharedPreferences.Editor prefsEdit=prefs.edit();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor prefsEdit = prefs.edit();
             prefsEdit.putBoolean("keepConnected", false);
             prefsEdit.apply();
             finish();
@@ -205,7 +199,7 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
     }
 
     @Override
-    protected void onNewIntent(Intent intent){
+    protected void onNewIntent(Intent intent) {
         getTagInfo(intent);
     }
 
@@ -220,11 +214,11 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
             System.out.println(message);
             ndef.close();
             clearBackstack();
-            Bundle data=new Bundle();
-            data.putString("message",message);
+            Bundle data = new Bundle();
+            data.putString("message", message);
             showFragment(ScanFragment.newInstance(data));
             getSupportActionBar().setTitle("Scan NFC");
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -233,21 +227,21 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
     public void onSuccess() {
 
         profileImage = (ImageView) header.findViewById(R.id.profileImage);
-        if(URLUtil.isValidUrl(AccountSingleton.getInstance().getPicture())) {
+        if (URLUtil.isValidUrl(AccountSingleton.getInstance().getPicture())) {
             Picasso.with(getBaseContext()).load(AccountSingleton.getInstance().getPicture()).into(profileImage);
-        }else{
+        } else {
             byte[] imageBytes = Base64.decode(AccountSingleton.getInstance().getPicture(), Base64.DEFAULT);
             Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
             profileImage.setImageBitmap(decodedImage);
         }
 
         pseudo_header.setText(AccountSingleton.getInstance().getPseudo());
-        if(AccountSingleton.getInstance().getListeCards().get(0).equals("")){
+        if (AccountSingleton.getInstance().getListeCards().get(0).equals("")) {
             nbCards.setText("0");
-        }else{
-            nbCards.setText(""+ AccountSingleton.getInstance().getListeCards().size());
+        } else {
+            nbCards.setText("" + AccountSingleton.getInstance().getListeCards().size());
         }
-        pokecoin.setText(""+AccountSingleton.getInstance().getPokeCoin());
+        pokecoin.setText("" + AccountSingleton.getInstance().getPokeCoin());
     }
 
     @Override
@@ -255,9 +249,9 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
         Toast.makeText(getBaseContext(), "Impossible de mettre à jour le compte", Toast.LENGTH_SHORT).show();
     }
 
-    public void onMeteo(MeteoModel meteoModel){
-        ImageView imgMeteo=(ImageView) findViewById(R.id.imgMeteo);
-        TextView tempMeteo=(TextView) findViewById(R.id.tempMeteo);
+    public void onMeteo(MeteoModel meteoModel) {
+        ImageView imgMeteo = (ImageView) findViewById(R.id.imgMeteo);
+        TextView tempMeteo = (TextView) findViewById(R.id.tempMeteo);
         tempMeteo.setText(meteoModel.getTemp());
         Picasso.with(getBaseContext()).load(meteoModel.getImg()).into(imgMeteo);
     }

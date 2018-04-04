@@ -14,15 +14,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.adapter.CardAdapter;
 import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
 import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
 import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class DetailsPokemon extends Fragment implements webServiceInterface {
     View parent;
@@ -35,7 +31,8 @@ public class DetailsPokemon extends Fragment implements webServiceInterface {
     PokemonDetails details;
     LinearLayout loadingScreen;
 
-    public DetailsPokemon() {}
+    public DetailsPokemon() {
+    }
 
     public static DetailsPokemon newInstance(Bundle data) {
         DetailsPokemon fragment = new DetailsPokemon();
@@ -44,36 +41,36 @@ public class DetailsPokemon extends Fragment implements webServiceInterface {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        parent=inflater.inflate(R.layout.fragment_details, container, false);
+        parent = inflater.inflate(R.layout.fragment_details, container, false);
 
         initVariables();
 
-        Bundle data=getArguments();
+        Bundle data = getArguments();
         ManagerPokemonService.getInstance().getPokemonDetails(data.getInt("id"), this);
 
         return parent;
     }
 
     private void initVariables() {
-        imgPokemon=(ImageView)parent.findViewById(R.id.details_imgPokemon);
-        id=(TextView)parent.findViewById(R.id.details_id);
-        nom=(TextView)parent.findViewById(R.id.details_nom);
-        type=(TextView)parent.findViewById(R.id.details_type);
-        poids=(TextView)parent.findViewById(R.id.details_poids);
-        taille=(TextView)parent.findViewById(R.id.details_taille);
-        loadingScreen=(LinearLayout) parent.findViewById(R.id.loadingDetails);
+        imgPokemon = (ImageView) parent.findViewById(R.id.details_imgPokemon);
+        id = (TextView) parent.findViewById(R.id.details_id);
+        nom = (TextView) parent.findViewById(R.id.details_nom);
+        type = (TextView) parent.findViewById(R.id.details_type);
+        poids = (TextView) parent.findViewById(R.id.details_poids);
+        taille = (TextView) parent.findViewById(R.id.details_taille);
+        loadingScreen = (LinearLayout) parent.findViewById(R.id.loadingDetails);
     }
 
     public void refresh(final PokemonDetails pok) {
         Picasso.with(getContext()).load(pok.getUrlPicture()).into(imgPokemon);
-        id.setText("(n°"+pok.getId()+")");
+        id.setText("(n°" + pok.getId() + ")");
         nom.setText(pok.getName());
         type.setText(pok.getType());
         poids.setText(pok.getWeight());
         taille.setText(pok.getHeight());
-        CardAdapter myCardsAdapter=new CardAdapter(getContext(), pok.getCards());
+        CardAdapter myCardsAdapter = new CardAdapter(getContext(), pok.getCards());
         GridView gridview = (GridView) parent.findViewById(R.id.details_cartes);
         gridview.setAdapter(myCardsAdapter);
 
@@ -81,9 +78,9 @@ public class DetailsPokemon extends Fragment implements webServiceInterface {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 final View customLayout = getActivity().getLayoutInflater().inflate(R.layout.detailzoom, null);
-                ImageView tmp=(ImageView) customLayout.findViewById(R.id.zoomimg);
-                String url=pok.getCards().get(position).getUrlPicture();
-                url=url.replace(".png","_hires.png");
+                ImageView tmp = (ImageView) customLayout.findViewById(R.id.zoomimg);
+                String url = pok.getCards().get(position).getUrlPicture();
+                url = url.replace(".png", "_hires.png");
                 Picasso.with(getContext()).load(url).into(tmp);
                 builder.setView(customLayout);
                 builder.show();

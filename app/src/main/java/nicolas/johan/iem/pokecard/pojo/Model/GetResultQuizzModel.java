@@ -39,7 +39,7 @@ public class GetResultQuizzModel {
     public void setCardsWin(List<Card> cardsWin) {
         try {
             this.cardsWin = cardsWin;
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }

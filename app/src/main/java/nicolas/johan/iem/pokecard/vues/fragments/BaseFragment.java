@@ -1,9 +1,7 @@
 package nicolas.johan.iem.pokecard.vues.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 
 import nicolas.johan.iem.pokecard.vues.Accueil;
 
@@ -20,7 +18,7 @@ public class BaseFragment extends Fragment {
         activity = (Accueil) context;
     }
 
-    public void showFragment(Fragment f){
+    public void showFragment(Fragment f) {
         this.activity.showFragment(f);
     }
 }

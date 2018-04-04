@@ -2,29 +2,29 @@ package nicolas.johan.iem.pokecard.webservice;
 
 import java.util.List;
 
+import nicolas.johan.iem.pokecard.pojo.Card;
+import nicolas.johan.iem.pokecard.pojo.FriendAccount;
+import nicolas.johan.iem.pokecard.pojo.GameCategory;
 import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.Model.BuyModel;
-import nicolas.johan.iem.pokecard.pojo.Card;
 import nicolas.johan.iem.pokecard.pojo.Model.CardNFCModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ChuckNorrisFactsModel;
 import nicolas.johan.iem.pokecard.pojo.Model.EditPseudoModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ExchangeModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ExchangePOSTModel;
-import nicolas.johan.iem.pokecard.pojo.FriendAccount;
-import nicolas.johan.iem.pokecard.pojo.GameCategory;
 import nicolas.johan.iem.pokecard.pojo.Model.GetResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.Model.LoginModel;
+import nicolas.johan.iem.pokecard.pojo.Model.LoginSpecialModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ManageFriendsModel;
 import nicolas.johan.iem.pokecard.pojo.Model.MeteoModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ModifyZIPModel;
 import nicolas.johan.iem.pokecard.pojo.Model.NewPictureModel;
+import nicolas.johan.iem.pokecard.pojo.Model.PostResultQuizzModel;
+import nicolas.johan.iem.pokecard.pojo.Model.QuestionGameModel;
 import nicolas.johan.iem.pokecard.pojo.Pokemon;
 import nicolas.johan.iem.pokecard.pojo.PokemonDetails;
-import nicolas.johan.iem.pokecard.pojo.Model.PostResultQuizzModel;
 import nicolas.johan.iem.pokecard.pojo.ProfilPicture;
-import nicolas.johan.iem.pokecard.pojo.Model.QuestionGameModel;
 import nicolas.johan.iem.pokecard.pojo.StoreItem;
-import nicolas.johan.iem.pokecard.pojo.Model.LoginSpecialModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -36,7 +36,7 @@ import retrofit2.http.Path;
  * Created by iem on 15/11/2017.
  */
 
-public interface PokemonService  {
+public interface PokemonService {
 
     @GET("pokedex")
     Call<List<Pokemon>> getAll();
@@ -53,7 +53,8 @@ public interface PokemonService  {
     @POST("exchange/send")
     Call<AccountModel> sendExchangeRequest(@Body ExchangePOSTModel request);
 
-    @GET("user/{idUser}/getFriends") //a verifier
+    @GET("user/{idUser}/getFriends")
+        //a verifier
     Call<List<FriendAccount>> getFriends(@Path("idUser") String idUser);
 
     @POST("verify")

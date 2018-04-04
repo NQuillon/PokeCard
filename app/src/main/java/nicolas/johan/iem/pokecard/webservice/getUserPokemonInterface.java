@@ -10,5 +10,6 @@ import nicolas.johan.iem.pokecard.pojo.Pokemon;
 
 public interface getUserPokemonInterface {
     void refresh(List<Pokemon> list);
+
     void onNoPokemon();
 }

@@ -2,66 +2,71 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#ec1e24"
     android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp"
+        android:orientation="vertical"
         android:paddingLeft="24dp"
-        android:paddingRight="24dp">
+        android:paddingRight="24dp"
+        android:paddingTop="56dp">
 
         <TextView
+            android:id="@+id/logo"
             android:layout_width="wrap_content"
             android:layout_height="72dp"
-            android:text="PokéCard"
-            android:textSize="50dp"
-            android:textColor="#f6ba2c"
-            android:id="@+id/logo"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"
-            android:layout_gravity="center_horizontal" />
+            android:text="PokéCard"
+            android:textColor="#f6ba2c"
+            android:textSize="50dp" />
 
         <!--  Name Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
-            android:focusableInTouchMode="true"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_pseudo"
+            android:focusableInTouchMode="true">
+
+            <EditText
+                android:id="@+id/input_pseudo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapWords"
-                android:hint="Pseudo" />
+                android:hint="Pseudo"
+                android:inputType="textCapWords" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Password Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_password"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Mot de passe"/>
+                android:hint="Mot de passe"
+                android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Confirm password Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_confirm_password"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/input_confirm_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Confirmation de mot de passe"/>
+                android:hint="Confirmation de mot de passe"
+                android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Signup Button -->
@@ -69,20 +74,21 @@
             android:id="@+id/btn_signup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
-            android:padding="12dp"
+            android:layout_marginTop="24dp"
             android:background="#f6ba2c"
-            android:text="Créer le compte"/>
+            android:padding="12dp"
+            android:text="Créer le compte" />
 
-        <TextView android:id="@+id/link_login"
-            android:padding="8dp"
+        <TextView
+            android:id="@+id/link_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Vous avez déjà un compte? Connectez-vous"
             android:gravity="center"
-            android:textSize="10dip"/>
+            android:padding="8dp"
+            android:text="Vous avez déjà un compte? Connectez-vous"
+            android:textSize="10dip" />
 
     </LinearLayout>
 </ScrollView>

@@ -17,14 +17,14 @@ import nicolas.johan.iem.pokecard.pojo.GameCategory;
  * Created by iem on 19/01/2018.
  */
 
-public class ListCategoryGameAdapter extends ArrayAdapter<GameCategory>{
+public class ListCategoryGameAdapter extends ArrayAdapter<GameCategory> {
     ListCategoryGameAdapter.GameCategoryHandler viewHolder;
     Bitmap bitmapimg;
     Context context;
 
     public ListCategoryGameAdapter(Context context, List<GameCategory> exchanges) {
         super(context, 0, exchanges);
-        this.context=context;
+        this.context = context;
     }
 
     @Override

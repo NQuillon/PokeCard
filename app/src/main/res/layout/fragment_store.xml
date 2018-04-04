@@ -2,22 +2,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#FFFFFF"
+    android:orientation="vertical"
     tools:context="nicolas.johan.iem.pokecard.vues.fragments.StoreFragment">
 
     <FrameLayout
         android:id="@+id/myPokecoinFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="80dp"
-        android:layout_marginLeft="80dp"
         android:layout_marginBottom="5dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp"
         android:layout_marginTop="5dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
+        android:background="@drawable/round_button_null"
         android:gravity="center"
-        android:background="@drawable/round_button_null">
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,15 +29,15 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="5dp"
-                android:src="@mipmap/pokecoin"/>
+                android:src="@mipmap/pokecoin" />
 
             <TextView
                 android:id="@+id/nbMyPokecoin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textSize="20sp"
                 android:text="NULL"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -45,16 +45,15 @@
     </FrameLayout>
 
     <GridView
-        android:layout_gravity="center"
         android:id="@+id/gridStore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:columnWidth="160dp"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="8dp"
+        android:gravity="center"
         android:horizontalSpacing="5dp"
+        android:numColumns="auto_fit"
         android:stretchMode="spacingWidth"
-        android:gravity="center">
-    </GridView>
+        android:verticalSpacing="8dp"></GridView>
 
 </LinearLayout>

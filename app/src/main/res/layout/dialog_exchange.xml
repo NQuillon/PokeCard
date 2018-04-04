@@ -9,11 +9,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:columnWidth="100dp"
-        android:verticalSpacing="5dp"
+        android:gravity="center"
         android:horizontalSpacing="5dp"
         android:numColumns="3"
         android:stretchMode="spacingWidth"
-        android:gravity="center">
-    </GridView>
+        android:verticalSpacing="5dp"></GridView>
 
 </LinearLayout>

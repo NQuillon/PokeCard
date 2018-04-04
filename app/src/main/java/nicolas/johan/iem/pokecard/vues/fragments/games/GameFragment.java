@@ -19,11 +19,19 @@ public class GameFragment extends BaseFragment {
         // Required empty public constructor
     }
 
+    public static GameFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        GameFragment fragment = new GameFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        parent= inflater.inflate(R.layout.fragment_game, container, false);
+        parent = inflater.inflate(R.layout.fragment_game, container, false);
         init();
 
         btn_questions.setOnClickListener(new View.OnClickListener() {
@@ -45,18 +53,9 @@ public class GameFragment extends BaseFragment {
         return parent;
     }
 
-    public void init(){
-        btn_questions=parent.findViewById(R.id.games_questions);
-        btn_chuckNorris=parent.findViewById(R.id.games_chucknorris);
-    }
-
-    public static GameFragment newInstance() {
-        
-        Bundle args = new Bundle();
-        
-        GameFragment fragment = new GameFragment();
-        fragment.setArguments(args);
-        return fragment;
+    public void init() {
+        btn_questions = parent.findViewById(R.id.games_questions);
+        btn_chuckNorris = parent.findViewById(R.id.games_chucknorris);
     }
 
 }

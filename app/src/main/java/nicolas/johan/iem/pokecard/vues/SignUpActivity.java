@@ -5,24 +5,18 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Model.LoginModel;
 import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class SignUpActivity extends AppCompatActivity{
+public class SignUpActivity extends AppCompatActivity {
 
     EditText nameText;
     EditText pseudoText;
@@ -36,16 +30,16 @@ public class SignUpActivity extends AppCompatActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        this.context=this;
+        this.context = this;
 
-        pseudoText=(EditText) findViewById(R.id.input_pseudo);
-        passwordText=(EditText) findViewById(R.id.input_password);
-        confirmPasswordText=(EditText) findViewById(R.id.input_confirm_password);
-        signupButton=(Button) findViewById(R.id.btn_signup);
-        loginLink=(TextView)findViewById(R.id.link_login);
+        pseudoText = (EditText) findViewById(R.id.input_pseudo);
+        passwordText = (EditText) findViewById(R.id.input_password);
+        confirmPasswordText = (EditText) findViewById(R.id.input_confirm_password);
+        signupButton = (Button) findViewById(R.id.btn_signup);
+        loginLink = (TextView) findViewById(R.id.link_login);
 
-        Typeface tf = Typeface.createFromAsset(getAssets(),"Pokemon Solid.ttf");
-        TextView logo=(TextView) findViewById(R.id.logo);
+        Typeface tf = Typeface.createFromAsset(getAssets(), "Pokemon Solid.ttf");
+        TextView logo = (TextView) findViewById(R.id.logo);
         logo.setTypeface(tf);
 
         signupButton.setOnClickListener(new View.OnClickListener() {
@@ -75,14 +69,14 @@ public class SignUpActivity extends AppCompatActivity{
         String pseudo = pseudoText.getText().toString();
         String password = passwordText.getText().toString();
 
-        LoginModel data=new LoginModel(pseudo, password);
+        LoginModel data = new LoginModel(pseudo, password);
         ManagerPokemonService.getInstance().signUp(data, (SignUpActivity) context);
     }
 
     public void onSignupSuccess() {
         signupButton.setEnabled(true);
-        Toast.makeText(context, "Vous êtes maintenant connecté à votre nouveau compte avec le login "+ AccountSingleton.getInstance().getPseudo(), Toast.LENGTH_LONG).show();
-        Intent i=new Intent(SignUpActivity.this, Accueil.class);
+        Toast.makeText(context, "Vous êtes maintenant connecté à votre nouveau compte avec le login " + AccountSingleton.getInstance().getPseudo(), Toast.LENGTH_LONG).show();
+        Intent i = new Intent(SignUpActivity.this, Accueil.class);
         startActivity(i);
         finish();
     }
@@ -92,7 +86,7 @@ public class SignUpActivity extends AppCompatActivity{
         signupButton.setEnabled(true);
     }
 
-    public void onBadSignup(){
+    public void onBadSignup() {
         Toast.makeText(context, "Login déjà pris", Toast.LENGTH_LONG).show();
         signupButton.setEnabled(true);
     }

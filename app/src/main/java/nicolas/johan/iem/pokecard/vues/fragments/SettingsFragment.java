@@ -15,12 +15,9 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import java.util.List;
-import java.util.Set;
 
-import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.adapter.GridViewProfilePicture;
-import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
 import nicolas.johan.iem.pokecard.pojo.Model.EditPseudoModel;
 import nicolas.johan.iem.pokecard.pojo.Model.ModifyZIPModel;
@@ -29,10 +26,6 @@ import nicolas.johan.iem.pokecard.pojo.ProfilPicture;
 import nicolas.johan.iem.pokecard.vues.Accueil;
 import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
 import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SettingsFragment extends PreferenceFragment implements webServiceInterface {
     Accueil activity;
@@ -40,7 +33,8 @@ public class SettingsFragment extends PreferenceFragment implements webServiceIn
     View customLayout;
     AlertDialog dialog;
 
-    public SettingsFragment() {}
+    public SettingsFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +57,7 @@ public class SettingsFragment extends PreferenceFragment implements webServiceIn
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        EditPseudoModel tmp=new EditPseudoModel(AccountSingleton.getInstance().getIdUser(),input.getText().toString());
+                        EditPseudoModel tmp = new EditPseudoModel(AccountSingleton.getInstance().getIdUser(), input.getText().toString());
                         ManagerPokemonService.getInstance().editPseudo(tmp, that);
                     }
                 });
@@ -107,7 +101,7 @@ public class SettingsFragment extends PreferenceFragment implements webServiceIn
         });
 
 
-        final EditTextPreference zipCode=(EditTextPreference) findPreference("zipCode");
+        final EditTextPreference zipCode = (EditTextPreference) findPreference("zipCode");
         zipCode.setText(AccountSingleton.getInstance().getZipCode());
         zipCode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -122,7 +116,7 @@ public class SettingsFragment extends PreferenceFragment implements webServiceIn
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.activity=(Accueil)context;
+        this.activity = (Accueil) context;
     }
 
     @Override
@@ -131,7 +125,8 @@ public class SettingsFragment extends PreferenceFragment implements webServiceIn
         Toast.makeText(activity, "Modification effectuée", Toast.LENGTH_SHORT).show();
         try {
             dialog.dismiss();
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -139,15 +134,15 @@ public class SettingsFragment extends PreferenceFragment implements webServiceIn
         Toast.makeText(activity, "Impossible d'effectuer les modifications", Toast.LENGTH_SHORT).show();
     }
 
-    public void initListPictures(final List<ProfilPicture> listPictures){
+    public void initListPictures(final List<ProfilPicture> listPictures) {
         GridView gv_pictures = (GridView) customLayout.findViewById(R.id.gridview_cards);
-        GridViewProfilePicture cardAdapter=new GridViewProfilePicture(getActivity(),listPictures);
+        GridViewProfilePicture cardAdapter = new GridViewProfilePicture(getActivity(), listPictures);
         gv_pictures.setAdapter(cardAdapter);
 
         gv_pictures.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                NewPictureModel tmp=new NewPictureModel(AccountSingleton.getInstance().getIdUser(),listPictures.get(position).getBase64());
+                NewPictureModel tmp = new NewPictureModel(AccountSingleton.getInstance().getIdUser(), listPictures.get(position).getBase64());
                 ManagerPokemonService.getInstance().editProfilPicture(tmp, that);
             }
         });

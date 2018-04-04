@@ -1,14 +1,20 @@
 package nicolas.johan.iem.pokecard.vues;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +39,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONObject;
 
+import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.pojo.Model.LoginModel;
 import nicolas.johan.iem.pokecard.pojo.Model.LoginSpecialModel;
@@ -64,22 +71,54 @@ public class LoginActivity extends AppCompatActivity {
         initGoogle();
     }
 
+    public void editIP() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Adresse IP du serveur :");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        builder.setView(input);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String tmp = sharedPref.getString("IPServer", "192.168.43.200");
+        input.setText(tmp);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                SharedPreferences.Editor prefsEdit = prefs.edit();
+                prefsEdit.putString("IPServer", input.getText().toString());
+                prefsEdit.apply();
+                PokemonApp.refreshService();
+            }
+        });
+        builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
+
     private void initVariables() {
-        context=this;
+        context = this;
         //Init Facebook SDK
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
         //Récupération des éléments graphiques
-        pseudoText=(EditText) findViewById(R.id.input_pseudo_login);
-        passwordText=(EditText) findViewById(R.id.input_password) ;
-        loginButton=(Button)findViewById(R.id.btn_login);
-        signupLink=(TextView) findViewById(R.id.link_signup);
+        pseudoText = (EditText) findViewById(R.id.input_pseudo_login);
+        passwordText = (EditText) findViewById(R.id.input_password);
+        loginButton = (Button) findViewById(R.id.btn_login);
+        signupLink = (TextView) findViewById(R.id.link_signup);
         signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         loginButtonFacebook = (LoginButton) findViewById(R.id.login_button_facebook);
-        logo=(TextView) findViewById(R.id.logo);
+        logo = (TextView) findViewById(R.id.logo);
 
     }
+
     private void initGoogle() {
         //Login Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -103,6 +142,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
     private void initFacebook() {
         //CallBack Login Facebook
         callbackManager = CallbackManager.Factory.create();
@@ -116,13 +156,13 @@ public class LoginActivity extends AppCompatActivity {
                                     public void onCompleted(
                                             JSONObject object,
                                             GraphResponse response) {
-                                            try {
-                                                Profile profile=Profile.getCurrentProfile();
-                                                LoginSpecialModel request = new LoginSpecialModel(object.getString("first_name")+" "+object.getString("last_name"), "facebook", object.getString("id"), profile.getProfilePictureUri(150,150).toString());
-                                                ManagerPokemonService.getInstance().loginSpecial(request, (LoginActivity) context);
-                                            }catch(Exception e){
-                                                Toast.makeText(LoginActivity.this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
-                                            }
+                                        try {
+                                            Profile profile = Profile.getCurrentProfile();
+                                            LoginSpecialModel request = new LoginSpecialModel(object.getString("first_name") + " " + object.getString("last_name"), "facebook", object.getString("id"), profile.getProfilePictureUri(150, 150).toString());
+                                            ManagerPokemonService.getInstance().loginSpecial(request, (LoginActivity) context);
+                                        } catch (Exception e) {
+                                            Toast.makeText(LoginActivity.this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
+                                        }
                                         LoginManager.getInstance().logOut(); //déconnexion facebook
                                     }
                                 });
@@ -139,10 +179,11 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(FacebookException exception) {
-                        Toast.makeText(LoginActivity.this, "Erreur"+exception, Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Erreur" + exception, Toast.LENGTH_LONG).show();
                     }
                 });
     }
+
     private void initInterface() {
 
         loginButtonFacebook.setReadPermissions("email");
@@ -151,8 +192,16 @@ public class LoginActivity extends AppCompatActivity {
         TextView textView = (TextView) signInButton.getChildAt(0);
         textView.setText("Continuer avec Google");
 
+        ImageView settings = (ImageView) findViewById(R.id.params_ip);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editIP();
+            }
+        });
+
         //Mise en place de la police d'écriture du logo
-        Typeface tf = Typeface.createFromAsset(getAssets(),"Pokemon Solid.ttf");
+        Typeface tf = Typeface.createFromAsset(getAssets(), "Pokemon Solid.ttf");
         logo.setTypeface(tf);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -187,9 +236,9 @@ public class LoginActivity extends AppCompatActivity {
         String pseudo = pseudoText.getText().toString();
         String password = passwordText.getText().toString();
         try {
-            LoginModel request=new LoginModel(pseudo, password);
+            LoginModel request = new LoginModel(pseudo, password);
             ManagerPokemonService.getInstance().login(request, (LoginActivity) context);
-        }catch(Exception e){
+        } catch (Exception e) {
             Toast.makeText(this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_SHORT).show();
             loginButton.setEnabled(true);
         }
@@ -204,18 +253,20 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         loginButton.setEnabled(true);
-        Intent i=new Intent(LoginActivity.this, Accueil.class);
+        Intent i = new Intent(LoginActivity.this, Accueil.class);
         startActivity(i);
         finish();
     }
+
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Echec", Toast.LENGTH_LONG).show();
-        if(mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
         loginButton.setEnabled(true);
     }
-    public void onBadLogin(){
+
+    public void onBadLogin() {
         Toast.makeText(context, "Login ou mot de passe incorrect", Toast.LENGTH_LONG).show();
         loginButton.setEnabled(true);
     }
@@ -261,10 +312,10 @@ public class LoginActivity extends AppCompatActivity {
             String photoUrl;
             try {
                 photoUrl = acct.getPhotoUrl().toString();
-            }catch(Exception e) {
+            } catch (Exception e) {
                 photoUrl = "https://slack-imgs.com/?c=1&url=https%3A%2F%2Feternia.fr%2Fpublic%2Fmedia%2Fsl%2Fsprites%2Fformes%2F025_kanto.png";
             }
-            LoginSpecialModel request=new LoginSpecialModel(acct.getDisplayName(), "google", acct.getId(), photoUrl);
+            LoginSpecialModel request = new LoginSpecialModel(acct.getDisplayName(), "google", acct.getId(), photoUrl);
             ManagerPokemonService.getInstance().loginSpecial(request, (LoginActivity) context);
         } else {
             Toast.makeText(this, "Echec, vous n'êtes pas connecté", Toast.LENGTH_SHORT).show();
