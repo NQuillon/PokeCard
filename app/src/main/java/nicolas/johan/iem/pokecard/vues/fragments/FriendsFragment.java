@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class FriendsFragment extends Fragment implements webServiceInterface, ge
     ProgressBar loading;
     View parent;
     ListView listeFriends;
+    LinearLayout noFriend;
     FriendsAdapter adapter;
     FriendsFragment that;
 
@@ -47,6 +49,7 @@ public class FriendsFragment extends Fragment implements webServiceInterface, ge
         // Inflate the layout for this fragment
         parent=inflater.inflate(R.layout.fragment_friends, container, false);
         loading=parent.findViewById(R.id.loading_Friends);
+        noFriend = parent.findViewById(R.id.noFriendsList);
         that = this;
 
         listeFriends=(ListView) parent.findViewById(R.id.listFriends);
@@ -112,6 +115,11 @@ public class FriendsFragment extends Fragment implements webServiceInterface, ge
 
     public void refresh(List<FriendAccount> list){
         friendsList = list;
+        if(list.size() == 0){
+            noFriend.setVisibility(View.VISIBLE);
+        } else {
+            noFriend.setVisibility(View.INVISIBLE);
+        }
         listeFriends=(ListView) parent.findViewById(R.id.listFriends);
         adapter=new FriendsAdapter(parent.getContext(), friendsList);
         listeFriends.setAdapter(adapter);
@@ -140,5 +148,6 @@ public class FriendsFragment extends Fragment implements webServiceInterface, ge
     @Override
     public void onFailure() {
         Toast.makeText(parent.getContext(), "Une erreur est survenue", Toast.LENGTH_LONG).show();
+        loading.setVisibility(View.GONE);
     }
 }
