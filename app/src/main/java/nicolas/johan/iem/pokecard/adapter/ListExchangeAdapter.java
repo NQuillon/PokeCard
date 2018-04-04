@@ -15,20 +15,20 @@ import java.util.List;
 
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
-import nicolas.johan.iem.pokecard.pojo.ExchangeModel;
+import nicolas.johan.iem.pokecard.pojo.Model.ExchangeModel;
 
 /**
  * Created by iem on 19/01/2018.
  */
 
-public class ListExchangeAdapter extends ArrayAdapter<ExchangeModel>{
+public class ListExchangeAdapter extends ArrayAdapter<ExchangeModel> {
     ListExchangeAdapter.ListeEchanges viewHolder;
     Bitmap bitmapimg;
     Context context;
 
     public ListExchangeAdapter(Context context, List<ExchangeModel> exchanges) {
         super(context, 0, exchanges);
-        this.context=context;
+        this.context = context;
     }
 
     @Override
@@ -44,24 +44,23 @@ public class ListExchangeAdapter extends ArrayAdapter<ExchangeModel>{
             viewHolder.pseudo_listeEchanges = (TextView) convertView.findViewById(R.id.pseudo_listeEchanges);
             viewHolder.typeEchange = (ImageView) convertView.findViewById(R.id.typeEchange);
             viewHolder.pokemon_picture_listeEchange = (ImageView) convertView.findViewById(R.id.pokemon_picture_listeEchange);
-            viewHolder.pokemon_name_listeEchange=(TextView) convertView.findViewById(R.id.pokemon_name_listeEchange);
-            viewHolder.exchangeMessage=convertView.findViewById(R.id.exchangeMessage);
+            viewHolder.pokemon_name_listeEchange = (TextView) convertView.findViewById(R.id.pokemon_name_listeEchange);
+            viewHolder.exchangeMessage = convertView.findViewById(R.id.exchangeMessage);
             convertView.setTag(viewHolder);
         }
 
         ExchangeModel exchangeItem = getItem(position);
 
-        if(exchangeItem.getIdReceiver().equals(AccountSingleton.getInstance().getIdUser()))
-        {
+        if (exchangeItem.getIdReceiver().equals(AccountSingleton.getInstance().getIdUser())) {
             viewHolder.exchangeMessage.setVisibility(View.VISIBLE);
         }
-        viewHolder.pseudo_listeEchanges.setText(exchangeItem.getPseudoSender()+" ➣ "+exchangeItem.getPseudoReceiver());
+        viewHolder.pseudo_listeEchanges.setText(exchangeItem.getPseudoSender() + " ➣ " + exchangeItem.getPseudoReceiver());
         viewHolder.pokemon_name_listeEchange.setText(exchangeItem.getCardName());
 
         Picasso.with(context).load(exchangeItem.getCardPicture()).into(viewHolder.pokemon_picture_listeEchange);
-        if(exchangeItem.getStatus().equals("send")){
+        if (exchangeItem.getStatus().equals("send")) {
             Picasso.with(context).load(R.mipmap.send).into(viewHolder.typeEchange);
-        }else{
+        } else {
             Picasso.with(context).load(R.mipmap.receive).into(viewHolder.typeEchange);
         }
         return convertView;

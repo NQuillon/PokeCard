@@ -5,20 +5,20 @@ package nicolas.johan.iem.pokecard.pojo;
  */
 
 public class ProfilPicture {
-    String url;
+    String base64;
 
     public ProfilPicture() {
     }
 
-    public ProfilPicture(String url) {
-        this.url = url;
+    public ProfilPicture(String base64) {
+        this.base64 = base64;
     }
 
-    public String getUrl() {
-        return url;
+    public String getBase64() {
+        return base64;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUrl(String base64) {
+        this.base64 = base64;
     }
 }

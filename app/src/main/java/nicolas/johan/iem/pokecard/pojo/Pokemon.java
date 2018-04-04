@@ -9,7 +9,7 @@ public class Pokemon {
     private String name;
     private String urlPicture;
 
-    public Pokemon(){
+    public Pokemon() {
 
     }
 

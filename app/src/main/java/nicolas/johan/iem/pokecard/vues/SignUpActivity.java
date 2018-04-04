@@ -5,21 +5,16 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
-import nicolas.johan.iem.pokecard.pojo.LoginClass;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import nicolas.johan.iem.pokecard.pojo.Model.LoginModel;
+import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -35,16 +30,16 @@ public class SignUpActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        this.context=this;
+        this.context = this;
 
-        pseudoText=(EditText) findViewById(R.id.input_pseudo);
-        passwordText=(EditText) findViewById(R.id.input_password);
-        confirmPasswordText=(EditText) findViewById(R.id.input_confirm_password);
-        signupButton=(Button) findViewById(R.id.btn_signup);
-        loginLink=(TextView)findViewById(R.id.link_login);
+        pseudoText = (EditText) findViewById(R.id.input_pseudo);
+        passwordText = (EditText) findViewById(R.id.input_password);
+        confirmPasswordText = (EditText) findViewById(R.id.input_confirm_password);
+        signupButton = (Button) findViewById(R.id.btn_signup);
+        loginLink = (TextView) findViewById(R.id.link_login);
 
-        Typeface tf = Typeface.createFromAsset(getAssets(),"Pokemon Solid.ttf");
-        TextView logo=(TextView) findViewById(R.id.logo);
+        Typeface tf = Typeface.createFromAsset(getAssets(), "Pokemon Solid.ttf");
+        TextView logo = (TextView) findViewById(R.id.logo);
         logo.setTypeface(tf);
 
         signupButton.setOnClickListener(new View.OnClickListener() {
@@ -73,71 +68,26 @@ public class SignUpActivity extends AppCompatActivity {
 
         String pseudo = pseudoText.getText().toString();
         String password = passwordText.getText().toString();
-        /*String result="";
-        try {
-            JSONObject jsonParam = new JSONObject();
-            jsonParam.put("pseudo", pseudo);
-            jsonParam.put("password", password);
-            result=new POSTrequest().execute("signup",jsonParam).get();
-            JSONObject objResult=new JSONObject(result);
-            if(objResult.getString("pseudo").equals("false")){
-                Toast.makeText(this, "Le compte existe déjà, veuillez changer de pseudo", Toast.LENGTH_LONG).show();
-                signupButton.setEnabled(true);
-            }else{
-                Toast.makeText(this, "Votre compte a été créé, veuillez vous connecter", Toast.LENGTH_LONG).show();
-                onSignupSuccess();
-            }
-        }catch(Exception e){
-            Toast.makeText(this, "Une erreur est survenue, veuillez réessayer", Toast.LENGTH_LONG).show();
-            signupButton.setEnabled(true);
-        }*/
 
-        LoginClass request=new LoginClass(pseudo, password);
-        Call<AccountModel> call = PokemonApp.getPokemonService().signup(request);
-        call.enqueue(new Callback<AccountModel>() {
-            @Override
-            public void onResponse(retrofit2.Call<AccountModel> call, Response<AccountModel> response) {
-                AccountModel tmpAccount=response.body();
-
-                if(response.code()==400){
-                    Toast.makeText(context, "Login ou mot de passe incorrect", Toast.LENGTH_LONG).show();
-                    signupButton.setEnabled(true);
-                }
-                else {
-                    AccountSingleton.getInstance().setListeCards(tmpAccount.getListeCards());
-                    AccountSingleton.getInstance().setListePokemon(tmpAccount.getListePokemon());
-                    AccountSingleton.getInstance().setIdAccount(tmpAccount.getIdAccount());
-                    AccountSingleton.getInstance().setIdUser(tmpAccount.getIdUser());
-                    AccountSingleton.getInstance().setPicture(tmpAccount.getPicture());
-                    AccountSingleton.getInstance().setPokeCoin(tmpAccount.getPokeCoin());
-                    AccountSingleton.getInstance().setPseudo(tmpAccount.getPseudo());
-
-                    onSignupSuccess();
-                }
-
-            }
-
-            @Override
-            public void onFailure(retrofit2.Call<AccountModel> call, Throwable t) {
-                Log.e("ERREUR",t.getMessage());
-                signupButton.setEnabled(true);
-                Toast.makeText(SignUpActivity.this, "Impossible de communiquer avec le serveur", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
+        LoginModel data = new LoginModel(pseudo, password);
+        ManagerPokemonService.getInstance().signUp(data, (SignUpActivity) context);
     }
-
 
     public void onSignupSuccess() {
         signupButton.setEnabled(true);
-        Toast.makeText(context, "Vous êtes maintenant connecté à votre nouveau compte avec le login "+ AccountSingleton.getInstance().getPseudo(), Toast.LENGTH_LONG).show();
-        Intent i=new Intent(SignUpActivity.this, Accueil.class);
+        Toast.makeText(context, "Vous êtes maintenant connecté à votre nouveau compte avec le login " + AccountSingleton.getInstance().getPseudo(), Toast.LENGTH_LONG).show();
+        Intent i = new Intent(SignUpActivity.this, Accueil.class);
         startActivity(i);
         finish();
     }
 
     public void onSignupFailed() {
+        Toast.makeText(context, "Une erreur est survenue", Toast.LENGTH_LONG).show();
+        signupButton.setEnabled(true);
+    }
+
+    public void onBadSignup() {
+        Toast.makeText(context, "Login déjà pris", Toast.LENGTH_LONG).show();
         signupButton.setEnabled(true);
     }
 
@@ -170,4 +120,5 @@ public class SignUpActivity extends AppCompatActivity {
         }
         return valid;
     }
+
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
         <item
@@ -26,16 +25,16 @@
         <item
             android:id="@+id/nav_amis"
             android:icon="@drawable/friends"
-            android:title="Mes Amis"/>
+            android:title="Mes Amis" />
     </group>
 
     <item android:title="Autre">
         <menu>
             <group android:checkableBehavior="single">
-            <item
-                android:id="@+id/nav_params"
-                android:icon="@drawable/settings"
-                android:title="Paramètres" />
+                <item
+                    android:id="@+id/nav_params"
+                    android:icon="@drawable/settings"
+                    android:title="Paramètres" />
             </group>
             <item
                 android:id="@+id/nav_deco"

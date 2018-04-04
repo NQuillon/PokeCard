@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#FFFFFF"
+    android:orientation="vertical"
     tools:context="nicolas.johan.iem.pokecard.vues.fragments.games.GameFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -11,14 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:text="Choisissez la catégorie des questions"
         android:textColor="@color/colorPrimary"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="Choisissez la catégorie des questions" />
+        android:textStyle="bold" />
 
     <ListView
+        android:id="@+id/listCategoryGame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/listCategoryGame"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

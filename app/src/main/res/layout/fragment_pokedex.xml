@@ -2,28 +2,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#FFFFFF"
+    android:orientation="vertical"
     tools:context="nicolas.johan.iem.pokecard.vues.fragments.PokedexFragment">
 
     <LinearLayout
         android:id="@+id/loadingPokedex"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:layout_gravity="center"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <ProgressBar
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
+
         <TextView
+            android:id="@+id/loadingTextPokedex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/loadingTextPokedex"
             android:layout_marginLeft="12px"
-            android:text="Chargement en cours..."/>
+            android:text="Chargement en cours..." />
 
     </LinearLayout>
 
@@ -31,24 +31,38 @@
         android:id="@+id/noPokemon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_gravity="center"
-        android:visibility="gone"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
-            android:layout_height="150dp"
-            android:src="@mipmap/no_pokemon"
             android:layout_width="100dp"
-            />
+            android:layout_height="150dp"
+            android:src="@mipmap/no_pokemon" />
+
         <TextView
+            android:id="@+id/loadingTextDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/loadingTextDetails"
             android:gravity="center"
-            android:textSize="22sp"
-            android:text="Votre pokédex est vide... \nRendez vous vite dans la boutique pour obtenir des pokémons !"/>
+            android:text="Votre pokédex est vide... \nRendez vous vite dans la boutique pour obtenir des pokémons !"
+            android:textSize="22sp" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <EditText
+            android:id="@+id/searchBar_Pokedex"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Rechercher un pokémon"
+            android:singleLine="true" />
     </LinearLayout>
 
     <GridView
@@ -56,13 +70,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnWidth="110dp"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="8dp"
+        android:gravity="center"
         android:horizontalSpacing="5dp"
+        android:numColumns="auto_fit"
         android:stretchMode="spacingWidth"
-        android:gravity="center">
-    </GridView>
-
+        android:verticalSpacing="8dp"></GridView>
 
 
 </LinearLayout>

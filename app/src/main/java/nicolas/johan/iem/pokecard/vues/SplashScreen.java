@@ -1,6 +1,5 @@
 package nicolas.johan.iem.pokecard.vues;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -20,14 +19,14 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
+import nicolas.johan.iem.pokecard.pojo.Model.AccountModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SplashScreen extends AppCompatActivity {
-    boolean isConnected=false;
+    boolean isConnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +36,11 @@ public class SplashScreen extends AppCompatActivity {
         Window window = this.getWindow();
         window.setStatusBarColor(Color.parseColor("#ec1e24"));
 
-        Typeface tf = Typeface.createFromAsset(getAssets(),"Pokemon Solid.ttf");
-        TextView logo=(TextView) findViewById(R.id.logo);
+        Typeface tf = Typeface.createFromAsset(getAssets(), "Pokemon Solid.ttf");
+        TextView logo = (TextView) findViewById(R.id.logo);
         logo.setTypeface(tf);
 
-        TextView tb=(TextView) findViewById(R.id.tb);
+        TextView tb = (TextView) findViewById(R.id.tb);
 
         Animation a = AnimationUtils.loadAnimation(this, R.anim.logo);
         a.reset();
@@ -54,17 +53,16 @@ public class SplashScreen extends AppCompatActivity {
         tb.startAnimation(b);
 
 
-
         ImageView imageView = (ImageView) findViewById(R.id.iv);
         GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(imageView);
         Glide.with(this).load(R.raw.loading).into(imageViewTarget);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean tmp=sharedPref.getBoolean("keepConnected",true);
-        final String idUserShared=sharedPref.getString("idUser","");
+        boolean tmp = sharedPref.getBoolean("keepConnected", true);
+        final String idUserShared = sharedPref.getString("idUser", "");
 
-        if(!idUserShared.equals("")&&tmp==true) {
-            isConnected=true;
+        if (!idUserShared.equals("") && tmp == true) {
+            isConnected = true;
             Call<AccountModel> request = PokemonApp.getPokemonService().majAccount(idUserShared);
             request.enqueue(new Callback<AccountModel>() {
                 @Override
@@ -103,19 +101,19 @@ public class SplashScreen extends AppCompatActivity {
                 } catch (InterruptedException e) {
                 } finally {
 
-                    if(isConnected){
+                    if (isConnected) {
                         finish();
                         Intent i = new Intent(SplashScreen.this, Accueil.class);
                         startActivity(i);
                         overridePendingTransition(R.anim.in, R.anim.out);
-                    }else{
+                    } else {
                         finish();
                         Intent i = new Intent(SplashScreen.this, LoginActivity.class);
                         startActivity(i);
                         overridePendingTransition(R.anim.in, R.anim.out);
                     }
 
-            }
+                }
             }
         };
 

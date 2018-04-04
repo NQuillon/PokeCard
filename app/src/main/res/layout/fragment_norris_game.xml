@@ -2,31 +2,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#FFFFFF"
     android:gravity="center"
+    android:orientation="vertical"
     tools:context="nicolas.johan.iem.pokecard.vues.fragments.games.ChuckNorrisFragment">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:layout_gravity="center"
+        android:gravity="center"
         android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="Chuck Norris Facts"
-                android:textStyle="italic"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chuck Norris Facts"
+            android:textSize="18sp"
+            android:textStyle="italic" />
 
         <ImageView
             android:id="@+id/imgNorris"
             android:layout_width="80dp"
-            android:layout_height="80dp"
-            />
+            android:layout_height="80dp" />
 
 
         <TextView
@@ -44,27 +42,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="12dp"
             android:background="#D2D2D2D2"
             android:gravity="center"
-            android:layout_marginTop="12dp"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+"/>
+                android:text="+" />
 
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@mipmap/pokecoin"/>
+                android:src="@mipmap/pokecoin" />
 
             <TextView
                 android:id="@+id/pokecoinswinnorris"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22sp"
-                android:text="0"/>
+                android:text="0"
+                android:textSize="22sp" />
 
         </LinearLayout>
 

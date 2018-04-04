@@ -2,72 +2,73 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="horizontal" >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/typeEchange"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="12dp"
-        android:src="@mipmap/ic_launcher" />
+        <ImageView
+            android:id="@+id/typeEchange"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:src="@mipmap/ic_launcher" />
+
         <TextView
             android:id="@+id/pseudo_listeEchanges"
             android:layout_width="wrap_content"
-            android:gravity="center"
             android:layout_height="match_parent"
-            android:textSize="20sp"
+            android:gravity="center"
             android:paddingTop="5dp"
-            android:text="PSEUDO"/>
+            android:text="PSEUDO"
+            android:textSize="20sp" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginLeft="22dp"
-        android:gravity="center">
-
-    <ImageView
-        android:id="@+id/pokemon_picture_listeEchange"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:src="@mipmap/no_pokemon" />
-
-        <TextView
-            android:id="@+id/pokemon_name_listeEchange"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="22dp"
             android:gravity="center"
-            android:paddingTop="5dp"
-            android:text="POKEMON"
-            android:textSize="12sp"
-            android:textStyle="italic" />
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/pokemon_picture_listeEchange"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:src="@mipmap/no_pokemon" />
+
+            <TextView
+                android:id="@+id/pokemon_name_listeEchange"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingTop="5dp"
+                android:text="POKEMON"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
-
     <TextView
         android:id="@+id/exchangeMessage"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:textSize="12sp"
         android:text="Pensez à renvoyer une carte en retour..."
-        android:textStyle="italic" />
+        android:textSize="12sp"
+        android:textStyle="italic"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -6,29 +6,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import nicolas.johan.iem.pokecard.R;
-import nicolas.johan.iem.pokecard.pojo.ExchangeModel;
 import nicolas.johan.iem.pokecard.pojo.GameCategory;
 
 /**
  * Created by iem on 19/01/2018.
  */
 
-public class ListCategoryGameAdapter extends ArrayAdapter<GameCategory>{
+public class ListCategoryGameAdapter extends ArrayAdapter<GameCategory> {
     ListCategoryGameAdapter.GameCategoryHandler viewHolder;
     Bitmap bitmapimg;
     Context context;
 
     public ListCategoryGameAdapter(Context context, List<GameCategory> exchanges) {
         super(context, 0, exchanges);
-        this.context=context;
+        this.context = context;
     }
 
     @Override

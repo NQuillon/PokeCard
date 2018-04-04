@@ -1,4 +1,4 @@
-package nicolas.johan.iem.pokecard.pojo;
+package nicolas.johan.iem.pokecard.pojo.Model;
 
 import java.util.ArrayList;
 
@@ -10,15 +10,17 @@ public class AccountModel {
     private String idUser; //id bd
     private String pseudo;
     private String picture;
-    private ArrayList<String> listePokemon=new ArrayList<>();
-    private ArrayList<String> listeCards=new ArrayList<>();
+    private ArrayList<String> listePokemon = new ArrayList<>();
+    private ArrayList<String> listeCards = new ArrayList<>();
     private int pokeCoin;
     private String zipCode;
     private String idAccount;//id facebook/google
 
-    /** Constructeur privé */
-    private AccountModel()
-    {}
+    /**
+     * Constructeur privé
+     */
+    private AccountModel() {
+    }
 
     public AccountModel(String idUser, String pseudo, String picture, ArrayList<String> listePokemon, ArrayList<String> listeCards, int pokeCoin, String idAccount, String zipCode) {
         this.idUser = idUser;
@@ -28,7 +30,7 @@ public class AccountModel {
         this.listeCards = listeCards;
         this.pokeCoin = pokeCoin;
         this.idAccount = idAccount;
-        this.zipCode=zipCode;
+        this.zipCode = zipCode;
     }
 
     public String getZipCode() {

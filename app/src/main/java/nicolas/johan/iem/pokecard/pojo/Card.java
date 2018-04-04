@@ -10,7 +10,7 @@ public class Card {
     private String price;
 
     public Card(String id, String urlPicture, String price) {
-        this.id=id;
+        this.id = id;
         this.urlPicture = urlPicture;
         this.price = price;
     }

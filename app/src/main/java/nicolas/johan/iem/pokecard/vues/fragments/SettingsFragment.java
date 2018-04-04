@@ -16,33 +16,31 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import nicolas.johan.iem.pokecard.PokemonApp;
 import nicolas.johan.iem.pokecard.R;
 import nicolas.johan.iem.pokecard.adapter.GridViewProfilePicture;
-import nicolas.johan.iem.pokecard.pojo.AccountModel;
 import nicolas.johan.iem.pokecard.pojo.AccountSingleton;
-import nicolas.johan.iem.pokecard.pojo.EditPseudoModel;
-import nicolas.johan.iem.pokecard.pojo.ModifyZIPModel;
-import nicolas.johan.iem.pokecard.pojo.NewPictureModel;
+import nicolas.johan.iem.pokecard.pojo.Model.EditPseudoModel;
+import nicolas.johan.iem.pokecard.pojo.Model.ModifyZIPModel;
+import nicolas.johan.iem.pokecard.pojo.Model.NewPictureModel;
 import nicolas.johan.iem.pokecard.pojo.ProfilPicture;
 import nicolas.johan.iem.pokecard.vues.Accueil;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import nicolas.johan.iem.pokecard.webservice.ManagerPokemonService;
+import nicolas.johan.iem.pokecard.webservice.webServiceInterface;
 
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragment implements webServiceInterface {
     Accueil activity;
-    List<ProfilPicture> listPictures;
+    SettingsFragment that;
+    View customLayout;
+    AlertDialog dialog;
 
     public SettingsFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
+        that = this;
 
         Preference pseudo = (Preference) findPreference("profil_pseudo");
         pseudo.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -59,26 +57,8 @@ public class SettingsFragment extends PreferenceFragment {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        EditPseudoModel tmp=new EditPseudoModel(AccountSingleton.getInstance().getIdUser(),input.getText().toString());
-                        Call<AccountModel> editPseudo = PokemonApp.getPokemonService().editPseudo(tmp);
-                        editPseudo.enqueue(new Callback<AccountModel>() {
-                            @Override
-                            public void onResponse(Call<AccountModel> call, Response<AccountModel> response) {
-                                if(response.isSuccessful()){
-                                    activity.update();
-                                    Toast.makeText(activity, "Pseudo modifié", Toast.LENGTH_SHORT).show();
-                                }else{
-                                    Toast.makeText(activity, "Impossible de modifier le pseudo", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<AccountModel> call, Throwable t) {
-                                Toast.makeText(activity, "Impossible de modifier le pseudo", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
+                        EditPseudoModel tmp = new EditPseudoModel(AccountSingleton.getInstance().getIdUser(), input.getText().toString());
+                        ManagerPokemonService.getInstance().editPseudo(tmp, that);
                     }
                 });
                 builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
@@ -87,7 +67,6 @@ public class SettingsFragment extends PreferenceFragment {
                         dialog.cancel();
                     }
                 });
-
                 builder.show();
                 return false;
             }
@@ -103,105 +82,32 @@ public class SettingsFragment extends PreferenceFragment {
                 builder.setPositiveButton("Annuler", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         dialog.dismiss();
                     }
                 });
 
-                final View customLayout = getActivity().getLayoutInflater().inflate(R.layout.dialog_exchange, null);
+                customLayout = getActivity().getLayoutInflater().inflate(R.layout.dialog_exchange, null);
 
                 builder.setView(customLayout);
-                //builder.show();
-                final AlertDialog dialog=builder.create();
+
+                dialog = builder.create();
                 dialog.setCancelable(true);
                 dialog.show();
 
-
-                //appel route
-                Call<List<ProfilPicture>> getList = PokemonApp.getPokemonService().getListPicturess();
-                getList.enqueue(new Callback<List<ProfilPicture>>() {
-                    @Override
-                    public void onResponse(Call<List<ProfilPicture>> call, Response<List<ProfilPicture>> response) {
-                        if(response.isSuccessful()){
-                            try{
-                                listPictures=response.body();
-                                GridView gv_pictures = (GridView) customLayout.findViewById(R.id.gridview_cards);
-                                GridViewProfilePicture cardAdapter=new GridViewProfilePicture(getActivity(),listPictures);
-                                gv_pictures.setAdapter(cardAdapter);
-
-                                gv_pictures.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        NewPictureModel tmp=new NewPictureModel(AccountSingleton.getInstance().getIdUser(),listPictures.get(position).getUrl());
-                                        Call<ResponseBody> setNewPicture=PokemonApp.getPokemonService().setNewProfilPicture(tmp);
-                                        setNewPicture.enqueue(new Callback<ResponseBody>() {
-                                            @Override
-                                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                                if(response.isSuccessful()){
-                                                    try{
-                                                        activity.update();
-                                                        dialog.dismiss();
-                                                        Toast.makeText(getActivity(), "La photo de profil a bien été changée", Toast.LENGTH_SHORT).show();
-                                                    }catch (Exception e){
-
-                                                    }
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                                            }
-                                        });
-                                    }
-                                });
-
-                            }catch (Exception e){
-
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<ProfilPicture>> call, Throwable t) {
-
-                    }
-                });
+                ManagerPokemonService.getInstance().getListPictures(that);
                 return false;
             }
 
         });
 
 
-        final EditTextPreference zipCode=(EditTextPreference) findPreference("zipCode");
+        final EditTextPreference zipCode = (EditTextPreference) findPreference("zipCode");
         zipCode.setText(AccountSingleton.getInstance().getZipCode());
         zipCode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 ModifyZIPModel tmp = new ModifyZIPModel(AccountSingleton.getInstance().getIdUser(), newValue.toString());
-                Call<ResponseBody> editZIP = PokemonApp.getPokemonService().setZipCode(tmp);
-                editZIP.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if(response.isSuccessful() && response.code()!=400){
-                            try{
-                                Toast.makeText(getActivity(), "Mise à jour de la météo...", Toast.LENGTH_SHORT).show();
-                                zipCode.setText(AccountSingleton.getInstance().getZipCode());
-                                activity.update();
-                            }catch (Exception e){
-
-                            }
-                        }else{
-                            Toast.makeText(activity, "Ce code postal n'existe pas", Toast.LENGTH_SHORT).show();
-                            zipCode.setText(AccountSingleton.getInstance().getZipCode());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(getActivity(), "Echec de changement de code postal", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                ManagerPokemonService.getInstance().editZipCode(tmp, that);
                 return true;
             }
         });
@@ -210,6 +116,35 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.activity=(Accueil)context;
+        this.activity = (Accueil) context;
+    }
+
+    @Override
+    public void onSuccess() {
+        activity.update();
+        Toast.makeText(activity, "Modification effectuée", Toast.LENGTH_SHORT).show();
+        try {
+            dialog.dismiss();
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
+    public void onFailure() {
+        Toast.makeText(activity, "Impossible d'effectuer les modifications", Toast.LENGTH_SHORT).show();
+    }
+
+    public void initListPictures(final List<ProfilPicture> listPictures) {
+        GridView gv_pictures = (GridView) customLayout.findViewById(R.id.gridview_cards);
+        GridViewProfilePicture cardAdapter = new GridViewProfilePicture(getActivity(), listPictures);
+        gv_pictures.setAdapter(cardAdapter);
+
+        gv_pictures.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                NewPictureModel tmp = new NewPictureModel(AccountSingleton.getInstance().getIdUser(), listPictures.get(position).getBase64());
+                ManagerPokemonService.getInstance().editProfilPicture(tmp, that);
+            }
+        });
     }
 }
