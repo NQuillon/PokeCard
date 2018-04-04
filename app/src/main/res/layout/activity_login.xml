@@ -11,7 +11,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp"
+        android:paddingTop="40dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
@@ -22,7 +22,7 @@
             android:textSize="50dp"
             android:textColor="#f6ba2c"
             android:id="@+id/logo"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="18dp"
             android:layout_gravity="center_horizontal" />
 
         <!-- Email Label -->
@@ -65,8 +65,9 @@
 
         <TextView android:id="@+id/link_signup"
             android:layout_width="fill_parent"
+            android:padding="8dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="20dp"
             android:text="Pas encore de compte ? Viens le créer en cliquant ici !"
             android:gravity="center"
             android:textSize="10dip"/>

@@ -51,6 +51,19 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+        <EditText
+            android:id="@+id/searchBar_Pokedex"
+            android:singleLine="true"
+            android:hint="Rechercher un pokémon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
     <GridView
         android:id="@+id/myPokedex"
         android:layout_width="match_parent"

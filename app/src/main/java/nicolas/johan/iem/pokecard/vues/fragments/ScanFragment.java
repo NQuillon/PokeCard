@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.squareup.picasso.Picasso;
 
 import nicolas.johan.iem.pokecard.R;
@@ -26,6 +28,10 @@ public class ScanFragment extends BaseFragment implements webServiceInterface {
 
         Bundle data=getArguments();
         String msg=data.getString("message");
+
+        ImageView nfcGif=(ImageView)parent.findViewById(R.id.nfcGif);
+        GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(nfcGif);
+        Glide.with(this).load(R.raw.nfc).into(imageViewTarget);
 
         cardTv=parent.findViewById(R.id.cardNFC);
 

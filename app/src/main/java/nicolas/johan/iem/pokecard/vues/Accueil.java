@@ -170,6 +170,10 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
             getSupportActionBar().setTitle("Paramètres");
         } else if (id == R.id.nav_deco) {
             clearBackstack();
+            SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor prefsEdit=prefs.edit();
+            prefsEdit.putBoolean("keepConnected", false);
+            prefsEdit.apply();
             finish();
             Intent i = new Intent(Accueil.this, LoginActivity.class);
             startActivity(i);

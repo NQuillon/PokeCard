@@ -9,6 +9,16 @@
     tools:context="nicolas.johan.iem.pokecard.vues.fragments.StoreFragment">
 
     <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginBottom="12dp"
+        android:id="@+id/nfcGif"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="Vous avez ajouté cette carte NFC dans votre Pokédex !"/>
+    <ImageView
         android:id="@+id/cardNFC"
         android:layout_width="250dp"
         android:layout_height="300dp" />

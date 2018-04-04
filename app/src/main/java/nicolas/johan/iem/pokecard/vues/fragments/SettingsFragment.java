@@ -136,7 +136,7 @@ public class SettingsFragment extends PreferenceFragment implements webServiceIn
 
     @Override
     public void onFailure() {
-        Toast.makeText(activity, "Impossible d'effectué les modifications", Toast.LENGTH_SHORT).show();
+        Toast.makeText(activity, "Impossible d'effectuer les modifications", Toast.LENGTH_SHORT).show();
     }
 
     public void initListPictures(final List<ProfilPicture> listPictures){
