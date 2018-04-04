@@ -51,6 +51,7 @@ public class AllPokemonsFragment extends BaseFragment implements webServiceInter
         PokemonAdapter myPokemonAdapter=new PokemonAdapter(getActivity(), pokedex);
         GridView gridview = (GridView) parent.findViewById(R.id.allPokemons);
         gridview.setAdapter(myPokemonAdapter);
+        
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
