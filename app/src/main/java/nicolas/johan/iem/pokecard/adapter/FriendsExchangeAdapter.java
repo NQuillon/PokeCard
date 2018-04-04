@@ -2,9 +2,12 @@ package nicolas.johan.iem.pokecard.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,7 +55,14 @@ public class FriendsExchangeAdapter extends ArrayAdapter<FriendAccount>{
         viewHolder.nbCartes.setText(""+friendItem.getNbCartes());
         //new chargeProfilePicture().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        Picasso.with(context).load(friendItem.getPicture()).into(viewHolder.profilePicture_friend);
+        if(URLUtil.isValidUrl(friendItem.getPicture())) {
+            Picasso.with(context).load(friendItem.getPicture()).into(viewHolder.profilePicture_friend);
+        }else{
+            byte[] imageBytes = Base64.decode(friendItem.getPicture(), Base64.DEFAULT);
+            Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            viewHolder.profilePicture_friend.setImageBitmap(decodedImage);
+        }
+
         return convertView;
     }
 

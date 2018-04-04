@@ -4,6 +4,8 @@ import android.accounts.Account;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
@@ -16,9 +18,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,7 +85,7 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
         update();
 
         profileImage = (ImageView) header.findViewById(R.id.profileImage);
-        Picasso.with(this).load(AccountSingleton.getInstance().getPicture()).into(profileImage);
+
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -223,7 +227,16 @@ public class Accueil extends BaseActivity implements NavigationView.OnNavigation
 
     @Override
     public void onSuccess() {
-        Picasso.with(getBaseContext()).load(AccountSingleton.getInstance().getPicture()).into(profileImage);
+
+        profileImage = (ImageView) header.findViewById(R.id.profileImage);
+        if(URLUtil.isValidUrl(AccountSingleton.getInstance().getPicture())) {
+            Picasso.with(getBaseContext()).load(AccountSingleton.getInstance().getPicture()).into(profileImage);
+        }else{
+            byte[] imageBytes = Base64.decode(AccountSingleton.getInstance().getPicture(), Base64.DEFAULT);
+            Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            profileImage.setImageBitmap(decodedImage);
+        }
+
         pseudo_header.setText(AccountSingleton.getInstance().getPseudo());
         if(AccountSingleton.getInstance().getListeCards().get(0).equals("")){
             nbCards.setText("0");
