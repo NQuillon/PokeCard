@@ -1,33 +1,35 @@
 {
   "project_info": {
-    "project_number": "91940252924",
-    "project_id": "pokecard-78083"
+    "project_number": "1017375072390",
+    "firebase_url": "https://pokecard-e644d.firebaseio.com",
+    "project_id": "pokecard-e644d",
+    "storage_bucket": "pokecard-e644d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:91940252924:android:fa5ddf8554b4ad03",
+        "mobilesdk_app_id": "1:1017375072390:android:fa5ddf8554b4ad03",
         "android_client_info": {
           "package_name": "nicolas.johan.iem.pokecard"
         }
       },
       "oauth_client": [
         {
-          "client_id": "91940252924-i9jukdmvilanakh32ju3um6ujitqk1bu.apps.googleusercontent.com",
+          "client_id": "1017375072390-3m22qi1ckqf7quoqqkbk2tbi4lgi71v3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "nicolas.johan.iem.pokecard",
-            "certificate_hash": "1f0a37c55ea53889ba71cfe15610fd2066cb0e05"
+            "certificate_hash": "2a795777c2b5c90be090da6b7aaf5ab49b28cede"
           }
         },
         {
-          "client_id": "91940252924-t8401sagsl9aug7tfr232jh2buh70uc0.apps.googleusercontent.com",
+          "client_id": "1017375072390-ec3n2mea2rg7ilq1b6sthrvcvubl1clr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAMZbdDTFskc3k5BhM5ZglFUlmle3ZeYGs"
+          "current_key": "AIzaSyBDNt56bOoAq8RzNLiDSvK4Xx-fK0QKeS4"
         }
       ],
       "services": {
@@ -35,11 +37,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1017375072390-ec3n2mea2rg7ilq1b6sthrvcvubl1clr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

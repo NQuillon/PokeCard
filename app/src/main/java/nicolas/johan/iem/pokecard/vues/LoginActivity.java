@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
         builder.setView(input);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String tmp = sharedPref.getString("IPServer", "192.168.43.200");
+        String tmp = sharedPref.getString("IPServer", "81.67.198.72");
         input.setText(tmp);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {

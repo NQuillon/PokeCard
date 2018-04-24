@@ -23,7 +23,7 @@ public class PokemonApp extends Application {
 
     public static void refreshService() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        String tmp = sharedPref.getString("IPServer", "192.168.43.200");
+        String tmp = sharedPref.getString("IPServer", "81.67.198.72");
 
         Retrofit.Builder mBuilder =
                 new Retrofit.Builder()
